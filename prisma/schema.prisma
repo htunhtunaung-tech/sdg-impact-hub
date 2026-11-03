@@ -1,0 +1,944 @@
+// SDG Impact Hub — PostgreSQL schema
+// Conventions: cuid string ids (except SDGGoal which uses the official goal number),
+// createdAt/updatedAt on every mutable table, explicit indexes on foreign keys
+// and on columns used for filtering/sorting.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  INDIVIDUAL
+  STUDENT
+  VOLUNTEER
+  ORGANIZER
+  ORGANIZATION
+  ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum TokenType {
+  VERIFY_EMAIL
+  RESET_PASSWORD
+}
+
+enum OrganizationType {
+  NGO
+  UNIVERSITY
+  SCHOOL
+  COMPANY
+  COMMUNITY_GROUP
+  GOVERNMENT
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum OrgMemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum SDGCategory {
+  PEOPLE
+  PLANET
+  PROSPERITY
+  PEACE
+  PARTNERSHIP
+}
+
+enum ResourceType {
+  ARTICLE
+  REPORT
+  VIDEO
+  COURSE
+  TOOLKIT
+}
+
+enum ProjectStatus {
+  PLANNING
+  RECRUITING
+  ACTIVE
+  COMPLETED
+}
+
+enum ModerationStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum ProjectMemberRole {
+  ORGANIZER
+  COORDINATOR
+  VOLUNTEER
+}
+
+enum OpportunityStatus {
+  OPEN
+  CLOSED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  WAITLISTED
+  REJECTED
+  WITHDRAWN
+  COMPLETED
+}
+
+enum ActivityType {
+  JOINED_PLATFORM
+  CREATED_PROJECT
+  JOINED_PROJECT
+  APPLIED_OPPORTUNITY
+  APPROVED_FOR_OPPORTUNITY
+  SUBMITTED_IMPACT
+  IMPACT_VERIFIED
+  EARNED_ACHIEVEMENT
+  COMPLETED_CHALLENGE
+  POSTED_UPDATE
+  CREATED_ORGANIZATION
+  MILESTONE_COMPLETED
+}
+
+enum ImpactStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ChallengeFrequency {
+  DAILY
+  WEEKLY
+  ONE_TIME
+}
+
+enum ParticipationStatus {
+  JOINED
+  COMPLETED
+}
+
+enum PostType {
+  POST
+  PROJECT_UPDATE
+  EVENT
+}
+
+enum ReactionType {
+  LIKE
+  CELEBRATE
+  SUPPORT
+  INSIGHTFUL
+}
+
+enum NotificationType {
+  APPLICATION_RECEIVED
+  APPLICATION_UPDATED
+  PROJECT_UPDATE
+  IMPACT_REVIEWED
+  ACHIEVEMENT_EARNED
+  NEW_MESSAGE
+  COMMENT
+  ORGANIZATION_VERIFIED
+  PROJECT_REVIEWED
+  SYSTEM
+}
+
+enum ReportTargetType {
+  POST
+  COMMENT
+  PROJECT
+  USER
+  ORGANIZATION
+  MESSAGE
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum AssistantRole {
+  USER
+  ASSISTANT
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Identity & auth
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  name          String
+  passwordHash  String?
+  emailVerified DateTime?
+  image         String?
+  role          UserRole      @default(INDIVIDUAL)
+  status        AccountStatus @default(ACTIVE)
+
+  // Gamification (XP is only granted for verified or quality-gated actions)
+  xp             Int       @default(0)
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  lastActiveDate DateTime? @db.Date
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile                 UserProfile?
+  accounts                Account[]
+  tokens                  EmailToken[]
+  sdgInterests            UserSdgInterest[]
+  organizationMemberships OrganizationMember[]
+  organizationsCreated    Organization[]           @relation("OrganizationCreator")
+  projectsOrganized       Project[]                @relation("ProjectOrganizer")
+  projectMemberships      ProjectMember[]
+  savedProjects           SavedProject[]
+  opportunitiesCreated    VolunteerOpportunity[]   @relation("OpportunityCreator")
+  applications            VolunteerApplication[]   @relation("Applicant")
+  applicationsReviewed    VolunteerApplication[]   @relation("ApplicationReviewer")
+  activities              Activity[]
+  impactSubmissions       ImpactSubmission[]       @relation("Submitter")
+  impactReviews           ImpactSubmission[]       @relation("ImpactReviewer")
+  achievements            UserAchievement[]
+  challengeParticipations ChallengeParticipation[]
+  posts                   Post[]
+  comments                Comment[]
+  reactions               Reaction[]
+  notifications           Notification[]
+  messagesSent            Message[]                @relation("MessageSender")
+  messagesReceived        Message[]                @relation("MessageRecipient")
+  reportsFiled            Report[]                 @relation("Reporter")
+  reportsResolved         Report[]                 @relation("ReportResolver")
+  groupMemberships        GroupMember[]
+  groupsCreated           DiscussionGroup[]
+  assistantThreads        AssistantThread[]
+  milestonesCompleted     ProjectMilestone[]
+
+  @@index([role])
+  @@index([xp])
+}
+
+model UserProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  username           String   @unique
+  headline           String?
+  bio                String?
+  city               String?
+  country            String?
+  latitude           Float?
+  longitude          Float?
+  skills             String[]
+  interests          String[]
+  website            String?
+  isPublic           Boolean  @default(true)
+  showOnLeaderboard  Boolean  @default(true)
+  emailNotifications Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// Auth.js OAuth accounts (Google)
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+/// Single-use tokens for email verification and password reset. Only a SHA-256 hash is stored.
+model EmailToken {
+  id        String    @id @default(cuid())
+  userId    String
+  type      TokenType
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+}
+
+/// Fixed-window rate limiting shared across server instances.
+model RateLimit {
+  key         String   @id
+  windowStart DateTime
+  count       Int      @default(0)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SDG reference data
+// ─────────────────────────────────────────────────────────────────────────────
+
+model SDGGoal {
+  id               Int         @id // Official goal number 1..17
+  slug             String      @unique
+  title            String
+  shortTitle       String
+  tagline          String
+  description      String
+  color            String
+  category         SDGCategory
+  challenges       String[]
+  waysToContribute String[]
+  isActive         Boolean     @default(true)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  targets       SDGTarget[]
+  resources     EducationalResource[]
+  projects      ProjectGoal[]
+  opportunities VolunteerOpportunity[]
+  submissions   ImpactSubmission[]
+  metrics       ImpactMetric[]
+  challengesSet Challenge[]
+  followers     UserSdgInterest[]
+  posts         Post[]
+  groups        DiscussionGroup[]
+}
+
+model SDGTarget {
+  id          String   @id @default(cuid())
+  goalId      Int
+  code        String // e.g. "6.1"
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  goal SDGGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@unique([goalId, code])
+}
+
+model EducationalResource {
+  id        String       @id @default(cuid())
+  goalId    Int
+  title     String
+  url       String
+  source    String
+  type      ResourceType
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  goal SDGGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@index([goalId])
+}
+
+model UserSdgInterest {
+  userId    String
+  goalId    Int
+  createdAt DateTime @default(now())
+
+  user User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal SDGGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@id([userId, goalId])
+  @@index([goalId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Organizations
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Organization {
+  id                 String             @id @default(cuid())
+  name               String
+  slug               String             @unique
+  type               OrganizationType
+  description        String
+  mission            String?
+  website            String?
+  email              String?
+  logoUrl            String?
+  city               String?
+  country            String?
+  verificationStatus VerificationStatus @default(PENDING)
+  verifiedAt         DateTime?
+  createdById        String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  createdBy     User                   @relation("OrganizationCreator", fields: [createdById], references: [id])
+  members       OrganizationMember[]
+  projects      Project[]
+  opportunities VolunteerOpportunity[]
+  posts         Post[]
+
+  @@index([verificationStatus])
+  @@index([createdById])
+}
+
+model OrganizationMember {
+  id             String        @id @default(cuid())
+  organizationId String
+  userId         String
+  role           OrgMemberRole @default(MEMBER)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Projects
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Project {
+  id               String           @id @default(cuid())
+  slug             String           @unique
+  title            String
+  summary          String
+  description      String
+  objectives       String[]
+  tasks            String[]
+  imageUrl         String?
+  status           ProjectStatus    @default(PLANNING)
+  moderationStatus ModerationStatus @default(PENDING_REVIEW)
+  moderationNote   String?
+  organizerId      String
+  organizationId   String?
+
+  budget      Decimal? @db.Decimal(12, 2)
+  fundingGoal Decimal? @db.Decimal(12, 2)
+  fundsRaised Decimal  @default(0) @db.Decimal(12, 2)
+  currency    String   @default("USD")
+
+  locationName     String?
+  city             String?
+  country          String?
+  latitude         Float?
+  longitude        Float?
+  isOnline         Boolean   @default(false)
+  startDate        DateTime?
+  endDate          DateTime?
+  scheduleText     String?
+  commitment       String?
+  skillsNeeded     String[]
+  volunteersNeeded Int       @default(0)
+  progress         Int       @default(0) // 0..100, derived from milestones
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organizer     User                   @relation("ProjectOrganizer", fields: [organizerId], references: [id])
+  organization  Organization?          @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  goals         ProjectGoal[]
+  members       ProjectMember[]
+  milestones    ProjectMilestone[]
+  impactTargets ProjectImpactTarget[]
+  opportunities VolunteerOpportunity[]
+  submissions   ImpactSubmission[]
+  posts         Post[]
+  saves         SavedProject[]
+
+  @@index([status, moderationStatus])
+  @@index([organizerId])
+  @@index([organizationId])
+  @@index([city])
+  @@index([startDate])
+}
+
+model ProjectGoal {
+  projectId String
+  goalId    Int
+  isPrimary Boolean @default(false)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  goal    SDGGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, goalId])
+  @@index([goalId])
+}
+
+model ProjectMember {
+  id        String            @id @default(cuid())
+  projectId String
+  userId    String
+  role      ProjectMemberRole @default(VOLUNTEER)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([userId])
+}
+
+model ProjectMilestone {
+  id            String    @id @default(cuid())
+  projectId     String
+  title         String
+  description   String?
+  dueDate       DateTime?
+  completedAt   DateTime?
+  completedById String?
+  order         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  completedBy User?   @relation(fields: [completedById], references: [id], onDelete: SetNull)
+
+  @@index([projectId, order])
+}
+
+model ProjectImpactTarget {
+  id          String   @id @default(cuid())
+  projectId   String
+  metricId    String
+  targetValue Float
+  label       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  metric  ImpactMetric @relation(fields: [metricId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, metricId])
+}
+
+model SavedProject {
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([userId, projectId])
+  @@index([projectId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Volunteering
+// ─────────────────────────────────────────────────────────────────────────────
+
+model VolunteerOpportunity {
+  id               String            @id @default(cuid())
+  title            String
+  description      String
+  goalId           Int
+  projectId        String?
+  organizationId   String?
+  createdById      String
+  skills           String[]
+  locationName     String
+  city             String?
+  isOnline         Boolean           @default(false)
+  latitude         Float?
+  longitude        Float?
+  startsAt         DateTime
+  endsAt           DateTime
+  spots            Int
+  requiresApproval Boolean           @default(true)
+  status           OpportunityStatus @default(OPEN)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  goal         SDGGoal                @relation(fields: [goalId], references: [id])
+  project      Project?               @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  organization Organization?          @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  createdBy    User                   @relation("OpportunityCreator", fields: [createdById], references: [id])
+  applications VolunteerApplication[]
+  submissions  ImpactSubmission[]
+
+  @@index([status, startsAt])
+  @@index([goalId])
+  @@index([projectId])
+  @@index([createdById])
+}
+
+model VolunteerApplication {
+  id            String            @id @default(cuid())
+  opportunityId String
+  userId        String
+  status        ApplicationStatus @default(PENDING)
+  motivation    String?
+  availability  String?
+  wantsReminder Boolean           @default(true)
+  reviewNote    String?
+  reviewedById  String?
+  reviewedAt    DateTime?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  opportunity VolunteerOpportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  user        User                 @relation("Applicant", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy  User?                @relation("ApplicationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@unique([opportunityId, userId])
+  @@index([userId, status])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Impact tracking
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Catalog of measurable outcomes (trees planted, kg recycled, …).
+model ImpactMetric {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  unit        String
+  description String
+  goalId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  goal       SDGGoal                 @relation(fields: [goalId], references: [id])
+  values     ImpactSubmissionValue[]
+  targets    ProjectImpactTarget[]
+  challenges Challenge[]
+}
+
+/// A contribution reported by a user. Status PENDING = self-reported (not yet reviewed);
+/// VERIFIED = confirmed by the project organizer or a platform admin.
+model ImpactSubmission {
+  id            String       @id @default(cuid())
+  userId        String
+  goalId        Int
+  projectId     String?
+  opportunityId String?
+  title         String
+  description   String?
+  date          DateTime     @db.Date
+  hours         Decimal      @default(0) @db.Decimal(6, 2)
+  evidenceUrl   String?
+  status        ImpactStatus @default(PENDING)
+  reviewedById  String?
+  reviewedAt    DateTime?
+  reviewNote    String?
+  xpAwarded     Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  user        User                    @relation("Submitter", fields: [userId], references: [id], onDelete: Cascade)
+  goal        SDGGoal                 @relation(fields: [goalId], references: [id])
+  project     Project?                @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  opportunity VolunteerOpportunity?   @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  reviewedBy  User?                   @relation("ImpactReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  values      ImpactSubmissionValue[]
+
+  @@index([userId, date])
+  @@index([status])
+  @@index([projectId])
+  @@index([goalId])
+}
+
+model ImpactSubmissionValue {
+  id           String @id @default(cuid())
+  submissionId String
+  metricId     String
+  value        Float
+
+  submission ImpactSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  metric     ImpactMetric     @relation(fields: [metricId], references: [id])
+
+  @@unique([submissionId, metricId])
+  @@index([metricId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Activity log & gamification
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Activity {
+  id        String       @id @default(cuid())
+  actorId   String
+  type      ActivityType
+  message   String
+  link      String?
+  isPublic  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+
+  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([actorId, createdAt])
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  description String
+  icon        String
+  criterion   String // e.g. "verified_hours", "projects_joined"
+  threshold   Int
+  xpReward    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users UserAchievement[]
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  earnedAt      DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+}
+
+model Challenge {
+  id               String             @id @default(cuid())
+  title            String
+  description      String
+  goalId           Int
+  metricId         String?
+  frequency        ChallengeFrequency
+  xpReward         Int
+  requiresEvidence Boolean            @default(false)
+  startsAt         DateTime
+  endsAt           DateTime
+  isActive         Boolean            @default(true)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  goal           SDGGoal                  @relation(fields: [goalId], references: [id])
+  metric         ImpactMetric?            @relation(fields: [metricId], references: [id], onDelete: SetNull)
+  participations ChallengeParticipation[]
+
+  @@index([isActive, endsAt])
+}
+
+/// periodKey makes recurring challenges completable once per period ("2026-11-03", "2026-W45", "once").
+model ChallengeParticipation {
+  id          String              @id @default(cuid())
+  challengeId String
+  userId      String
+  periodKey   String
+  status      ParticipationStatus @default(JOINED)
+  note        String?
+  completedAt DateTime?
+  xpAwarded   Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([challengeId, userId, periodKey])
+  @@index([userId, completedAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Community
+// ─────────────────────────────────────────────────────────────────────────────
+
+model DiscussionGroup {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  goalId      Int?
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  goal      SDGGoal?      @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  createdBy User          @relation(fields: [createdById], references: [id])
+  members   GroupMember[]
+  posts     Post[]
+}
+
+model GroupMember {
+  groupId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  group DiscussionGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, userId])
+  @@index([userId])
+}
+
+/// Feed posts, project progress reports and event announcements.
+model Post {
+  id             String    @id @default(cuid())
+  authorId       String
+  type           PostType  @default(POST)
+  title          String?
+  body           String
+  goalId         Int?
+  projectId      String?
+  organizationId String?
+  groupId        String?
+  eventStartsAt  DateTime?
+  eventLocation  String?
+  isHidden       Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  author       User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  goal         SDGGoal?         @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  project      Project?         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  organization Organization?    @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  group        DiscussionGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  comments     Comment[]
+  reactions    Reaction[]
+
+  @@index([createdAt])
+  @@index([projectId, createdAt])
+  @@index([groupId, createdAt])
+  @@index([goalId, createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  authorId  String
+  body      String
+  isHidden  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+}
+
+model Reaction {
+  id        String       @id @default(cuid())
+  postId    String
+  userId    String
+  type      ReactionType @default(LIKE)
+  createdAt DateTime     @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+}
+
+model Message {
+  id          String    @id @default(cuid())
+  senderId    String
+  recipientId String
+  body        String
+  readAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  sender    User @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient User @relation("MessageRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([senderId, recipientId, createdAt])
+  @@index([recipientId, readAt])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+}
+
+model Report {
+  id           String           @id @default(cuid())
+  reporterId   String
+  targetType   ReportTargetType
+  targetId     String
+  reason       String
+  details      String?
+  status       ReportStatus     @default(OPEN)
+  resolvedById String?
+  resolution   String?
+  resolvedAt   DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  reporter   User  @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  resolvedBy User? @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([targetType, targetId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AI assistant
+// ─────────────────────────────────────────────────────────────────────────────
+
+model AssistantThread {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AssistantMessage[]
+
+  @@index([userId, updatedAt])
+}
+
+model AssistantMessage {
+  id        String        @id @default(cuid())
+  threadId  String
+  role      AssistantRole
+  content   String
+  createdAt DateTime      @default(now())
+
+  thread AssistantThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@index([threadId, createdAt])
+}
