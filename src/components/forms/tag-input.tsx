@@ -69,7 +69,7 @@ export function ListInput({ id, value, onChange, placeholder, max = 10 }: { id?:
       {value.length > 0 && (
         <ol className="mb-2 space-y-1.5">
           {value.map((v, i) => (
-            <li key={`${v}-${i}`} className="flex items-start gap-2 rounded-[10px] border border-border bg-canvas px-3 py-2 text-sm">
+            <li key={`${v}-${i}`} className="flex items-start gap-2 rounded-[14px] border border-border bg-canvas px-3 py-2 text-sm">
               <span className="font-semibold text-ink-subtle">{i + 1}.</span>
               <span className="flex-1">{v}</span>
               <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))} aria-label={`Remove item ${i + 1}`} className="rounded p-0.5 hover:bg-slate-200">
@@ -81,7 +81,7 @@ export function ListInput({ id, value, onChange, placeholder, max = 10 }: { id?:
       )}
       <div className="flex gap-2">
         <Input id={id} value={draft} placeholder={placeholder} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }} />
-        <button type="button" onClick={add} className="shrink-0 rounded-[10px] border border-border-strong px-3 text-sm font-semibold hover:bg-canvas">Add</button>
+        <button type="button" onClick={add} className="shrink-0 rounded-[14px] border border-border-strong px-3 text-sm font-semibold hover:bg-canvas">Add</button>
       </div>
     </div>
   );

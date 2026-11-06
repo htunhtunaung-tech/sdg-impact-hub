@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 
 const LeafletMap = dynamic(() => import("./leaflet-map").then((m) => m.LeafletMap), {
   ssr: false,
-  loading: () => <div className="h-64 animate-pulse rounded-[12px] bg-slate-100" />,
+  loading: () => <div className="h-64 animate-pulse rounded-[16px] bg-slate-100" />,
 });
 
 /** Search an address (OpenStreetMap Nominatim) or click the map to set coordinates. */
@@ -79,7 +79,7 @@ export function LocationPicker({
           <LocateFixed />
         </Button>
       </div>
-      <LeafletMap points={[]} picked={picked} onPick={onChange} zoom={picked ? 13 : 6} className="h-64 overflow-hidden rounded-[12px] border border-border" />
+      <LeafletMap points={[]} picked={picked} onPick={onChange} zoom={picked ? 13 : 6} className="h-64 overflow-hidden rounded-[16px] border border-border" />
       <p className="text-xs text-ink-subtle">
         {msg ?? (picked ? `Pinned at ${picked.lat}, ${picked.lng}. Click the map to adjust.` : "Click the map to drop a pin.")}
       </p>

@@ -10,7 +10,8 @@ import type { ShellUser } from "@/components/layout/app-shell";
 export function UserMenu({ user }: { user: ShellUser }) {
   return (
     <Dropdown>
-      <DropdownTrigger className="flex items-center gap-1.5 rounded-full p-0.5 pr-1.5 hover:bg-slate-100" aria-label="Account menu">
+      <DropdownTrigger className="flex items-center gap-1.5 rounded-full p-0.5 pr-1.5 hover:bg-track">
+        <span className="sr-only">Account menu for {user.name}</span>
         <Avatar name={user.name} src={user.image} size={36} />
         <ChevronDown className="hidden size-4 text-ink-muted sm:block" aria-hidden />
       </DropdownTrigger>

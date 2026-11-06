@@ -52,7 +52,7 @@ export function FileUpload({
         onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])}
       />
       {value ? (
-        <div className="relative inline-flex items-center gap-3 rounded-[12px] border border-border bg-surface p-2 pr-10">
+        <div className="relative inline-flex items-center gap-3 rounded-[16px] border border-border bg-surface p-2 pr-10">
           {isImage ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={value} alt="Uploaded preview" className="h-16 w-24 rounded-md object-cover" />
@@ -68,7 +68,7 @@ export function FileUpload({
         <label
           htmlFor={id}
           className={cn(
-            "flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-[12px] border border-dashed border-border-strong bg-canvas px-4 py-6 text-center text-sm text-ink-muted transition-colors hover:border-accent hover:bg-mint/40",
+            "flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-[16px] border border-dashed border-border-strong bg-canvas px-4 py-6 text-center text-sm text-ink-muted transition-colors hover:border-accent hover:bg-mint/40",
             busy && "pointer-events-none opacity-70",
           )}
         >

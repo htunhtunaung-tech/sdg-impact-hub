@@ -13,7 +13,7 @@ export function DropdownContent({ className, align = "end", ...props }: React.Co
       <M.Content
         align={align}
         sideOffset={8}
-        className={cn("z-50 min-w-52 rounded-[12px] border border-border bg-surface p-1.5 shadow-overlay data-[state=open]:animate-fade-in", className)}
+        className={cn("z-50 min-w-52 rounded-[16px] border border-border bg-surface p-1.5 shadow-overlay data-[state=open]:animate-fade-in", className)}
         {...props}
       />
     </M.Portal>
@@ -24,7 +24,7 @@ export function DropdownItem({ className, ...props }: React.ComponentProps<typeo
   return (
     <M.Item
       className={cn(
-        "flex cursor-pointer select-none items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-ink outline-none data-[highlighted]:bg-slate-100 [&_svg]:size-4 [&_svg]:text-ink-muted",
+        "flex cursor-pointer select-none items-center gap-2.5 rounded-[14px] px-3 py-2.5 text-sm text-ink outline-none data-[highlighted]:bg-mint [&_svg]:size-4 [&_svg]:text-ink-muted",
         className,
       )}
       {...props}

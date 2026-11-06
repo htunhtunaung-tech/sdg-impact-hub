@@ -95,6 +95,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
       <p className="mb-4 mt-6 text-[15px] text-ink-muted">
         {total ? `Showing ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} of ${total} projects` : ""}
       </p>
+      <h2 className="sr-only">Results</h2>
       {items.length ? (
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
           {items.map((p) => (

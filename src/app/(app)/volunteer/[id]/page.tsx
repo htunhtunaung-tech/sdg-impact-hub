@@ -65,13 +65,13 @@ export default async function OpportunityPage({ params }: Props) {
               )}
             </div>
           </div>
-          {o.status !== "OPEN" && <p className="mt-4 rounded-[10px] bg-slate-100 px-3 py-2 text-sm font-medium">This opportunity is {o.status === "CANCELLED" ? "cancelled" : "closed for sign-ups"}.</p>}
+          {o.status !== "OPEN" && <p className="mt-4 rounded-[14px] bg-slate-100 px-3 py-2 text-sm font-medium">This opportunity is {o.status === "CANCELLED" ? "cancelled" : "closed for sign-ups"}.</p>}
           <section className="mt-6">
             <h2 className="text-lg font-semibold">About the role</h2>
             <p className="mt-2 whitespace-pre-line text-[16px] leading-relaxed text-slate-700">{o.description}</p>
           </section>
           {o.project && (
-            <Link href={`/projects/${o.project.slug}`} className="mt-6 flex items-center gap-3 rounded-[12px] border border-border bg-surface p-4 hover:bg-canvas">
+            <Link href={`/projects/${o.project.slug}`} className="mt-6 flex items-center gap-3 rounded-[16px] border border-border bg-surface p-4 hover:bg-canvas">
               <FolderOpen className="size-5 text-link" />
               <span className="flex-1"><span className="block text-xs text-ink-muted">Part of the project</span><span className="font-semibold">{o.project.title}</span></span>
               <ChevronRight className="size-4 text-ink-subtle" />

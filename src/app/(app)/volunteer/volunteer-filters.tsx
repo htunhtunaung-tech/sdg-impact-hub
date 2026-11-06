@@ -54,7 +54,7 @@ export function VolunteerFilters({ skills, hasLocation, signedIn }: { skills: st
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-subtle" />
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search" className="pl-9" aria-label="Search opportunities" />
         </div>
-        <div className="grid grid-cols-2 gap-1 rounded-[10px] bg-slate-100 p-1" role="group" aria-label="View">
+        <div className="grid grid-cols-2 gap-1 rounded-[14px] bg-slate-100 p-1" role="group" aria-label="View">
           {(["list", "map"] as const).map((v) => (
             <button key={v} type="button" aria-pressed={view === v} onClick={() => set("view", v === "list" ? "" : v)} className={cn("flex h-8 items-center justify-center gap-1.5 rounded-md text-sm font-medium", view === v ? "bg-surface shadow-card" : "text-ink-muted")}>
               {v === "list" ? <List className="size-4" /> : <MapIcon className="size-4" />} {v === "list" ? "List" : "Map"}

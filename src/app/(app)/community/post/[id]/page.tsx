@@ -31,7 +31,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           {comments.map((c) => (
             <li key={c.id} className="flex gap-3">
               <Avatar name={c.author.name} src={c.author.image} size={36} />
-              <div className="min-w-0 flex-1 rounded-[12px] bg-surface p-3 shadow-card">
+              <div className="min-w-0 flex-1 rounded-[16px] bg-surface p-3 shadow-card">
                 <p className="text-sm">
                   <Link href={c.author.profile ? `/u/${c.author.profile.username}` : "#"} className="font-semibold hover:underline">{c.author.name}</Link>
                   <span className="text-ink-subtle"> · {timeAgo(c.createdAt)}</span>

@@ -52,10 +52,10 @@ export function PostActions({ postId, counts, mine, comments, canDelete, signedI
             type="button"
             onClick={() => react(key)}
             aria-pressed={active}
-            aria-label={`${label}${n ? ` (${n})` : ""}`}
+            aria-label={n ? `${n} ${label}` : label}
             title={label}
             className={cn(
-              "inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-sm transition-colors",
+              "inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm transition-colors",
               active ? "bg-mint font-semibold text-forest-900" : "text-ink-muted hover:bg-slate-100",
             )}
           >

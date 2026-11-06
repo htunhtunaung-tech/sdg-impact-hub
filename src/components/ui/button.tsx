@@ -9,19 +9,20 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm",
+        primary: "bg-primary text-primary-foreground hover:bg-primary-hover shadow-brand",
         secondary: "bg-surface text-ink border border-border-strong hover:bg-canvas hover:border-slate-400",
-        ghost: "text-ink-muted hover:bg-slate-100 hover:text-ink",
+        ghost: "text-ink-muted hover:bg-track hover:text-ink",
         link: "text-link hover:underline underline-offset-4 px-0 h-auto",
         danger: "bg-danger text-white hover:bg-red-800 shadow-sm",
         soft: "bg-mint text-forest-900 hover:bg-mint-strong",
+        white: "bg-white text-forest-900 hover:bg-mint shadow-sm",
       },
       size: {
-        sm: "h-8 px-3 text-[13px] rounded-md",
-        md: "h-10 px-4 text-sm rounded-[10px]",
-        lg: "h-12 px-6 text-[15px] rounded-[10px]",
-        icon: "size-10 rounded-[10px]",
-        "icon-sm": "size-8 rounded-md",
+        sm: "h-8 px-3.5 text-[13px] rounded-full",
+        md: "h-11 px-5 text-sm rounded-full",
+        lg: "h-12 px-6 text-[15px] rounded-full",
+        icon: "size-11 rounded-full",
+        "icon-sm": "size-8 rounded-full",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

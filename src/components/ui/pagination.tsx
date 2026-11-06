@@ -12,10 +12,10 @@ export function Pagination({ page, total, pageSize, basePath, params }: { page: 
     return `${basePath}${s ? `?${s}` : ""}`;
   };
   const nums = Array.from({ length: pages }, (_, i) => i + 1).filter((n) => n === 1 || n === pages || Math.abs(n - page) <= 1);
-  const btn = "inline-flex h-10 min-w-10 items-center justify-center rounded-[10px] border border-border-strong bg-surface px-3 text-sm font-semibold hover:bg-canvas";
+  const btn = "inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-border-strong bg-surface px-3.5 text-sm font-semibold hover:bg-canvas";
   return (
     <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
-      {page > 1 ? <Link className={cn(btn, "px-4")} href={href(page - 1)}>‹ Previous</Link> : <span className={cn(btn, "px-4 opacity-40")}>‹ Previous</span>}
+      {page > 1 ? <Link className={cn(btn, "px-4")} href={href(page - 1)}>‹ Previous</Link> : <span aria-disabled="true" className={cn(btn, "cursor-not-allowed border-border bg-canvas px-4 text-ink-subtle hover:bg-canvas")}>‹ Previous</span>}
       {nums.map((n, i) => (
         <span key={n} className="flex items-center gap-2">
           {i > 0 && n - nums[i - 1]! > 1 && <span className="px-1 text-ink-subtle">…</span>}
@@ -24,7 +24,7 @@ export function Pagination({ page, total, pageSize, basePath, params }: { page: 
           </Link>
         </span>
       ))}
-      {page < pages ? <Link className={cn(btn, "px-4")} href={href(page + 1)}>Next ›</Link> : <span className={cn(btn, "px-4 opacity-40")}>Next ›</span>}
+      {page < pages ? <Link className={cn(btn, "px-4")} href={href(page + 1)}>Next ›</Link> : <span aria-disabled="true" className={cn(btn, "cursor-not-allowed border-border bg-canvas px-4 text-ink-subtle hover:bg-canvas")}>Next ›</span>}
     </nav>
   );
 }

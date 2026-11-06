@@ -13,7 +13,7 @@ export function VerifyEmailButton({ token }: { token: string }) {
   if (state?.ok)
     return (
       <div className="space-y-5">
-        <p className="flex items-center gap-2 rounded-[10px] bg-mint px-3 py-3 text-sm font-medium text-forest-900" role="status">
+        <p className="flex items-center gap-2 rounded-[14px] bg-mint px-3 py-3 text-sm font-medium text-forest-900" role="status">
           <CircleCheck className="size-5" /> {state.msg}
         </p>
         <Button asChild size="lg" className="w-full">

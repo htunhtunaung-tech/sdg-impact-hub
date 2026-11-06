@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Stat } from "@/components/ui/misc";
 import { Button } from "@/components/ui/button";
 import { GoalBars } from "@/components/impact/goal-bars";
-import { HoursBarChart } from "@/components/charts/hours-chart";
+import { HoursBarChart } from "@/components/charts/lazy";
 import { hoursByGoal, metricTotals, monthlyHours, peopleReached } from "@/server/queries/impact";
 
 export const metadata: Metadata = { title: "Admin" };
@@ -34,16 +34,16 @@ export default async function AdminOverview() {
   return (
     <div className="space-y-6">
       <section className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <Stat icon={<Users />} label="Members" value={formatInt(users)} sub={`+${newUsers} in 30 days`} trend={newUsers ? "up" : null} />
-        <Stat icon={<FolderOpen />} label="Live projects" value={projects} sub={`${orgs} verified organizations`} />
-        <Stat icon={<Clock />} label="Verified hours" value={formatNumber(toNumber(hours._sum.hours))} sub={`${formatInt(people)} people reached`} />
-        <Stat icon={<CircleCheck />} label="Verification rate" value={reviewed ? `${Math.round((verified / reviewed) * 100)}%` : "—"} sub="of reviewed submissions" />
+        <Stat tone="mint" icon={<Users />} label="Members" value={formatInt(users)} sub={`+${newUsers} in 30 days`} trend={newUsers ? "up" : null} />
+        <Stat tone="sky" icon={<FolderOpen />} label="Live projects" value={projects} sub={`${orgs} verified organizations`} />
+        <Stat tone="sun" icon={<Clock />} label="Verified hours" value={formatNumber(toNumber(hours._sum.hours))} sub={`${formatInt(people)} people reached`} />
+        <Stat tone="lilac" icon={<CircleCheck />} label="Verification rate" value={reviewed ? `${Math.round((verified / reviewed) * 100)}%` : "—"} sub="of reviewed submissions" />
       </section>
       <Card>
         <CardHeader><div><CardTitle>Moderation queue</CardTitle><CardDescription>Items waiting for an administrator.</CardDescription></div></CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {queue.map(({ href, label, n, icon: Icon }) => (
-            <Link key={href} href={href} className={`flex items-center gap-3 rounded-[12px] border p-4 hover:bg-canvas ${n ? "border-amber-200 bg-warning-soft/50" : "border-border"}`}>
+            <Link key={href} href={href} className={`flex items-center gap-3 rounded-[16px] border p-4 hover:bg-canvas ${n ? "border-amber-200 bg-warning-soft/50" : "border-border"}`}>
               <Icon className={`size-6 ${n ? "text-warning" : "text-ink-subtle"}`} />
               <span><span className="block text-2xl font-bold">{n}</span><span className="text-sm text-ink-muted">{label}</span></span>
             </Link>
@@ -71,7 +71,7 @@ export default async function AdminOverview() {
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {totals.map((t) => (
-            <div key={t.key} className="rounded-[12px] bg-canvas p-4">
+            <div key={t.key} className="rounded-[16px] bg-canvas p-4">
               <p className="text-xl font-bold">{formatNumber(t.value, 0)} <span className="text-sm font-normal text-ink-muted">{t.unit}</span></p>
               <p className="text-xs text-ink-muted">{t.name}</p>
             </div>

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Markdown } from "@/components/ui/markdown";
 import { Textarea } from "@/components/ui/input";
 import { cn, timeAgo } from "@/lib/utils";
+import { EcoIllustration } from "@/components/brand/illustration";
 
 type Msg = { id: string; role: "user" | "assistant"; content: string };
 
@@ -89,7 +90,7 @@ export function AssistantChat({ firstName, online, threads, threadId: initialThr
   return (
     <div className="container-page grid gap-6 py-6 sm:py-8 lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside className="hidden lg:block">
-        <Link href="/assistant" className="flex h-10 items-center justify-center gap-2 rounded-[10px] bg-primary text-sm font-semibold text-white hover:bg-primary-hover">
+        <Link href="/assistant" className="flex h-11 items-center justify-center gap-2 rounded-full bg-primary text-sm font-semibold text-white hover:bg-primary-hover">
           <MessageSquarePlus className="size-4" /> New conversation
         </Link>
         <p className="mb-2 mt-6 px-2 text-[11px] font-semibold uppercase tracking-wider text-ink-subtle">History</p>
@@ -110,7 +111,7 @@ export function AssistantChat({ firstName, online, threads, threadId: initialThr
       <section className="flex min-h-[calc(100dvh-11rem)] flex-col rounded-[var(--radius-xl)] border border-border bg-surface shadow-card">
         <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           <div className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-forest-900 text-white"><Sparkles className="size-5" /></span>
+            <span className="flex size-10 items-center justify-center rounded-full bg-[image:var(--gradient-brand)] text-white"><Sparkles className="size-5" /></span>
             <div><h1 className="font-semibold">Sustainability Assistant</h1><p className="text-xs text-ink-muted">Grounded in your profile and live platform data</p></div>
           </div>
           {!online && <span className="inline-flex items-center gap-1.5 rounded-full bg-warning-soft px-2.5 py-1 text-xs font-semibold text-warning" title="Set OPENAI_API_KEY to enable the language model"><WifiOff className="size-3.5" /> Offline mode</span>}
@@ -119,13 +120,14 @@ export function AssistantChat({ firstName, online, threads, threadId: initialThr
         <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
           {messages.length === 0 ? (
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="font-display text-4xl text-forest-900 sm:text-5xl">Hi {firstName}, how can I help?</h2>
+              <EcoIllustration className="mx-auto max-w-[160px]" />
+              <h2 className="mt-2 text-[30px] font-bold leading-tight tracking-tight text-ink sm:text-[38px]">Hi {firstName}, how can I help?</h2>
               <p className="mx-auto mt-3 max-w-md text-ink-muted">Ask about the goals, find opportunities, or get help drafting a proposal or action plan.</p>
               <ul className="mt-8 grid gap-3 text-left sm:grid-cols-2">
                 {STARTERS.map(({ icon: Icon, text }) => (
                   <li key={text}>
-                    <button type="button" onClick={() => send(text)} className="flex w-full items-start gap-3 rounded-[12px] border border-border p-3.5 text-sm transition-colors hover:border-accent hover:bg-mint/40">
-                      <Icon className="mt-0.5 size-4 shrink-0 text-link" /> {text}
+                    <button type="button" onClick={() => send(text)} className="flex w-full items-center gap-3 rounded-[18px] bg-canvas p-3.5 text-sm font-medium transition-colors hover:bg-tone-mint">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-link shadow-card"><Icon className="size-4" /></span> {text}
                     </button>
                   </li>
                 ))}
@@ -137,7 +139,7 @@ export function AssistantChat({ firstName, online, threads, threadId: initialThr
                 <motion.li key={m.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start gap-3")}>
                   {m.role === "assistant" && <span className="mt-1 flex size-8 shrink-0 items-center justify-center rounded-full bg-mint text-link"><Sparkles className="size-4" /></span>}
                   {m.role === "user" ? (
-                    <p className="max-w-[85%] whitespace-pre-line rounded-[18px] rounded-br-sm bg-primary px-4 py-2.5 text-[15px] text-white">{m.content}</p>
+                    <p className="max-w-[85%] whitespace-pre-line rounded-[20px] rounded-br-md bg-primary px-4 py-2.5 text-[15px] text-white">{m.content}</p>
                   ) : (
                     <div className="min-w-0 max-w-[92%]">
                       {m.content ? <Markdown text={m.content} /> : <span className="inline-flex gap-1 py-2" aria-label="Thinking"><Dot /><Dot d={0.15} /><Dot d={0.3} /></span>}
@@ -151,11 +153,11 @@ export function AssistantChat({ firstName, online, threads, threadId: initialThr
         </div>
 
         <form className="border-t border-border p-3 sm:p-4" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
-          <div className="mx-auto flex max-w-3xl items-end gap-2 rounded-[14px] border border-border-strong bg-surface p-2 focus-within:border-accent focus-within:ring-3 focus-within:ring-emerald-600/15">
+          <div className="mx-auto flex max-w-3xl items-end gap-2 rounded-[24px] border border-border-strong bg-surface p-2 pl-3 focus-within:border-accent focus-within:ring-3 focus-within:ring-emerald-600/15">
             <label htmlFor="ask" className="sr-only">Message the assistant</label>
             <Textarea id="ask" rows={1} value={input} onChange={(e) => setInput(e.target.value)} maxLength={4000} placeholder="Ask anything about the SDGs or your next step…" className="max-h-40 min-h-10 resize-none border-0 py-2 focus:ring-0"
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(input); } }} />
-            <button type="submit" disabled={busy || !input.trim()} className="flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-primary text-white disabled:opacity-40" aria-label="Send">
+            <button type="submit" disabled={busy || !input.trim()} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-brand disabled:opacity-40 disabled:shadow-none" aria-label="Send">
               <ArrowUp className="size-5" />
             </button>
           </div>

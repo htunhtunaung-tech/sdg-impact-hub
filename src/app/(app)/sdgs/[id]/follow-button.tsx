@@ -27,7 +27,7 @@ export function FollowGoalButton({ goalId, following, signedIn, onColor }: { goa
           } else toast.success(res.message);
         });
       }}
-      className="inline-flex h-11 items-center gap-2 rounded-[10px] border-2 px-4 text-sm font-semibold transition-colors disabled:opacity-70"
+      className="inline-flex h-11 items-center gap-2 rounded-[14px] border-2 px-4 text-sm font-semibold transition-colors disabled:opacity-70"
       style={{ borderColor: dark ? "#0F172A" : "#FFFFFF", color: dark ? "#0F172A" : "#FFFFFF", background: state ? (dark ? "rgba(15,23,42,.08)" : "rgba(255,255,255,.15)") : "transparent" }}
     >
       {state ? <Check className="size-4" /> : <Plus className="size-4" />} {state ? "Following" : "Follow this goal"}

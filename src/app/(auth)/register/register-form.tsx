@@ -49,7 +49,7 @@ export function RegisterForm() {
         <h2 className="mt-4 text-lg font-semibold">Confirm your email</h2>
         <p className="mt-1 text-sm text-ink-muted">{done.message}</p>
         {done.devLink && (
-          <p className="mt-4 rounded-[10px] bg-canvas p-3 text-xs text-ink-muted">
+          <p className="mt-4 rounded-[14px] bg-canvas p-3 text-xs text-ink-muted">
             Dev mode (no SMTP configured):{" "}
             <Link href={done.devLink} className="font-semibold text-link underline">
               open confirmation link

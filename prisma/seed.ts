@@ -663,6 +663,9 @@ async function main() {
   ];
   await db.activity.createMany({ data: acts.map(([k, type, message, link, d]) => ({ actorId: u[k]!, type, message, link, createdAt: new Date(Date.now() - d * DAY) })) });
 
+  // Everyone except the brand-new student has finished onboarding (Ploy demonstrates the first-run flow).
+  await db.userProfile.updateMany({ where: { userId: { not: u.new! } }, data: { onboardedAt: new Date() } });
+
   console.log("\n✅ Seed complete.\n");
   console.log("Demo accounts (password: " + DEMO_PASSWORD + ")");
   console.log("  Volunteer : mya@example.org");

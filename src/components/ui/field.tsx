@@ -53,7 +53,7 @@ export function Field({
 export function FormError({ message }: { message?: string | null }) {
   if (!message) return null;
   return (
-    <div role="alert" className="flex items-start gap-2 rounded-[10px] border border-red-200 bg-danger-soft px-3 py-2.5 text-sm text-danger">
+    <div role="alert" className="flex items-start gap-2 rounded-[14px] border border-red-200 bg-danger-soft px-3 py-2.5 text-sm text-danger">
       <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
       <span>{message}</span>
     </div>

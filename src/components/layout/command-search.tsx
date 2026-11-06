@@ -101,11 +101,11 @@ export function CommandSearch({ iconOnly = false }: { iconOnly?: boolean }) {
     <D.Root open={open} onOpenChange={setOpen}>
       <D.Trigger asChild>
         {iconOnly ? (
-          <button className="inline-flex size-10 items-center justify-center rounded-[10px] border border-border text-ink-muted hover:bg-canvas" aria-label="Search">
+          <button className="inline-flex size-10 items-center justify-center rounded-[14px] border border-border text-ink-muted hover:bg-canvas" aria-label="Search">
             <Search className="size-[18px]" />
           </button>
         ) : (
-          <button className="flex h-10 w-full items-center gap-3 rounded-[10px] border border-border bg-canvas px-3 text-left text-[15px] text-ink-subtle transition-colors hover:border-border-strong">
+          <button className="flex h-10 w-full items-center gap-3 rounded-[14px] border border-border bg-canvas px-3 text-left text-[15px] text-ink-subtle transition-colors hover:border-border-strong">
             <Search className="size-[18px]" aria-hidden />
             <span className="flex-1">Search projects, goals and people</span>
             <kbd className="rounded-md border border-border bg-surface px-1.5 py-0.5 text-[11px] font-medium text-ink-muted">Ctrl K</kbd>
@@ -155,7 +155,7 @@ export function CommandSearch({ iconOnly = false }: { iconOnly?: boolean }) {
                           aria-selected={idx === active}
                           onMouseEnter={() => setActive(idx)}
                           onClick={() => go(r)}
-                          className={cn("flex cursor-pointer items-center gap-3 rounded-[10px] px-3 py-2.5", idx === active && "bg-slate-100")}
+                          className={cn("flex cursor-pointer items-center gap-3 rounded-[14px] px-3 py-2.5", idx === active && "bg-slate-100")}
                         >
                           <ResultIcon r={r} />
                           <span className="min-w-0 flex-1">

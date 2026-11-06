@@ -54,11 +54,16 @@ function luminance(hex: string) {
   return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
 }
 
-/** Foreground for text on an SDG colour: white when it reaches 3:1, otherwise slate-900. */
+/**
+ * Foreground for text on an SDG colour: whichever of white or slate-900 contrasts more.
+ * Across all 17 official colours this yields at least 4.5:1, so it is safe for small text
+ * (goal numbers in 20 px tiles, "GOAL" overlines), not just large numerals.
+ */
 export function sdgForeground(hex: string) {
   const L = luminance(hex);
-  const whiteContrast = 1.05 / (L + 0.05);
-  return whiteContrast >= 3 ? "#FFFFFF" : "#0F172A";
+  const white = 1.05 / (L + 0.05);
+  const ink = (L + 0.05) / (luminance("#0F172A") + 0.05);
+  return white >= ink ? "#FFFFFF" : "#0F172A";
 }
 
 /** Soft tint used for project hero placeholders. */

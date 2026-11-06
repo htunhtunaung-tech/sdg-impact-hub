@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Award, CircleCheck, Clock, Download, Globe, Hourglass, Plus, TrendingUp, Trophy, Users, XCircle } from "lucide-react";
+import { Award, CalendarCheck, CircleCheck, Clock, Download, Globe, Hourglass, Plus, Target, TrendingDown, TrendingUp, Trophy, Users, XCircle } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
 import { formatDate, formatInt, formatNumber, toNumber } from "@/lib/utils";
@@ -9,8 +9,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { EmptyState, PageHeader, Stat } from "@/components/ui/misc";
 import { Badge } from "@/components/ui/badge";
 import { SdgNumber } from "@/components/sdg/sdg-badge";
-import { GoalBars } from "@/components/impact/goal-bars";
-import { HoursAreaChart } from "@/components/charts/hours-chart";
+import { DonutChart } from "@/components/charts/lazy";
+import { LinkSegmented } from "@/components/ui/segmented";
+import { InsightRow } from "@/components/ui/misc";
+import { sdg } from "@/lib/sdg";
+import { HoursAreaChart } from "@/components/charts/lazy";
 import { hoursByGoal, metricTotals, monthlyHours, peopleReached } from "@/server/queries/impact";
 import { DeleteEntryButton } from "./delete-entry";
 
@@ -65,6 +68,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
   const pDelta = prevPeople != null ? pct(people, prevPeople) : null;
   const myRank = rank[0];
   const totalMonth = monthly.reduce((s, m) => s + m.verified, 0);
+  const best = monthly.reduce<(typeof monthly)[number] | undefined>((m, d) => (!m || d.verified > m.verified ? d : m), undefined);
 
   return (
     <div className="container-page py-6 sm:py-8">
@@ -73,13 +77,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
         description="Track what your time has achieved, and share it."
         actions={
           <>
-            <nav className="flex rounded-[12px] bg-slate-100 p-1" aria-label="Time range">
-              {(Object.keys(RANGES) as RangeKey[]).map((k) => (
-                <Link key={k} href={`/impact?range=${k}`} aria-current={k === rk ? "page" : undefined} className={`rounded-[9px] px-3 py-1.5 text-sm font-medium ${k === rk ? "bg-surface text-ink shadow-card" : "text-ink-muted hover:text-ink"}`}>
-                  {RANGES[k].label}
-                </Link>
-              ))}
-            </nav>
+            <LinkSegmented label="Time range" active={rk} items={(Object.keys(RANGES) as RangeKey[]).map((k) => ({ key: k, label: RANGES[k].label, href: `/impact?range=${k}` }))} />
             <Button variant="secondary" asChild>
               <a href={`/api/impact/export?range=${rk}`}><Download /> Export CSV</a>
             </Button>
@@ -88,12 +86,12 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
       />
 
       <section className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4" aria-label="Summary">
-        <Stat icon={<Clock />} label="Volunteer hours" value={formatNumber(h)} trend={hDelta != null && hDelta > 0 ? "up" : null}
-          sub={hDelta != null ? <span className="inline-flex items-center gap-1">{hDelta > 0 && <TrendingUp className="size-3.5" />}{hDelta >= 0 ? "+" : ""}{hDelta}% vs previous {range.label}</span> : "Verified only"} />
-        <Stat icon={<Users />} label="People reached" value={formatInt(people)} trend={pDelta != null && pDelta > 0 ? "up" : null}
-          sub={pDelta != null ? <span className="inline-flex items-center gap-1">{pDelta > 0 && <TrendingUp className="size-3.5" />}{pDelta >= 0 ? "+" : ""}{pDelta}% vs previous {range.label}</span> : "From verified activities"} />
-        <Stat icon={<CircleCheck />} label="Verified activities" value={verifiedCount} sub={`${pendingCount} pending review`} />
-        <Stat icon={<Globe />} label="Goals contributed" value={byGoal.length} sub={`Across ${projects.length} project${projects.length === 1 ? "" : "s"}`} />
+        <Stat tone="mint" icon={<Clock />} label="Volunteer hours" value={formatNumber(h)} trend={hDelta != null && hDelta > 0 ? "up" : null}
+          sub={hDelta != null ? <span className="inline-flex items-center gap-1">{hDelta > 0 ? <TrendingUp className="size-3.5" /> : hDelta < 0 ? <TrendingDown className="size-3.5" /> : null}{hDelta >= 0 ? "+" : ""}{hDelta}% vs previous {range.label}</span> : "Verified only"} />
+        <Stat tone="sky" icon={<Users />} label="People reached" value={formatInt(people)} trend={pDelta != null && pDelta > 0 ? "up" : null}
+          sub={pDelta != null ? <span className="inline-flex items-center gap-1">{pDelta > 0 ? <TrendingUp className="size-3.5" /> : pDelta < 0 ? <TrendingDown className="size-3.5" /> : null}{pDelta >= 0 ? "+" : ""}{pDelta}% vs previous {range.label}</span> : "From verified activities"} />
+        <Stat tone="sun" icon={<CircleCheck />} label="Verified activities" value={verifiedCount} sub={`${pendingCount} pending review`} />
+        <Stat tone="lilac" icon={<Globe />} label="Goals contributed" value={byGoal.length} sub={`Across ${projects.length} project${projects.length === 1 ? "" : "s"}`} />
       </section>
 
       <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
@@ -108,8 +106,18 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
         </Card>
         <Card>
           <CardHeader><div><CardTitle>Hours by goal</CardTitle><CardDescription>Share of your {formatNumber(h)} verified hours</CardDescription></div></CardHeader>
-          <CardContent className="pt-6">
-            {byGoal.length ? <GoalBars rows={byGoal.slice(0, 6)} showShare /> : <p className="text-sm text-ink-muted">No verified hours in this period.</p>}
+          <CardContent>
+            {byGoal.length ? (
+              <DonutChart
+                legend="below"
+                size={190}
+                centerLabel="verified"
+                data={[
+                  ...byGoal.slice(0, 5).map((r) => ({ key: String(r.goal), label: sdg(r.goal).shortTitle, value: r.hours, color: sdg(r.goal).color })),
+                  ...(byGoal.length > 5 ? [{ key: "other", label: "Other goals", value: Math.round(byGoal.slice(5).reduce((x, r) => x + r.hours, 0) * 10) / 10, color: "#CBD5D0" }] : []),
+                ]}
+              />
+            ) : <p className="text-sm text-ink-muted">No verified hours in this period.</p>}
           </CardContent>
         </Card>
       </div>
@@ -121,7 +129,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
             {totals.length ? (
               <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {totals.map((t) => (
-                  <li key={t.key} className="flex items-center gap-3 rounded-[12px] border border-border p-4">
+                  <li key={t.key} className="flex items-center gap-3 rounded-[18px] bg-canvas p-4">
                     <SdgNumber goal={t.goalId} size={28} />
                     <div>
                       <p className="text-xl font-bold">{formatNumber(t.value, 0)} <span className="text-sm font-normal text-ink-muted">{t.unit}</span></p>
@@ -134,21 +142,23 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><div><CardTitle>Recognition</CardTitle><CardDescription>Based on verified hours, last 12 months</CardDescription></div></CardHeader>
+          <CardHeader><div><CardTitle>Quick insights</CardTitle><CardDescription>What stands out in this period</CardDescription></div></CardHeader>
           <CardContent className="space-y-4">
+            {best && best.verified > 0 && <InsightRow icon={<CalendarCheck />} title={`Best month: ${best.full}`} sub={`${formatNumber(best.verified)} verified hours`} />}
+            {byGoal[0] && <InsightRow icon={<Target />} title={`Top goal: ${sdg(byGoal[0].goal).shortTitle}`} sub={`${Math.round((byGoal[0].hours / (h || 1)) * 100)}% of your verified hours`} />}
+            {pendingCount > 0 && <InsightRow href="#contributions" icon={<Hourglass />} title={`${pendingCount} awaiting verification`} sub="Add evidence so organizers can confirm them faster" />}
             {myRank && Number(myRank.total) > 0 && user.profile?.showOnLeaderboard !== false ? (
-              <div className="flex items-center gap-3 rounded-[12px] bg-mint p-4">
-                <Trophy className="size-7 text-forest-900" />
-                <div><p className="text-lg font-bold text-forest-900">#{String(myRank.rank)} of {String(myRank.total)}</p><p className="text-sm text-ink-muted">on the community leaderboard</p></div>
-              </div>
+              <InsightRow icon={<Trophy />} title={`#${String(myRank.rank)} of ${String(myRank.total)} volunteers`} sub="On the community leaderboard, last 12 months" />
             ) : <p className="text-sm text-ink-muted">You&apos;re hidden from leaderboards (change in Settings).</p>}
-            <Button variant="secondary" className="w-full" asChild><Link href="/impact/leaderboard">View leaderboard</Link></Button>
-            <Button variant="secondary" className="w-full" asChild><Link href={`/certificate/${user.id}`} target="_blank"><Award /> Volunteer certificate</Link></Button>
+            <div className="grid gap-2 pt-1 sm:grid-cols-2 xl:grid-cols-1">
+              <Button variant="secondary" className="w-full" asChild><Link href="/impact/leaderboard">View leaderboard</Link></Button>
+              <Button variant="secondary" className="w-full" asChild><Link href={`/certificate/${user.id}`} target="_blank"><Award /> Volunteer certificate</Link></Button>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="mt-4 overflow-hidden sm:mt-6">
+      <Card id="contributions" className="mt-4 scroll-mt-24 overflow-hidden sm:mt-6">
         <CardHeader className="pb-4">
           <CardTitle>Recent contributions</CardTitle>
           <Button variant="secondary" size="sm" asChild><Link href="/impact/new"><Plus /> Record Your Impact</Link></Button>

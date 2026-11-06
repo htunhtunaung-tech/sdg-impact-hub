@@ -27,8 +27,8 @@ export function DialogContent({
       <D.Content
         className={cn(
           "fixed z-50 w-full bg-surface shadow-overlay focus:outline-none data-[state=open]:animate-fade-in",
-          "inset-x-0 bottom-0 max-h-[92vh] overflow-y-auto rounded-t-[22px] px-5 pb-8 pt-3",
-          "sm:inset-auto sm:left-1/2 sm:top-1/2 sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-[var(--radius-xl)] sm:p-6",
+          "inset-x-0 bottom-0 max-h-[92vh] overflow-y-auto rounded-t-[28px] px-5 pb-8 pt-3",
+          "sm:inset-auto sm:left-1/2 sm:top-1/2 sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-[var(--radius-2xl)] sm:p-7",
           className,
         )}
       >
@@ -42,7 +42,7 @@ export function DialogContent({
               <D.Description className="sr-only">{title}</D.Description>
             )}
           </div>
-          <D.Close className="-mr-1 rounded-md p-1.5 text-ink-muted hover:bg-slate-100 hover:text-ink" aria-label="Close">
+          <D.Close className="-mr-1 flex size-9 items-center justify-center rounded-full bg-track text-ink-muted hover:text-ink" aria-label="Close">
             <X className="size-5" />
           </D.Close>
         </div>

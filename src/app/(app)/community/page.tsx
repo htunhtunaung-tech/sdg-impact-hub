@@ -54,7 +54,7 @@ export default async function CommunityPage({ searchParams }: { searchParams: Pr
               <ul className="space-y-1">
                 {groups.map((g) => (
                   <li key={g.id}>
-                    <Link href={`/community/groups/${g.slug}`} className="flex items-center gap-3 rounded-[10px] p-2 hover:bg-canvas">
+                    <Link href={`/community/groups/${g.slug}`} className="flex items-center gap-3 rounded-[14px] p-2 hover:bg-canvas">
                       {g.goalId ? <SdgNumber goal={g.goalId} size={32} /> : <span className="flex size-8 items-center justify-center rounded-md bg-mint text-link"><Users className="size-4" /></span>}
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-semibold">{g.name}</span>
