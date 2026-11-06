@@ -109,7 +109,7 @@ export function ImpactForm({ projects, opportunities, metrics, initial }: {
             <p className="mt-1.5 text-xs text-ink-subtle">Only you and the reviewers can see evidence files.</p>
           </div>
 
-          <p className="flex gap-2 rounded-[10px] bg-info-soft p-3 text-sm text-info">
+          <p className="flex gap-2 rounded-[14px] bg-info-soft p-3 text-sm text-info">
             <Info className="mt-0.5 size-4 shrink-0" />
             Your entry is marked <strong>self-reported</strong> until a project organizer or administrator verifies it. XP, badges and leaderboards only count verified impact.
           </p>

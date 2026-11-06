@@ -35,7 +35,7 @@ const toast = (page, text) => page.getByText(text, { exact: false }).first().wai
 
 // 1 — Registration, email verification, login
 const stamp = Date.now();
-await step("register → verify email → sign in", async () => {
+await step("register → verify email → sign in → onboarding", async () => {
   const p = await session(null);
   await p.goto(`${BASE}/register`);
   await p.fill("#name", "Test Volunteer");
@@ -49,7 +49,19 @@ await step("register → verify email → sign in", async () => {
   await p.goto(`${BASE}/login`);
   await p.fill("#email", `test${stamp}@example.org`);
   await p.fill("#password", PASSWORD);
-  await Promise.all([p.waitForURL("**/dashboard"), p.click("button[type=submit]")]);
+  // First sign-in lands on onboarding (dashboard redirects until it's finished or skipped).
+  await Promise.all([p.waitForURL("**/onboarding"), p.click("button[type=submit]")]);
+  await p.getByRole("button", { name: "Get started" }).click();
+  await p.getByText("Student", { exact: true }).click();
+  await p.getByRole("button", { name: "Continue" }).click();
+  await p.getByRole("button", { name: /Quality Education/ }).click();
+  await p.getByRole("button", { name: "Continue" }).click();
+  await p.getByRole("button", { name: "Teaching", exact: true }).click();
+  await p.getByRole("button", { name: "Continue" }).click();
+  await p.fill("#city", "Khon Kaen");
+  await Promise.all([p.waitForURL("**/dashboard"), p.getByRole("button", { name: "Finish and see my matches" }).click()]);
+  await p.goto(`${BASE}/settings`);
+  await p.getByRole("button", { name: "Remove Teaching" }).first().waitFor({ timeout: 15000 });
   await p.close();
 });
 

@@ -35,9 +35,9 @@ export function GoalPicker({
             onClick={() => toggle(g.id)}
             className={cn(
               "relative flex aspect-square items-center justify-center rounded-[8px] text-sm font-bold transition-all",
-              on ? "ring-2 ring-ink ring-offset-2" : "opacity-45 hover:opacity-80",
+              on ? "ring-2 ring-ink ring-offset-2" : "bg-surface text-ink ring-1 ring-border-strong hover:ring-ink",
             )}
-            style={{ background: g.color, color: fg }}
+            style={on ? { background: g.color, color: fg } : { boxShadow: `inset 0 -4px 0 ${g.color}` }}
           >
             {g.id}
             {on && <Check className="absolute right-0.5 top-0.5 size-3" aria-hidden />}
@@ -49,14 +49,14 @@ export function GoalPicker({
             aria-pressed={on}
             onClick={() => toggle(g.id)}
             className={cn(
-              "flex items-center gap-2.5 rounded-[10px] border p-2 text-left text-sm transition-colors",
+              "flex min-h-12 items-center gap-2.5 rounded-[14px] border p-2 text-left text-sm transition-colors",
               on ? "border-forest-900 bg-mint font-semibold text-forest-900" : "border-border bg-surface text-ink-muted hover:border-border-strong",
             )}
           >
             <span className="flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold" style={{ background: g.color, color: fg }}>
               {g.id}
             </span>
-            <span className="min-w-0 flex-1 truncate">{g.shortTitle}</span>
+            <span className="line-clamp-2 min-w-0 flex-1 leading-tight">{g.shortTitle}</span>
             {on && <Check className="size-4 shrink-0" aria-hidden />}
           </button>
         );

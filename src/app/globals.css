@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
 /* ───────────────────────────────────────────────────────────────────────────
-   SDG Impact Hub design tokens (mirrors the Figma "Design System" page)
-   Accessibility: emerald-600 is 3.8:1 on white → UI shapes / large text only.
-   Links and small text use emerald-700 (5.5:1).
+   SDG Impact Hub design tokens — "Soft UI" (v2)
+   Forest green + emerald brand, white surfaces on a soft neutral canvas,
+   pastel tones for metric tiles, generous radii, low, diffuse shadows.
+   UN SDG colours are used only as goal accents.
+
+   Accessibility: emerald-600 (#059669) is 3.8:1 on white → UI shapes / large
+   text only. Links and small text use emerald-700 (#047857, 5.5:1). All pastel
+   tones keep ink (#0F172A) text at ≥ 15:1 and muted text (#475569) at ≥ 6.5:1.
    ─────────────────────────────────────────────────────────────────────────── */
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -19,16 +24,24 @@
   --color-primary-foreground: #ffffff;
   --color-accent: #059669;
   --color-link: #047857;
-  --color-mint: #f0fdf4;
-  --color-mint-strong: #dcfce7;
+  --color-mint: #ecf8f0;
+  --color-mint-strong: #d5f2df;
 
-  --color-canvas: #f8fafc;
+  --color-canvas: #f4f7f5;
   --color-surface: #ffffff;
-  --color-border: #e2e8f0;
-  --color-border-strong: #cbd5e1;
+  --color-track: #edf1ee;
+  --color-border: #e4e9e6;
+  --color-border-strong: #cbd5d0;
   --color-ink: #0f172a;
   --color-ink-muted: #475569;
-  --color-ink-subtle: #64748b;
+  --color-ink-subtle: #5a687b;
+
+  /* Pastel tones for metric tiles and soft highlights */
+  --color-tone-mint: #e7f6ec;
+  --color-tone-sky: #e6f1fa;
+  --color-tone-sun: #fcf4df;
+  --color-tone-rose: #fbecee;
+  --color-tone-lilac: #efedfa;
 
   --color-danger: #b91c1c;
   --color-danger-soft: #fef2f2;
@@ -37,20 +50,35 @@
   --color-info: #0369a1;
   --color-info-soft: #f0f9ff;
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
 
-  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.05), 0 1px 3px 0 rgb(15 23 42 / 0.04);
-  --shadow-raised: 0 6px 16px -4px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.04);
-  --shadow-overlay: 0 16px 40px -8px rgb(15 23 42 / 0.18);
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 10px 28px -18px rgb(15 23 42 / 0.16);
+  --shadow-raised: 0 12px 32px -16px rgb(15 23 42 / 0.22), 0 2px 6px -2px rgb(15 23 42 / 0.06);
+  --shadow-overlay: 0 24px 56px -16px rgb(15 23 42 / 0.28);
+  --shadow-brand: 0 14px 30px -14px rgb(20 83 45 / 0.6);
 
   --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-rise: rise 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   @keyframes fade-in {
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: none; }
   }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+:root {
+  /* Eco wash used behind onboarding, auth and mobile hero areas */
+  --gradient-eco: radial-gradient(120% 60% at 50% 0%, #d9f3e1 0%, rgb(217 243 225 / 0) 70%), linear-gradient(180deg, #f2faf4 0%, #ffffff 70%);
+  /* Brand card (impact this month, promo) — white text passes 4.5:1 across the whole gradient */
+  --gradient-brand: linear-gradient(135deg, #14532d 0%, #166534 55%, #047857 100%);
+  --gradient-hero: radial-gradient(80% 70% at 85% 10%, rgb(5 150 105 / 0.16), transparent 60%), radial-gradient(60% 60% at 0% 100%, rgb(38 189 226 / 0.12), transparent 60%);
 }
 
 @layer base {
@@ -61,9 +89,13 @@
   h1, h2, h3, h4 { letter-spacing: -0.015em; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
 @utility container-page {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1240px;
   margin-inline: auto;
   padding-inline: 1rem;
   @media (width >= 640px) { padding-inline: 1.5rem; }
@@ -72,3 +104,8 @@
 
 /* Leaflet container should respect rounded cards */
 .leaflet-container { font-family: inherit; border-radius: inherit; z-index: 0; }
+
+/* Sonner toasts — match the soft UI */
+.leaflet-container .leaflet-control-attribution a { color: var(--color-link) !important; text-decoration: underline !important; }
+
+[data-sonner-toaster] [data-sonner-toast] { border-radius: 16px; box-shadow: var(--shadow-raised); font-size: 14px; }

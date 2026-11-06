@@ -1,9 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { impactSubmissionSchema, passwordSchema, projectSchema, registerSchema } from "@/lib/validation";
+import { impactSubmissionSchema, onboardingSchema, passwordSchema, projectSchema, registerSchema } from "@/lib/validation";
 import { levelForXp, levelProgress, periodKeyFor, xpForSubmission } from "@/lib/gamification";
 import { SDGS, sdgForeground } from "@/lib/sdg";
 import { sniffMime } from "@/lib/storage";
 import { haversineKm, slugify } from "@/lib/utils";
+
+describe("onboarding", () => {
+  const base = { role: "STUDENT", goals: [4], skills: ["Teaching"], interests: [], city: " Khon Kaen ", country: "", emailNotifications: true };
+
+  it("accepts a complete answer and normalises text", () => {
+    const res = onboardingSchema.safeParse(base);
+    expect(res.success).toBe(true);
+    if (res.success) {
+      expect(res.data.city).toBe("Khon Kaen");
+      expect(res.data.country).toBeUndefined();
+    }
+  });
+
+  it("requires at least one goal and rejects invalid goal numbers", () => {
+    expect(onboardingSchema.safeParse({ ...base, goals: [] }).success).toBe(false);
+    expect(onboardingSchema.safeParse({ ...base, goals: [18] }).success).toBe(false);
+  });
+
+  it("never lets users pick the admin role", () => {
+    expect(onboardingSchema.safeParse({ ...base, role: "ADMIN" }).success).toBe(false);
+  });
+});
 
 describe("validation", () => {
   it("enforces password strength", () => {
@@ -69,6 +91,20 @@ describe("SDG metadata", () => {
   it("picks accessible foreground colours", () => {
     expect(sdgForeground("#C5192D")).toBe("#FFFFFF");
     expect(sdgForeground("#FCC30B")).toBe("#0F172A");
+  });
+
+  it("gives every goal colour at least 4.5:1 text contrast", () => {
+    const lum = (h: string) => {
+      const [r, g, b] = [1, 3, 5].map((i) => {
+        const v = parseInt(h.slice(i, i + 2), 16) / 255;
+        return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+    };
+    for (const g of SDGS) {
+      const [a, b] = [lum(g.color), lum(sdgForeground(g.color))].sort((x, y) => y - x);
+      expect((a! + 0.05) / (b! + 0.05)).toBeGreaterThanOrEqual(4.5);
+    }
   });
 });
 

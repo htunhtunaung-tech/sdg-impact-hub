@@ -89,10 +89,10 @@ export default async function UserProfilePage({ params }: Props) {
       </section>
 
       <section className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <Stat icon={<Clock />} label="Verified hours" value={formatNumber(toNumber(hours._sum.hours))} sub={isMe && pending && toNumber(pending._sum.hours) > 0 ? `+${formatNumber(toNumber(pending._sum.hours))} h awaiting verification` : `${hours._count} verified activities`} />
-        <Stat icon={<FolderOpen />} label="Projects" value={memberships.length} />
-        <Stat icon={<Globe />} label="Goals contributed" value={byGoal.length} />
-        <Stat icon={<Trophy />} label="Experience" value={formatInt(u.xp)} sub={<span className="block"><Progress value={lvl.pct} className="mt-1 h-1.5" label="Level progress" /></span>} />
+        <Stat tone="mint" icon={<Clock />} label="Verified hours" value={formatNumber(toNumber(hours._sum.hours))} sub={isMe && pending && toNumber(pending._sum.hours) > 0 ? `+${formatNumber(toNumber(pending._sum.hours))} h awaiting verification` : `${hours._count} verified activities`} />
+        <Stat tone="sky" icon={<FolderOpen />} label="Projects" value={memberships.length} />
+        <Stat tone="sun" icon={<Globe />} label="Goals contributed" value={byGoal.length} />
+        <Stat tone="lilac" icon={<Trophy />} label="Experience" value={formatInt(u.xp)} sub={<span className="block"><Progress value={lvl.pct} className="mt-1 h-1.5" label="Level progress" /></span>} />
       </section>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
@@ -105,7 +105,7 @@ export default async function UserProfilePage({ params }: Props) {
                   const got = earned.has(a.id);
                   const when = achievements.find((x) => x.achievementId === a.id)?.earnedAt;
                   return (
-                    <li key={a.id} className={`flex items-center gap-3 rounded-[12px] border p-3 ${got ? "border-emerald-200 bg-mint/50" : "border-dashed border-border opacity-60"}`}>
+                    <li key={a.id} className={`flex items-center gap-3 rounded-[16px] border p-3 ${got ? "border-emerald-200 bg-mint/50" : "border-dashed border-border opacity-60"}`}>
                       <span className={`flex size-10 shrink-0 items-center justify-center rounded-full ${got ? "bg-primary text-white" : "bg-slate-100 text-ink-subtle"}`}><AchievementIcon icon={a.icon} className="size-5" /></span>
                       <span className="min-w-0">
                         <span className="block text-sm font-semibold leading-tight">{a.name}</span>

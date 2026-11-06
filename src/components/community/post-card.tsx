@@ -26,7 +26,7 @@ export function PostCard({ post, currentUserId, isAdmin = false, expanded = fals
   return (
     <article className="rounded-[var(--radius-lg)] border border-border bg-surface p-4 shadow-card sm:p-5">
       <header className="flex items-start gap-3">
-        <Link href={profileHref}><Avatar name={post.author.name} src={post.author.image} size={40} /></Link>
+        <Link href={profileHref} className="rounded-full"><span className="sr-only">{post.author.name}’s profile</span><Avatar name={post.author.name} src={post.author.image} size={40} /></Link>
         <div className="min-w-0 flex-1">
           <p className="text-[15px] leading-snug">
             <Link href={profileHref} className="font-semibold hover:underline">{post.author.name}</Link>
@@ -46,10 +46,10 @@ export function PostCard({ post, currentUserId, isAdmin = false, expanded = fals
         {post.type === "EVENT" && <Badge variant="info"><CalendarDays /> Event</Badge>}
       </header>
       <div className="mt-3">
-        {post.title && <h3 className="text-[17px] font-semibold leading-snug">{expanded ? post.title : <Link href={`/community/post/${post.id}`} className="hover:underline">{post.title}</Link>}</h3>}
+        {post.title && <h2 className="text-[17px] font-semibold leading-snug">{expanded ? post.title : <Link href={`/community/post/${post.id}`} className="hover:underline">{post.title}</Link>}</h2>}
         <p className={`mt-1 whitespace-pre-line text-[15px] leading-relaxed text-slate-700 ${expanded ? "" : "line-clamp-5"}`}>{post.body}</p>
         {post.type === "EVENT" && post.eventStartsAt && (
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 rounded-[10px] bg-info-soft px-3 py-2.5 text-sm text-info">
+          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 rounded-[14px] bg-info-soft px-3 py-2.5 text-sm text-info">
             <span className="inline-flex items-center gap-1.5"><CalendarDays className="size-4" /> {formatDate(post.eventStartsAt, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false })}</span>
             {post.eventLocation && <span className="inline-flex items-center gap-1.5"><MapPin className="size-4" /> {post.eventLocation}</span>}
           </div>

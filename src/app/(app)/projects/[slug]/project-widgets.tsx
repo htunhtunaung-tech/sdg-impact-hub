@@ -41,7 +41,7 @@ export function JoinProjectButton({ projectId, isMember, isOrganizer, signedIn, 
   if (isMember)
     return (
       <div className="space-y-2">
-        <p className="flex items-center justify-center gap-2 rounded-[10px] bg-mint py-3 text-sm font-semibold text-forest-900"><CircleCheck className="size-4" /> You're on this team</p>
+        <p className="flex items-center justify-center gap-2 rounded-[14px] bg-mint py-3 text-sm font-semibold text-forest-900"><CircleCheck className="size-4" /> You're on this team</p>
         <Button variant="ghost" className="w-full" loading={pending} onClick={() => confirm("Leave this project?") && run(() => leaveProjectAction(projectId))}>Leave project</Button>
       </div>
     );

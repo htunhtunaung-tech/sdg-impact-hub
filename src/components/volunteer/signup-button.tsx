@@ -52,7 +52,7 @@ export function SignUpButton({ opp, signedIn, size = "sm", className }: { opp: S
         </Button>
       </DialogTrigger>
       <DialogContent title={opp.full ? "Join the waitlist" : "Confirm your spot"} description={opp.requiresApproval && !opp.full ? "The organizer reviews applications and will confirm your spot." : undefined}>
-        <div className="rounded-[12px] border border-border bg-canvas p-4">
+        <div className="rounded-[16px] border border-border bg-canvas p-4">
           <p className="font-semibold">{opp.title}</p>
           {opp.org && <p className="text-sm text-ink-muted">{opp.org}</p>}
           <p className="mt-2 flex items-center gap-2 text-sm text-ink-muted">

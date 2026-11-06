@@ -19,7 +19,7 @@ import { SdgIcon } from "@/components/sdg/sdg-icon";
 import { SaveProjectButton } from "@/components/projects/save-button";
 import { OpportunityRow } from "@/components/volunteer/opportunity-row";
 import { MapView } from "@/components/map/map-view";
-import { HoursBarChart } from "@/components/charts/hours-chart";
+import { HoursBarChart } from "@/components/charts/lazy";
 import { upcomingOpportunityRows } from "@/server/queries/opportunities";
 import { metricTotals, monthlyHours } from "@/server/queries/impact";
 import { PostCard, postInclude } from "@/components/community/post-card";
@@ -90,7 +90,7 @@ export default async function ProjectPage({ params, searchParams }: Props) {
       </nav>
 
       {project.moderationStatus !== "APPROVED" && (
-        <div role="status" className="mb-4 flex items-start gap-2 rounded-[12px] border border-amber-200 bg-warning-soft p-4 text-sm text-warning">
+        <div role="status" className="mb-4 flex items-start gap-2 rounded-[16px] border border-amber-200 bg-warning-soft p-4 text-sm text-warning">
           <Hourglass className="mt-0.5 size-4 shrink-0" />
           <span>
             {project.moderationStatus === "PENDING_REVIEW"
@@ -179,7 +179,7 @@ export default async function ProjectPage({ params, searchParams }: Props) {
                     <h2 className="text-xl font-semibold">Expected impact</h2>
                     <div className="mt-3 grid gap-3 sm:grid-cols-3">
                       {project.impactTargets.map((t) => (
-                        <div key={t.id} className="rounded-[12px] border border-border bg-surface p-5">
+                        <div key={t.id} className="rounded-[16px] border border-border bg-surface p-5">
                           <p className="text-[28px] font-bold text-forest-900">{formatNumber(t.targetValue, 0)}</p>
                           <p className="text-sm text-ink-muted">{t.label ?? `${t.metric.unit} · ${t.metric.name.toLowerCase()}`}</p>
                         </div>
@@ -314,12 +314,12 @@ export default async function ProjectPage({ params, searchParams }: Props) {
 
 function Detail({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
   return (
-    <div className="flex gap-3">
-      <span className="mt-0.5 text-link [&_svg]:size-5">{icon}</span>
-      <div className="min-w-0 flex-1">
-        <dt className="text-xs text-ink-muted">{label}</dt>
-        <dd className="font-medium text-ink">{value}</dd>
-      </div>
+    <div className="relative min-w-0 pl-8">
+      <dt className="text-xs text-ink-muted">
+        <span className="absolute left-0 top-0.5 text-link [&_svg]:size-5" aria-hidden>{icon}</span>
+        {label}
+      </dt>
+      <dd className="font-medium text-ink">{value}</dd>
     </div>
   );
 }
@@ -340,17 +340,17 @@ async function ImpactTab({
   return (
     <div className="space-y-6">
       <div className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-[12px] border border-border bg-surface p-5">
+        <div className="rounded-[16px] border border-border bg-surface p-5">
           <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-link"><ShieldCheck className="size-3.5" /> Verified hours</p>
           <p className="mt-1 text-[28px] font-bold">{formatNumber(toNumber(verified._sum.hours))}</p>
           <p className="text-sm text-ink-muted">{verified._count} verified entries</p>
         </div>
-        <div className="rounded-[12px] border border-border bg-surface p-5">
+        <div className="rounded-[16px] border border-border bg-surface p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Contributors</p>
           <p className="mt-1 text-[28px] font-bold">{contributors.length}</p>
           <p className="text-sm text-ink-muted">with verified impact</p>
         </div>
-        <div className="rounded-[12px] border border-dashed border-amber-300 bg-warning-soft/50 p-5">
+        <div className="rounded-[16px] border border-dashed border-amber-300 bg-warning-soft/50 p-5">
           <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-warning"><Hourglass className="size-3.5" /> Self-reported</p>
           <p className="mt-1 text-[28px] font-bold">{formatNumber(toNumber(pending._sum.hours))}</p>
           <p className="text-sm text-ink-muted">hours awaiting verification — not counted</p>
@@ -385,7 +385,7 @@ async function ImpactTab({
           {totals.filter((t) => !targets.some((x) => x.metric.key === t.key)).length > 0 && (
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
               {totals.filter((t) => !targets.some((x) => x.metric.key === t.key)).map((t) => (
-                <div key={t.key} className="rounded-[10px] bg-canvas p-3">
+                <div key={t.key} className="rounded-[14px] bg-canvas p-3">
                   <p className="text-lg font-bold">{formatNumber(t.value, 0)} <span className="text-sm font-normal text-ink-muted">{t.unit}</span></p>
                   <p className="text-xs text-ink-muted">{t.name}</p>
                 </div>
@@ -495,7 +495,7 @@ async function ManageTab({ project }: { project: NonNullable<Awaited<ReturnType<
             const past = o.startsAt < now;
             const hours = Math.round(((o.endsAt.getTime() - o.startsAt.getTime()) / 3600_000) * 2) / 2;
             return (
-              <div key={o.id} className="rounded-[12px] border border-border p-4">
+              <div key={o.id} className="rounded-[16px] border border-border p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <Link href={`/volunteer/${o.id}`} className="font-semibold hover:underline">{o.title}</Link>

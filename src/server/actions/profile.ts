@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { ActionError, parseOrThrow, runAction, type ActionResult } from "@/lib/action";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { requireActionUser } from "@/lib/session";
-import { changePasswordSchema, privacySchema, profileSchema } from "@/lib/validation";
+import { changePasswordSchema, onboardingSchema, privacySchema, profileSchema } from "@/lib/validation";
 import { signOut } from "@/auth";
 
 export async function toggleFollowGoalAction(goalId: number): Promise<ActionResult<{ following: boolean }>> {
@@ -51,6 +51,42 @@ export async function updateProfileAction(input: unknown): Promise<ActionResult>
     ]);
     revalidatePath("/", "layout");
     return { ok: true, message: "Profile saved." };
+  });
+}
+
+/** First-run onboarding: role, followed goals, skills/interests, location and email preference. */
+export async function completeOnboardingAction(input: unknown): Promise<ActionResult> {
+  return runAction(async () => {
+    const user = await requireActionUser();
+    await enforceRateLimit("onboarding", 20, 3600, user.id);
+    const d = parseOrThrow(onboardingSchema, input);
+    const role = user.role === "ADMIN" ? "ADMIN" : d.role;
+    const profile = {
+      skills: d.skills, interests: d.interests, city: d.city ?? null, country: d.country ?? null,
+      emailNotifications: d.emailNotifications, onboardedAt: new Date(),
+    };
+    await db.$transaction([
+      db.user.update({ where: { id: user.id }, data: { role } }),
+      db.userProfile.upsert({
+        where: { userId: user.id },
+        create: { userId: user.id, username: user.profile?.username ?? `user_${user.id.slice(-8)}`, ...profile },
+        update: profile,
+      }),
+      db.userSdgInterest.deleteMany({ where: { userId: user.id } }),
+      db.userSdgInterest.createMany({ data: d.goals.map((goalId) => ({ userId: user.id, goalId })) }),
+    ]);
+    revalidatePath("/", "layout");
+    return { ok: true, message: "You're all set. Here are projects picked for you." };
+  });
+}
+
+/** Lets people skip onboarding; they can fill the same details in Settings later. */
+export async function skipOnboardingAction(): Promise<ActionResult> {
+  return runAction(async () => {
+    const user = await requireActionUser();
+    if (user.profile) await db.userProfile.update({ where: { userId: user.id }, data: { onboardedAt: new Date() } });
+    revalidatePath("/", "layout");
+    return { ok: true };
   });
 }
 

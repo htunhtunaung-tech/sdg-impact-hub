@@ -130,7 +130,7 @@ export function SettingsForms({ profile, privacy, email, hasPassword, googleLink
         <CardHeader><div><CardTitle>Your data</CardTitle><CardDescription>Download everything we store about you, or delete your account.</CardDescription></div></CardHeader>
         <CardContent className="space-y-6">
           <Button variant="secondary" asChild><a href="/api/me/export"><Download /> Download my data (JSON)</a></Button>
-          <div className="rounded-[12px] border border-red-200 bg-danger-soft/60 p-4">
+          <div className="rounded-[16px] border border-red-200 bg-danger-soft/60 p-4">
             <p className="flex items-center gap-2 font-semibold text-danger"><TriangleAlert className="size-4" /> Delete account</p>
             <p className="mt-1 text-sm text-ink-muted">This permanently deletes your profile, contributions, messages and posts. It can&apos;t be undone.</p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">

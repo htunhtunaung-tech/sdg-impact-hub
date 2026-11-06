@@ -200,7 +200,7 @@ async function Schedule({ userId }: { userId: string }) {
             {items.map((a) => (
               <li key={a.id} className="relative">
                 <span className="absolute -left-[31px] top-4 size-3 rounded-full border-2 border-surface bg-accent" aria-hidden />
-                <Link href={`/volunteer/${a.opportunity.id}`} className="block rounded-[12px] border border-border bg-surface p-4 shadow-card hover:shadow-raised">
+                <Link href={`/volunteer/${a.opportunity.id}`} className="block rounded-[16px] border border-border bg-surface p-4 shadow-card hover:shadow-raised">
                   <p className="text-sm font-semibold text-link">{formatDate(a.opportunity.startsAt, { weekday: "long", day: "numeric", month: "long" })} · {formatTimeRange(a.opportunity.startsAt, a.opportunity.endsAt)}</p>
                   <p className="mt-0.5 font-semibold">{a.opportunity.title}</p>
                   <p className="text-sm text-ink-muted">{a.opportunity.isOnline ? "Online" : a.opportunity.locationName}</p>

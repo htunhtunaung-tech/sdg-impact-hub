@@ -9,11 +9,13 @@ Recharts · Lucide · PostgreSQL · Prisma · Auth.js (credentials + Google) · 
 
 - Architecture, database relationships, permissions and security model: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - Design source: the Figma file `SDG Impact Hub` (design tokens mirrored in `src/app/globals.css`)
+- Live design system: every token and component with its states at [`/design-system`](http://localhost:3000/design-system)
 
 ## Features
 
 | Area | What works |
 |---|---|
+| **Onboarding** | Four-step first-run flow (role → goals → skills → location) with progress stepper, validation and "skip for now"; answers feed recommendations immediately |
 | **Auth & profiles** | Sign up, email verification, login, Google sign-in, password reset, profile photo, skills/interests, followed goals, roles, contribution history, public/private profiles |
 | **Dashboard** | Verified hours, projects, people reached, goals contributed, SDG contribution bars, "what to do next", active projects with progress, upcoming sessions, personalised recommendations, level/XP/streak, community activity, achievements |
 | **Explore SDGs** | All 17 goals with official colours, category filters, follow goals; per-goal pages with description, key targets, global challenges, ways to contribute, related projects, opportunities, resources, discussions and live verified stats |
@@ -125,7 +127,9 @@ Do **not** run the seed script against production — it truncates all tables.
 
 * **Honest impact.** Self-reported entries never contribute to totals, badges, leaderboards, targets, certificates or the
   public figures. Organizers verify contributions to their own projects (or confirm attendance); admins verify the rest.
-* **Accessibility.** Colour contrast follows the Figma notes (emerald-700 for small text; SDG tiles switch text colour
-  automatically), every field has a visible label and error text, status is never colour-only, keyboard-accessible dialogs,
+* **Accessibility.** WCAG 2.2 AA: colour contrast follows the Figma notes (emerald-700 for small text; text on SDG colours
+  always picks the higher-contrast of white or ink, ≥ 4.5:1 for all 17 goals), every field has a visible label and error text, status is never colour-only, keyboard-accessible dialogs,
   skip link, 44 px touch targets on mobile, and charts offer a table view.
+* **Performance.** Dashboard charts are server-rendered SVG (no client JS); interactive Recharts charts are code-split with
+  fixed-height placeholders (no layout shift). Animations respect `prefers-reduced-motion`.
 * **Times** are stored in UTC and displayed in `NEXT_PUBLIC_APP_TIMEZONE`.

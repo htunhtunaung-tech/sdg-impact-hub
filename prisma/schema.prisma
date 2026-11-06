@@ -257,6 +257,8 @@ model UserProfile {
   isPublic           Boolean  @default(true)
   showOnLeaderboard  Boolean  @default(true)
   emailNotifications Boolean  @default(true)
+  /// Set when the user finishes (or skips) the first-run onboarding flow.
+  onboardedAt        DateTime?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 

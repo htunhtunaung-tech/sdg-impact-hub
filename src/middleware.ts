@@ -7,6 +7,7 @@ const { auth } = NextAuth(authConfig);
 /** Routes that require a signed-in user. Public browsing (SDGs, projects, volunteer, orgs) stays open. */
 const PROTECTED = [
   "/dashboard",
+  "/onboarding",
   "/impact",
   "/assistant",
   "/community",

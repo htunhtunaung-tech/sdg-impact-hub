@@ -5,7 +5,7 @@ export function GoogleButton({ callbackUrl, label = "Continue with Google" }: { 
     <form action={googleSignInAction.bind(null, callbackUrl)}>
       <button
         type="submit"
-        className="flex h-12 w-full items-center justify-center gap-3 rounded-[10px] border border-border-strong bg-surface text-[15px] font-semibold text-ink transition-colors hover:bg-canvas"
+        className="flex h-12 w-full items-center justify-center gap-3 rounded-[14px] border border-border-strong bg-surface text-[15px] font-semibold text-ink transition-colors hover:bg-canvas"
       >
         <svg viewBox="0 0 24 24" className="size-5" aria-hidden>
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />

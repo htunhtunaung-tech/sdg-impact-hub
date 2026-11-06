@@ -87,6 +87,16 @@ export const profileSchema = z.object({
   goals: z.array(goalId).max(17).default([]),
 });
 
+export const onboardingSchema = z.object({
+  role: z.enum(SELF_SERVICE_ROLES),
+  goals: z.array(goalId).min(1, "Pick at least one goal").max(17),
+  skills: stringList(25, 40),
+  interests: stringList(25, 40),
+  city: optionalText(80),
+  country: optionalText(80),
+  emailNotifications: z.boolean().default(true),
+});
+
 export const privacySchema = z.object({
   isPublic: z.boolean(),
   showOnLeaderboard: z.boolean(),

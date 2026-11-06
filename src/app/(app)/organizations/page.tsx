@@ -34,7 +34,7 @@ export default async function OrganizationsPage({ searchParams }: { searchParams
             <li key={o.id}>
               <Link href={`/organizations/${o.slug}`} className="flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-card transition-shadow hover:shadow-raised">
                 <div className="flex items-center gap-3">
-                  <Avatar name={o.name} src={o.logoUrl} size={48} className="rounded-[12px] bg-sky-50 text-info" />
+                  <Avatar name={o.name} src={o.logoUrl} size={48} className="rounded-[16px] bg-sky-50 text-info" />
                   <div className="min-w-0">
                     <p className="flex items-center gap-1.5 font-semibold">{o.name}{o.verificationStatus === "VERIFIED" && <BadgeCheck className="size-4 shrink-0 text-link" aria-label="Verified" />}</p>
                     <p className="text-sm text-ink-muted">{TYPE[o.type]}</p>

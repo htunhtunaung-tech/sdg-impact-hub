@@ -15,7 +15,7 @@ function TipBox({ active, payload, showPending }: TooltipProps<number, string> &
   if (!active || !payload?.length) return null;
   const p = payload[0]!.payload;
   return (
-    <div className="rounded-[10px] bg-ink px-3 py-2 text-center text-white shadow-overlay">
+    <div className="rounded-[14px] bg-ink px-3.5 py-2.5 text-center text-white shadow-overlay">
       <p className="text-xs text-slate-300">{p.full}</p>
       <p className="text-sm font-bold">{p.verified} verified hours</p>
       {showPending && p.pending > 0 && <p className="text-xs text-amber-200">+ {p.pending} awaiting verification</p>}
@@ -80,8 +80,8 @@ export function HoursBarChart({ data, height = 240 }: { data: MonthPoint[]; heig
               <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: GRID }} tick={{ fill: AXIS, fontSize: 12 }} />
               <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: AXIS, fontSize: 12 }} />
               <Tooltip cursor={{ fill: "rgba(15,23,42,0.04)" }} content={<TipBox showPending={hasPending} />} />
-              <Bar dataKey="verified" stackId="h" fill={VERIFIED} maxBarSize={24} stroke="#fff" strokeWidth={hasPending ? 1 : 0} radius={hasPending ? [0, 0, 0, 0] : [4, 4, 0, 0]} />
-              {hasPending && <Bar dataKey="pending" stackId="h" fill={PENDING} maxBarSize={24} stroke="#fff" strokeWidth={1} radius={[4, 4, 0, 0]} />}
+              <Bar isAnimationActive={false} dataKey="verified" stackId="h" fill={VERIFIED} maxBarSize={24} stroke="#fff" strokeWidth={hasPending ? 1 : 0} radius={hasPending ? [0, 0, 0, 0] : [4, 4, 0, 0]} />
+              {hasPending && <Bar isAnimationActive={false} dataKey="pending" stackId="h" fill={PENDING} maxBarSize={24} stroke="#fff" strokeWidth={1} radius={[4, 4, 0, 0]} />}
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -108,8 +108,8 @@ export function HoursAreaChart({ data, height = 280 }: { data: MonthPoint[]; hei
             <AreaChart data={data} margin={{ top: 12, right: 12, bottom: 0, left: -18 }}>
               <defs>
                 <linearGradient id="hoursFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={VERIFIED} stopOpacity={0.14} />
-                  <stop offset="100%" stopColor={VERIFIED} stopOpacity={0.04} />
+                  <stop offset="0%" stopColor={VERIFIED} stopOpacity={0.24} />
+                  <stop offset="100%" stopColor={VERIFIED} stopOpacity={0.02} />
                 </linearGradient>
               </defs>
               <CartesianGrid vertical={false} stroke={GRID} />
@@ -117,11 +117,12 @@ export function HoursAreaChart({ data, height = 280 }: { data: MonthPoint[]; hei
               <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: AXIS, fontSize: 12 }} />
               <Tooltip cursor={{ stroke: AXIS, strokeDasharray: "3 3" }} content={<TipBox showPending={hasPending} />} />
               <Area
-                type="linear"
+                type="monotone"
                 dataKey="verified"
                 stroke={VERIFIED}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 fill="url(#hoursFill)"
+                isAnimationActive={false}
                 dot={{ r: 4, fill: "#fff", stroke: VERIFIED, strokeWidth: 2 }}
                 activeDot={{ r: 5, fill: VERIFIED, stroke: "#fff", strokeWidth: 2 }}
               />

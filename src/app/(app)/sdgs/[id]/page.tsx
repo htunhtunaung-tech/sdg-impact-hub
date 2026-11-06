@@ -80,7 +80,7 @@ export default async function GoalPage({ params }: Props) {
             </div>
             <div className="flex flex-wrap gap-3">
               <FollowGoalButton goalId={goal.id} following={Boolean(following)} signedIn={Boolean(user)} onColor={fg} />
-              <Link href={`/projects?goal=${goal.id}`} className="inline-flex h-11 items-center gap-2 rounded-[10px] bg-white px-4 text-sm font-semibold text-ink hover:bg-slate-50">
+              <Link href={`/projects?goal=${goal.id}`} className="inline-flex h-11 items-center gap-2 rounded-[14px] bg-white px-4 text-sm font-semibold text-ink hover:bg-slate-50">
                 Projects for this goal <ArrowRight className="size-4" />
               </Link>
             </div>
@@ -176,7 +176,7 @@ export default async function GoalPage({ params }: Props) {
                   const Icon = RES_ICON[r.type];
                   return (
                     <li key={r.id}>
-                      <a href={r.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-[10px] p-2 hover:bg-canvas">
+                      <a href={r.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-[14px] p-2 hover:bg-canvas">
                         <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-mint text-link"><Icon className="size-4" /></span>
                         <span className="min-w-0">
                           <span className="block text-sm font-semibold leading-snug">{r.title}</span>
@@ -220,13 +220,13 @@ export default async function GoalPage({ params }: Props) {
 
           <nav className="grid grid-cols-2 gap-3" aria-label="Other goals">
             {prev ? (
-              <Link href={`/sdgs/${prev.id}`} className="rounded-[12px] border border-border bg-surface p-3 text-sm hover:bg-canvas">
+              <Link href={`/sdgs/${prev.id}`} className="rounded-[16px] border border-border bg-surface p-3 text-sm hover:bg-canvas">
                 <span className="text-xs text-ink-subtle">← Goal {prev.id}</span>
                 <span className="block truncate font-semibold">{prev.shortTitle}</span>
               </Link>
             ) : <span />}
             {next && (
-              <Link href={`/sdgs/${next.id}`} className="rounded-[12px] border border-border bg-surface p-3 text-right text-sm hover:bg-canvas">
+              <Link href={`/sdgs/${next.id}`} className="rounded-[16px] border border-border bg-surface p-3 text-right text-sm hover:bg-canvas">
                 <span className="text-xs text-ink-subtle">Goal {next.id} →</span>
                 <span className="block truncate font-semibold">{next.shortTitle}</span>
               </Link>

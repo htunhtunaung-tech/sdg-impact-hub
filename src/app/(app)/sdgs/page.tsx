@@ -52,7 +52,7 @@ export default async function SdgsPage() {
         </div>
         <Link
           href={user ? "/assistant?q=Which%20goals%20and%20opportunities%20suit%20my%20interests%20and%20skills%3F" : "/register"}
-          className="inline-flex h-11 items-center justify-center gap-3 rounded-[10px] bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover"
+          className="inline-flex h-11 items-center justify-center gap-3 rounded-full bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover"
         >
           {user ? "Ask the assistant" : "Join to get suggestions"} <ArrowRight className="size-4" />
         </Link>

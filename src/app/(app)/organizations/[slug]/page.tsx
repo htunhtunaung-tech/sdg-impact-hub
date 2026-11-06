@@ -47,7 +47,7 @@ export default async function OrganizationPage({ params }: Props) {
   return (
     <div className="container-page py-6 sm:py-8">
       {org.verificationStatus !== "VERIFIED" && (
-        <p className="mb-4 flex items-center gap-2 rounded-[12px] bg-warning-soft p-3 text-sm text-warning"><Hourglass className="size-4" /> {org.verificationStatus === "PENDING" ? "Awaiting verification by an administrator. Only members can see this page." : "This organization wasn't verified."}</p>
+        <p className="mb-4 flex items-center gap-2 rounded-[16px] bg-warning-soft p-3 text-sm text-warning"><Hourglass className="size-4" /> {org.verificationStatus === "PENDING" ? "Awaiting verification by an administrator. Only members can see this page." : "This organization wasn't verified."}</p>
       )}
       <header className="flex flex-col gap-5 sm:flex-row sm:items-center">
         <Avatar name={org.name} src={org.logoUrl} size={80} className="rounded-[18px] bg-sky-50 text-2xl text-info" />
@@ -65,10 +65,10 @@ export default async function OrganizationPage({ params }: Props) {
       </header>
 
       <section className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <Stat icon={<FolderOpen />} label="Projects" value={projects.length} />
-        <Stat icon={<Clock />} label="Verified hours" value={formatNumber(toNumber(hours._sum.hours))} />
-        <Stat icon={<Users />} label="Volunteers" value={volunteers.length} />
-        <Stat icon={<Users />} label="People reached" value={formatInt(people)} />
+        <Stat tone="mint" icon={<FolderOpen />} label="Projects" value={projects.length} />
+        <Stat tone="sky" icon={<Clock />} label="Verified hours" value={formatNumber(toNumber(hours._sum.hours))} />
+        <Stat tone="sun" icon={<Users />} label="Volunteers" value={volunteers.length} />
+        <Stat tone="lilac" icon={<Users />} label="People reached" value={formatInt(people)} />
       </section>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -77,7 +77,7 @@ export default async function OrganizationPage({ params }: Props) {
             <CardHeader><CardTitle>About</CardTitle></CardHeader>
             <CardContent className="space-y-3 text-[15px] leading-relaxed text-slate-700">
               <p>{org.description}</p>
-              {org.mission && <p className="rounded-[12px] bg-mint p-4 text-forest-900"><strong>Mission:</strong> {org.mission}</p>}
+              {org.mission && <p className="rounded-[16px] bg-mint p-4 text-forest-900"><strong>Mission:</strong> {org.mission}</p>}
             </CardContent>
           </Card>
           <section>
