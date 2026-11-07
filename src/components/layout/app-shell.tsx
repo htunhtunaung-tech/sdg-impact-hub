@@ -15,6 +15,7 @@ import { ADMIN_NAV, MAIN_NAV, SUPPORT_NAV, type NavIcon, type NavItem } from "@/
 import { CommandSearch } from "@/components/layout/command-search";
 import { UserMenu } from "@/components/layout/user-menu";
 import { Tooltip } from "@/components/ui/tooltip";
+import { CreatorCredit } from "@/components/layout/creator-credit";
 
 const ICONS: Record<NavIcon, React.ComponentType<{ className?: string }>> = {
   home: House, globe: Globe, folder: FolderOpen, heart: Heart, chart: ChartColumn, users: Users, sparkles: Sparkles,
@@ -244,6 +245,9 @@ export function AppShell({ user, children }: { user: ShellUser | null; children:
 
       <main id="main" className="pb-32 md:pb-12 lg:pl-0">
         {children}
+        <footer className="container-page mt-4 border-t border-border pt-5">
+          <CreatorCredit />
+        </footer>
       </main>
 
       {/* Mobile: floating bottom bar with a central "Record impact" action */}

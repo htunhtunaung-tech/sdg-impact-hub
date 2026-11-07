@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { SDGS, sdgForeground } from "@/lib/sdg";
 import { DeviceMockup } from "@/components/brand/device-mockup";
+import { CreatorCredit } from "@/components/layout/creator-credit";
 import { formatInt, formatNumber, toNumber } from "@/lib/utils";
 import { Logo } from "@/components/layout/logo";
 import { ProjectCard } from "@/components/projects/project-card";
@@ -185,6 +186,9 @@ export default async function LandingPage() {
             <Link href="/help" className="hover:text-ink">Help Center</Link>
             <Link href="/help#privacy" className="hover:text-ink">Privacy</Link>
           </nav>
+        </div>
+        <div className="container-page border-t border-border py-5">
+          <CreatorCredit />
         </div>
       </footer>
     </div>
