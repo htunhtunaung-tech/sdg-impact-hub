@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 /** The SDG Impact Hub emblem (globe, goal-colour ring and growing leaves). Decorative: the link carries the name. */
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <span className={cn("relative inline-flex size-9 shrink-0 overflow-hidden rounded-[12px] bg-forest-950 shadow-card", className)} aria-hidden>
-      <Image src="/brand/logo-mark.png" alt="" fill sizes="44px" className="object-cover" priority />
+    <span className={cn("relative inline-flex size-9 shrink-0 overflow-hidden rounded-[12px] shadow-card", className)} aria-hidden>
+      {/* Vector artwork: stays sharp on retina screens at any size */}
+      <Image src="/brand/logo-mark.svg" alt="" fill unoptimized className="object-cover" priority />
     </span>
   );
 }
