@@ -112,7 +112,7 @@ export const projectSchema = z
     description: trimmed(50, 6000, "Description"),
     objectives: stringList(10, 200),
     tasks: stringList(10, 200),
-    goals: z.array(goalId).min(1, "Choose at least one goal").max(5, "Choose up to 5 goals"),
+    goals: z.array(goalId).min(1, "Choose at least one goal").max(5, "Choose up to 5 goals").transform((g) => [...new Set(g)]),
     primaryGoal: goalId,
     status: z.enum(PROJECT_STATUSES),
     imageUrl: optionalUrl,
@@ -136,6 +136,10 @@ export const projectSchema = z
       .array(z.object({ metricId: z.string().min(1).max(40), targetValue: z.coerce.number().positive().max(1e9) }))
       .max(8)
       .default([]),
+  })
+  .refine((p) => new Set(p.impactTargets.map((t) => t.metricId)).size === p.impactTargets.length, {
+    path: ["impactTargets"],
+    message: "Each impact metric can only be added once. Remove the duplicate target",
   })
   .refine((p) => p.goals.includes(p.primaryGoal), { path: ["primaryGoal"], message: "Primary goal must be one of the selected goals" })
   .refine((p) => !p.startDate || !p.endDate || p.endDate >= p.startDate, { path: ["endDate"], message: "End date must be after the start date" })

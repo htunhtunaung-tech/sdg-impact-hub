@@ -198,7 +198,10 @@ export function ProjectForm({
               <div key={i} className="flex gap-2">
                 <Select aria-label="Metric" value={t.metricId} onChange={(e) => set("impactTargets", v.impactTargets.map((x, j) => (j === i ? { ...x, metricId: e.target.value } : x)))}>
                   <option value="">Choose a metric…</option>
-                  {metrics.map((m) => <option key={m.id} value={m.id}>{m.name} ({m.unit})</option>)}
+                  {metrics.map((m) => {
+                    const usedElsewhere = v.impactTargets.some((x, j) => j !== i && x.metricId === m.id);
+                    return <option key={m.id} value={m.id} disabled={usedElsewhere}>{m.name} ({m.unit}){usedElsewhere ? " — already added" : ""}</option>;
+                  })}
                 </Select>
                 <Input aria-label="Target value" type="number" min={1} className="w-36" value={t.targetValue} placeholder="Target" onChange={(e) => set("impactTargets", v.impactTargets.map((x, j) => (j === i ? { ...x, targetValue: e.target.value } : x)))} />
                 <Button type="button" variant="ghost" size="icon" aria-label="Remove target" onClick={() => set("impactTargets", v.impactTargets.filter((_, j) => j !== i))}><Trash2 /></Button>
