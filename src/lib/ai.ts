@@ -6,14 +6,20 @@ import { SDGS } from "@/lib/sdg";
 import { formatDate, toNumber } from "@/lib/utils";
 import type { CurrentUser } from "@/lib/session";
 
-export const aiEnabled = () => Boolean(process.env.OPENAI_API_KEY);
+/** Env values pasted from Windows editors can carry stray quotes, spaces or CR characters. */
+const env = (k: string) => process.env[k]?.trim().replace(/^["']|["']$/g, "").trim() || undefined;
+const AI_KEY = env("OPENAI_API_KEY");
+const AI_BASE_URL = env("OPENAI_BASE_URL");
+const AI_MODEL = env("OPENAI_MODEL") || "gpt-4o-mini";
+
+export const aiEnabled = () => Boolean(AI_KEY);
 
 /**
  * Any OpenAI-compatible provider works: set OPENAI_BASE_URL to use e.g. Google Gemini's free tier
  * (https://generativelanguage.googleapis.com/v1beta/openai/) instead of OpenAI.
  */
-const openai = process.env.OPENAI_API_KEY
-  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY, baseURL: process.env.OPENAI_BASE_URL || undefined, maxRetries: 1, timeout: 30_000 })
+const openai = AI_KEY
+  ? new OpenAI({ apiKey: AI_KEY, baseURL: AI_BASE_URL, maxRetries: 1, timeout: 30_000 })
   : null;
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
@@ -86,10 +92,11 @@ ${ctx.projects.map((p) => `- [${p.title}](${p.link}) — Goals ${p.goals.join(",
 /** Streams the assistant reply as plain text chunks. */
 export async function streamAssistantReply(user: CurrentUser, history: ChatTurn[]): Promise<AsyncIterable<string>> {
   const ctx = await buildAssistantContext(user);
+  let providerNote = "";
   if (openai) {
     try {
       const stream = await openai.chat.completions.create({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        model: AI_MODEL,
         stream: true,
         temperature: 0.5,
         max_tokens: 1200,
@@ -109,9 +116,10 @@ export async function streamAssistantReply(user: CurrentUser, history: ChatTurn[
     } catch (err) {
       // Free tiers have rate limits — fall back to the offline, data-grounded assistant instead of failing.
       console.error("[assistant] AI provider unavailable, using offline mode", err);
+      providerNote = describeProviderError(err);
     }
   }
-  const text = await offlineReply(ctx, history[history.length - 1]?.content ?? "");
+  const text = (await offlineReply(ctx, history[history.length - 1]?.content ?? "")) + providerNote;
   return (async function* () {
     // Chunk the response so the UI streams identically in offline mode.
     const parts = text.match(/[\s\S]{1,24}/g) ?? [];
@@ -120,6 +128,18 @@ export async function streamAssistantReply(user: CurrentUser, history: ChatTurn[
       await new Promise((r) => setTimeout(r, 8));
     }
   })();
+}
+
+/** A short, secret-free explanation shown under offline answers when the AI provider failed. */
+function describeProviderError(err: unknown) {
+  const e = err as { status?: number; message?: string };
+  const reason =
+    e.status === 401 || e.status === 403 ? "the API key was rejected — check OPENAI_API_KEY"
+    : e.status === 404 ? `model or URL not found — check OPENAI_MODEL ("${AI_MODEL}") and OPENAI_BASE_URL`
+    : e.status === 429 ? "the free usage limit was reached — try again later"
+    : e.status === 400 ? "the AI service rejected the request"
+    : "the AI service could not be reached";
+  return `\n\n---\n_Answered in offline mode: ${reason}${e.status ? ` (HTTP ${e.status})` : ""}._`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
