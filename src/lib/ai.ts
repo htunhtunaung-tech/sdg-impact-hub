@@ -19,7 +19,7 @@ export const aiEnabled = () => Boolean(AI_KEY);
  * (https://generativelanguage.googleapis.com/v1beta/openai/) instead of OpenAI.
  */
 const openai = AI_KEY
-  ? new OpenAI({ apiKey: AI_KEY, baseURL: AI_BASE_URL, maxRetries: 1, timeout: 30_000 })
+  ? new OpenAI({ apiKey: AI_KEY, baseURL: AI_BASE_URL, maxRetries: 1, timeout: 45_000 })
   : null;
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
@@ -130,6 +130,16 @@ export async function streamAssistantReply(user: CurrentUser, history: ChatTurn[
   })();
 }
 
+/** Names the kind of connection failure (timeout, DNS, bad URL) without exposing secrets. */
+function connectionDetail(err: unknown) {
+  const e = err as { name?: string; cause?: { code?: string; cause?: { code?: string } } };
+  const code = e.cause?.code ?? e.cause?.cause?.code;
+  if (e.name?.includes("Timeout")) return "the AI service took too long to answer (timeout)";
+  if (code === "ERR_INVALID_URL") return "OPENAI_BASE_URL is not a valid URL";
+  if (code === "ENOTFOUND") return "the address in OPENAI_BASE_URL was not found — check for typos";
+  return `the AI service could not be reached${e.name ? ` (${e.name}${code ? `, ${code}` : ""})` : ""}`;
+}
+
 /** A short, secret-free explanation shown under offline answers when the AI provider failed. */
 function describeProviderError(err: unknown) {
   const e = err as { status?: number; message?: string };
@@ -138,7 +148,7 @@ function describeProviderError(err: unknown) {
     : e.status === 404 ? `model or URL not found — check OPENAI_MODEL ("${AI_MODEL}") and OPENAI_BASE_URL`
     : e.status === 429 ? "the free usage limit was reached — try again later"
     : e.status === 400 ? "the AI service rejected the request"
-    : "the AI service could not be reached";
+    : connectionDetail(err);
   return `\n\n---\n_Answered in offline mode: ${reason}${e.status ? ` (HTTP ${e.status})` : ""}._`;
 }
 
