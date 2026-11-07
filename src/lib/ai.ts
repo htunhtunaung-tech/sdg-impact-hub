@@ -11,6 +11,7 @@ const env = (k: string) => process.env[k]?.trim().replace(/^["']|["']$/g, "").tr
 const AI_KEY = env("OPENAI_API_KEY");
 const AI_BASE_URL = env("OPENAI_BASE_URL");
 const AI_MODEL = env("OPENAI_MODEL") || "gpt-4o-mini";
+const IS_GEMINI = Boolean(AI_BASE_URL?.includes("generativelanguage.googleapis.com"));
 
 export const aiEnabled = () => Boolean(AI_KEY);
 
@@ -19,7 +20,7 @@ export const aiEnabled = () => Boolean(AI_KEY);
  * (https://generativelanguage.googleapis.com/v1beta/openai/) instead of OpenAI.
  */
 const openai = AI_KEY
-  ? new OpenAI({ apiKey: AI_KEY, baseURL: AI_BASE_URL, maxRetries: 1, timeout: 45_000 })
+  ? new OpenAI({ apiKey: AI_KEY, baseURL: AI_BASE_URL, maxRetries: 1, timeout: 60_000 })
   : null;
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
@@ -100,7 +101,10 @@ export async function streamAssistantReply(user: CurrentUser, history: ChatTurn[
         stream: true,
         temperature: 0.5,
         max_tokens: 1200,
-        messages: [{ role: "system", content: systemPrompt(ctx) }, ...history.slice(-12)],
+        // Gemini "thinking" models can spend a long time reasoning before the first token;
+        // a low effort keeps chat replies fast. (Only sent to Gemini — OpenAI chat models reject it.)
+        ...(IS_GEMINI ? { reasoning_effort: "low" as const } : {}),
+        messages: [{ role: "system", content: systemPrompt(ctx) }, ...history.slice(-8)],
       });
       return (async function* () {
         try {
@@ -132,9 +136,11 @@ export async function streamAssistantReply(user: CurrentUser, history: ChatTurn[
 
 /** Names the kind of connection failure (timeout, DNS, bad URL) without exposing secrets. */
 function connectionDetail(err: unknown) {
-  const e = err as { name?: string; cause?: { code?: string; cause?: { code?: string } } };
+  const e = err as { name?: string; message?: string; cause?: { name?: string; code?: string | number; cause?: { code?: string } } };
   const code = e.cause?.code ?? e.cause?.cause?.code;
-  if (e.name?.includes("Timeout")) return "the AI service took too long to answer (timeout)";
+  // DOMException code 20 / AbortError = the request was cut off by the timeout.
+  if (e.name?.includes("Timeout") || code === 20 || e.cause?.name === "AbortError" || /abort|timed? ?out/i.test(e.message ?? ""))
+    return "the AI service took too long to answer — please try again";
   if (code === "ERR_INVALID_URL") return "OPENAI_BASE_URL is not a valid URL";
   if (code === "ENOTFOUND") return "the address in OPENAI_BASE_URL was not found — check for typos";
   return `the AI service could not be reached${e.name ? ` (${e.name}${code ? `, ${code}` : ""})` : ""}`;
