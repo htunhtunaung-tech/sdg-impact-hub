@@ -55,8 +55,8 @@ export function StaticAreaChart({ data, height = 220, unit = "verified hours" }:
             {[0, 1, 2, 3, 4].map((k) => (
               <line key={k} x1="0" x2={W} y1={(H / 4) * k} y2={(H / 4) * k} stroke="#E4E9E6" strokeDasharray={k === 4 ? undefined : "4 4"} vectorEffect="non-scaling-stroke" />
             ))}
-            {area && <path d={area} fill="url(#static-area)" />}
-            {line && <path d={line} fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />}
+            {area && <path d={area} fill="url(#static-area)" className="chart-area" />}
+            {line && <path d={line} pathLength={1} className="chart-line" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />}
             {data.map((d, i) => (
               <rect key={d.key} x={x(i) - W / data.length / 2} y="0" width={W / data.length} height={H} fill="transparent">
                 <title>{`${d.full}: ${formatNumber(d.verified)} ${unit}`}</title>
@@ -68,7 +68,7 @@ export function StaticAreaChart({ data, height = 220, unit = "verified hours" }:
             const d = data[i];
             if (!d) return null;
             return (
-              <span key={d.key} className="pointer-events-none absolute" style={{ left: `${(x(i) / W) * 100}%`, top: `calc(7px + (100% - 31px) * ${y(d.verified) / H})` }} aria-hidden>
+              <span key={d.key} className="chart-dot pointer-events-none absolute" style={{ left: `${(x(i) / W) * 100}%`, top: `calc(7px + (100% - 31px) * ${y(d.verified) / H})` }} aria-hidden>
                 <span className="absolute -left-[6px] -top-[6px] size-3 rounded-full border-2 border-white bg-accent shadow-card" />
                 {i === peak && d.verified > 0 && (
                   <span className={`absolute -top-11 whitespace-nowrap rounded-[12px] bg-ink px-2.5 py-1 text-xs font-semibold text-white shadow-raised ${i === last ? "right-0" : i === 0 ? "left-0" : "-translate-x-1/2"}`}>
@@ -107,7 +107,7 @@ export function StaticDonut({ data, size = 180, centerLabel = "verified" }: { da
           {rows.map((d) => {
             const len = Math.max(0, (d.value / total) * 100 - gap);
             const el = (
-              <circle key={d.key} cx="21" cy="21" r="15.9155" fill="none" stroke={d.color} strokeWidth="6" strokeDasharray={`${len} ${100 - len}`} strokeDashoffset={-offset} strokeLinecap="butt">
+              <circle key={d.key} cx="21" cy="21" r="15.9155" fill="none" stroke={d.color} strokeWidth="6" strokeDasharray={`${len} ${100 - len}`} strokeDashoffset={-offset} strokeLinecap="butt" className="donut-slice">
                 <title>{`${d.label}: ${formatNumber(d.value)} h`}</title>
               </circle>
             );

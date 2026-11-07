@@ -1,5 +1,6 @@
 "use client";
 
+import { celebrate } from "@/lib/confetti";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Check, CircleCheck, Share2, Trash2, X } from "lucide-react";
@@ -47,7 +48,7 @@ export function JoinProjectButton({ projectId, isMember, isOrganizer, signedIn, 
     );
   const disabled = status === "COMPLETED" || status === "PLANNING" || full;
   return (
-    <Button size="lg" className="w-full" disabled={disabled} loading={pending} onClick={() => run(() => joinProjectAction(projectId))}>
+    <Button size="lg" className="w-full" disabled={disabled} loading={pending} onClick={() => run(() => joinProjectAction(projectId), celebrate)}>
       {status === "COMPLETED" ? "Project completed" : status === "PLANNING" ? "Not recruiting yet" : full ? "Team is full" : "Join this project"}
     </Button>
   );

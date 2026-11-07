@@ -1,5 +1,6 @@
 "use client";
 
+import { celebrate } from "@/lib/confetti";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -63,6 +64,7 @@ export function ProjectForm({
         return;
       }
       toast.success(res.message);
+      if (!projectId) celebrate();
       router.push(`/projects/${res.data!.slug}`);
       router.refresh();
     });

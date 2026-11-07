@@ -1,5 +1,6 @@
 "use client";
 
+import { celebrate } from "@/lib/confetti";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Info, Plus, Trash2 } from "lucide-react";
@@ -43,6 +44,7 @@ export function ImpactForm({ projects, opportunities, metrics, initial }: {
         return;
       }
       toast.success(res.message);
+      celebrate({ count: 90 });
       router.push("/impact");
       router.refresh();
     });

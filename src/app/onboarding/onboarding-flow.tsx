@@ -1,5 +1,6 @@
 "use client";
 
+import { celebrate } from "@/lib/confetti";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -79,6 +80,7 @@ export function OnboardingFlow({ firstName, initial }: { firstName: string; init
       const res = await completeOnboardingAction(v);
       if (!res.ok) return setError(res.error);
       toast.success(res.message);
+      celebrate();
       router.push("/dashboard");
       router.refresh();
     });

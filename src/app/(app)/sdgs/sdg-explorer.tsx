@@ -80,15 +80,15 @@ export function SdgExplorer({
             const fg = sdgForeground(g.color);
             const isFollowed = followed.includes(g.id);
             return (
-              <motion.li key={g.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.02, 0.3) }}>
+              <motion.li key={g.id} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.02, 0.3) }}>
                 <Link
                   href={`/sdgs/${g.id}`}
-                  className="group relative flex aspect-square h-full flex-col overflow-hidden rounded-[var(--radius-lg)] p-3.5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-raised sm:p-4"
+                  className="group relative flex aspect-square h-full flex-col overflow-hidden rounded-[var(--radius-lg)] p-3.5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-raised sm:p-4"
                   style={{ background: g.color, color: fg }}
                 >
                   <span className="text-[34px] font-extrabold leading-[0.9] tracking-tight sm:text-[38px]">{g.id}</span>
                   <span className="mt-1.5 text-[11px] font-extrabold uppercase leading-[1.15] group-hover:underline sm:text-[12px]">{g.title}</span>
-                  <SdgIcon goal={g.id} className="m-auto size-[32%] shrink-0" strokeWidth={1.6} />
+                  <SdgIcon goal={g.id} className="m-auto size-[32%] shrink-0 transition-transform duration-300 ease-out group-hover:-rotate-6 group-hover:scale-115" strokeWidth={1.6} />
                   <span className="flex items-center gap-1.5 text-[12px] font-semibold">
                     <FolderOpen className="size-3.5" aria-hidden /> {g.projects} {g.projects === 1 ? "project" : "projects"}
                   </span>

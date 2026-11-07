@@ -1,5 +1,6 @@
 "use client";
 
+import { celebrate } from "@/lib/confetti";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { CalendarDays, MapPin } from "lucide-react";
@@ -39,6 +40,7 @@ export function SignUpButton({ opp, signedIn, size = "sm", className }: { opp: S
       const res = await applyToOpportunityAction({ opportunityId: opp.id, wantsReminder: reminder, motivation: motivation || undefined });
       if (!res.ok) return void toast.error(res.error);
       toast.success(res.message);
+      if (res.data?.status !== "WAITLISTED") celebrate();
       setOpen(false);
       if (calendar && res.data?.status !== "WAITLISTED") window.location.href = `/api/calendar/${opp.id}`;
       router.refresh();

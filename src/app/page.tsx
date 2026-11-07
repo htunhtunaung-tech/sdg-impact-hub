@@ -2,11 +2,12 @@ import Link from "next/link";
 import { ArrowRight, BadgeCheck, Building2, CalendarCheck2, ChartColumn, Hourglass, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { CountUp } from "@/components/motion/count-up";
 import { SdgTile } from "@/components/sdg/sdg-badge";
 import { SDGS } from "@/lib/sdg";
 import { DeviceMockup } from "@/components/brand/device-mockup";
 import { CreatorCredit } from "@/components/layout/creator-credit";
-import { formatInt, formatNumber, toNumber } from "@/lib/utils";
+import { toNumber } from "@/lib/utils";
 import { Logo } from "@/components/layout/logo";
 import { ProjectCard } from "@/components/projects/project-card";
 import { projectCardInclude, toProjectCard } from "@/server/queries/projects";
@@ -25,10 +26,10 @@ export default async function LandingPage() {
     db.project.findMany({ where: { moderationStatus: "APPROVED", status: "RECRUITING" }, include: projectCardInclude(), orderBy: { createdAt: "desc" }, take: 3 }),
   ]);
   const stats = [
-    { v: formatNumber(toNumber(hours._sum.hours), 0), l: "verified volunteer hours" },
-    { v: formatInt(people), l: "people reached" },
-    { v: formatInt(volunteers.length), l: "volunteers with verified impact" },
-    { v: formatInt(projectCount), l: "live projects" },
+    { v: Math.round(toNumber(hours._sum.hours)), l: "verified volunteer hours" },
+    { v: people, l: "people reached" },
+    { v: volunteers.length, l: "volunteers with verified impact" },
+    { v: projectCount, l: "live projects" },
   ];
   const primaryCta = user ? { href: "/dashboard", label: "Go to your dashboard" } : { href: "/register", label: "Join for free" };
 
@@ -75,7 +76,7 @@ export default async function LandingPage() {
               <ul className="mt-10 grid max-w-[540px] grid-cols-6 gap-2 sm:grid-cols-9" aria-label="The 17 goals">
                 {SDGS.map((g) => (
                   <li key={g.id}>
-                    <Link href={`/sdgs/${g.id}`} className="block rounded-[12px] shadow-card transition-transform hover:-translate-y-0.5" aria-label={`Goal ${g.id}: ${g.title}`} title={g.title}>
+                    <Link href={`/sdgs/${g.id}`} className="group block rounded-[12px] shadow-card transition-transform hover:-translate-y-1" aria-label={`Goal ${g.id}: ${g.title}`} title={g.title}>
                       <SdgTile goal={g.id} />
                     </Link>
                   </li>
@@ -91,7 +92,7 @@ export default async function LandingPage() {
           <div className="grid grid-cols-2 gap-3 rounded-[var(--radius-2xl)] border border-border/80 bg-surface p-3 shadow-raised sm:gap-4 sm:p-4 lg:grid-cols-4">
             {stats.map((st, i) => (
               <div key={st.l} className={`rounded-[20px] p-5 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun", "bg-tone-lilac"][i]}`}>
-                <p className="text-[32px] font-bold leading-none tracking-tight text-ink sm:text-[40px]">{st.v}</p>
+                <p className="text-[32px] font-bold leading-none tracking-tight text-ink sm:text-[40px]"><CountUp value={st.v} /></p>
                 <p className="mt-2 text-sm text-ink-muted">{st.l}</p>
               </div>
             ))}
@@ -101,14 +102,14 @@ export default async function LandingPage() {
 
         {/* How it works */}
         <section className="container-page py-20">
-          <h2 className="max-w-2xl text-[34px] font-bold leading-tight tracking-tight sm:text-[44px]">From “I want to help” to proof that it mattered.</h2>
+          <h2 className="reveal max-w-2xl text-[34px] font-bold leading-tight tracking-tight sm:text-[44px]">From “I want to help” to proof that it mattered.</h2>
           <ol className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               { icon: Sparkles, t: "Find your fit", d: "Follow the goals you care about. Our recommendations weigh your skills, interests and location — and explain why." },
               { icon: CalendarCheck2, t: "Show up", d: "Join a project or sign up for a session in two clicks. Add it to your calendar and get a reminder the day before." },
               { icon: ChartColumn, t: "Measure honestly", d: "Record hours and outcomes with evidence. Organizers verify them, so your impact report means something." },
             ].map(({ icon: Icon, t, d }, i) => (
-              <li key={t} className={`rounded-[var(--radius-xl)] p-6 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun"][i]}`}>
+              <li key={t} className={`reveal rounded-[var(--radius-xl)] p-6 transition-transform duration-300 hover:-translate-y-1 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun"][i]}`}>
                 <span className="flex size-12 items-center justify-center rounded-full bg-white text-forest-900 shadow-card"><Icon className="size-5" /></span>
                 <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-ink-muted">Step {i + 1}</p>
                 <h3 className="mt-1 text-xl font-semibold">{t}</h3>
@@ -122,7 +123,7 @@ export default async function LandingPage() {
         {featured.length > 0 && (
           <section className="bg-canvas py-20 sm:py-24">
             <div className="container-page">
-              <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="reveal flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <h2 className="text-[34px] font-bold tracking-tight sm:text-[44px]">Recruiting now</h2>
                   <p className="mt-2 text-ink-muted">Projects looking for people like you.</p>
@@ -130,7 +131,7 @@ export default async function LandingPage() {
                 <Link href="/projects" className="inline-flex items-center gap-1.5 font-semibold text-link hover:underline">All projects <ArrowRight className="size-4" /></Link>
               </div>
               <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {featured.map((p) => <ProjectCard key={p.id} p={toProjectCard(p, null)} />)}
+                {featured.map((p) => <div key={p.id} className="reveal"><ProjectCard p={toProjectCard(p, null)} /></div>)}
               </div>
             </div>
           </section>
@@ -138,11 +139,11 @@ export default async function LandingPage() {
 
         {/* Trust */}
         <section className="container-page grid gap-10 py-20 lg:grid-cols-2 lg:items-center">
-          <div>
+          <div className="reveal">
             <h2 className="text-[34px] font-bold leading-tight tracking-tight sm:text-[44px]">We never call an estimate a result.</h2>
             <p className="mt-4 text-lg text-ink-muted">Every contribution is labelled. Self-reported entries are visible to you, but only verified impact counts towards badges, leaderboards, project targets and the numbers on this page.</p>
           </div>
-          <div className="space-y-3 rounded-[var(--radius-2xl)] border border-border/80 bg-surface p-6 shadow-raised">
+          <div className="reveal space-y-3 rounded-[var(--radius-2xl)] border border-border/80 bg-surface p-6 shadow-raised">
             {[
               { icon: BadgeCheck, c: "text-link bg-mint", t: "Verified", d: "Confirmed by the project organizer or an administrator — with attendance or evidence." },
               { icon: Hourglass, c: "text-warning bg-warning-soft", t: "Self-reported", d: "Your own record, awaiting review. Not included in totals." },
@@ -158,7 +159,7 @@ export default async function LandingPage() {
 
         {/* Organizations */}
         <section className="container-page pb-20">
-          <div className="relative overflow-hidden rounded-[var(--radius-2xl)] bg-[image:var(--gradient-brand)] px-6 py-14 text-white sm:px-12">
+          <div className="reveal relative overflow-hidden rounded-[var(--radius-2xl)] bg-[image:var(--gradient-brand)] px-6 py-14 text-white sm:px-12">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(5,150,105,0.5),transparent_60%)]" />
             <div className="relative grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
               <div>
