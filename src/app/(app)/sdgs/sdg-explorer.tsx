@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Check, FolderOpen, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/misc";
+import { SdgIcon } from "@/components/sdg/sdg-icon";
 import { sdgForeground } from "@/lib/sdg";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +39,7 @@ export function SdgExplorer({
 
   const chip = (active: boolean) =>
     cn(
-      "inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors",
+      "inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3.5 text-sm font-medium transition-colors",
       active ? "border-primary bg-primary text-white" : "border-border-strong bg-surface text-ink hover:bg-canvas",
     );
   const count = (active: boolean) => cn("rounded-full px-1.5 text-[11px] font-semibold", active ? "bg-forest-950/40 text-white" : "bg-mint-strong text-forest-900");
@@ -82,23 +83,20 @@ export function SdgExplorer({
               <motion.li key={g.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.02, 0.3) }}>
                 <Link
                   href={`/sdgs/${g.id}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-card transition-all hover:-translate-y-0.5 hover:shadow-raised"
+                  className="group relative flex aspect-square h-full flex-col overflow-hidden rounded-[var(--radius-lg)] p-3.5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-raised sm:p-4"
+                  style={{ background: g.color, color: fg }}
                 >
-                  <div className="relative px-4 pb-3 pt-4" style={{ background: g.color, color: fg }}>
-                    <span className="text-[11px] font-bold uppercase tracking-[0.08em]">Goal</span>
-                    <span className="block text-[40px] font-extrabold leading-none tracking-tight">{g.id}</span>
-                    {isFollowed && (
-                      <span className="absolute right-3 top-3 flex size-6 items-center justify-center rounded-full bg-white text-ink" title="You follow this goal">
-                        <Check className="size-4" style={{ color: g.color }} aria-label="Following" />
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-1 flex-col p-4">
-                    <span className="text-[15px] font-semibold leading-snug text-ink group-hover:underline">{g.title}</span>
-                    <span className="mt-auto flex items-center gap-1.5 pt-4 text-[13px] text-ink-muted">
-                      <FolderOpen className="size-3.5" aria-hidden /> {g.projects} {g.projects === 1 ? "project" : "projects"}
+                  <span className="text-[34px] font-extrabold leading-[0.9] tracking-tight sm:text-[38px]">{g.id}</span>
+                  <span className="mt-1.5 text-[11px] font-extrabold uppercase leading-[1.15] group-hover:underline sm:text-[12px]">{g.title}</span>
+                  <SdgIcon goal={g.id} className="m-auto size-[32%] shrink-0" strokeWidth={1.6} />
+                  <span className="flex items-center gap-1.5 text-[12px] font-semibold">
+                    <FolderOpen className="size-3.5" aria-hidden /> {g.projects} {g.projects === 1 ? "project" : "projects"}
+                  </span>
+                  {isFollowed && (
+                    <span className="absolute right-3 top-3 flex size-6 items-center justify-center rounded-full bg-white" title="You follow this goal">
+                      <Check className="size-4" style={{ color: g.color }} aria-label="Following" />
                     </span>
-                  </div>
+                  )}
                 </Link>
               </motion.li>
             );

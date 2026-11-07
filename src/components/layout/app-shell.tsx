@@ -197,7 +197,7 @@ export function AppShell({ user, children }: { user: ShellUser | null; children:
       </aside>
 
       {/* Top bar (floating on tablet/desktop) */}
-      <header className="sticky top-0 z-20 md:px-6 md:pt-4 lg:pl-4 lg:pr-8">
+      <header className="sticky top-0 z-20 md:bg-canvas md:px-6 md:pt-4 lg:pl-4 lg:pr-8">
         <div className="flex h-14 items-center gap-3 border-b border-border bg-surface/90 px-4 backdrop-blur supports-[backdrop-filter]:bg-surface/80 sm:px-6 md:h-16 md:rounded-[var(--radius-lg)] md:border md:border-border/80 md:px-4 md:shadow-card">
           <div className="md:hidden">
             <Logo compact />
