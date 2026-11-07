@@ -92,7 +92,7 @@ and has a working fallback:
 |---|---|---|
 | `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | Google sign-in (redirect URI `{APP_URL}/api/auth/callback/google`) | Google button hidden |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM` | Transactional email | Logged to console |
-| `OPENAI_API_KEY`, `OPENAI_MODEL` | Language-model assistant | Offline, data-grounded assistant |
+| `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL` | Language-model assistant (OpenAI, or any OpenAI-compatible API such as Google Gemini's free tier) | Offline, data-grounded assistant (also used automatically if the AI provider is rate-limited) |
 | `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_STORAGE_BUCKET` | Supabase Storage for uploads (create a **private** bucket) | Local `./uploads` folder |
 | `NEXT_PUBLIC_MAP_TILE_URL`, `NEXT_PUBLIC_MAP_ATTRIBUTION` | Map tiles | OpenStreetMap |
 | `NEXT_PUBLIC_APP_TIMEZONE` | Timezone for event times | `Asia/Bangkok` |

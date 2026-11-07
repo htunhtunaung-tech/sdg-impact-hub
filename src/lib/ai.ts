@@ -8,7 +8,13 @@ import type { CurrentUser } from "@/lib/session";
 
 export const aiEnabled = () => Boolean(process.env.OPENAI_API_KEY);
 
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+/**
+ * Any OpenAI-compatible provider works: set OPENAI_BASE_URL to use e.g. Google Gemini's free tier
+ * (https://generativelanguage.googleapis.com/v1beta/openai/) instead of OpenAI.
+ */
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY, baseURL: process.env.OPENAI_BASE_URL || undefined, maxRetries: 1, timeout: 30_000 })
+  : null;
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
 
@@ -81,19 +87,29 @@ ${ctx.projects.map((p) => `- [${p.title}](${p.link}) — Goals ${p.goals.join(",
 export async function streamAssistantReply(user: CurrentUser, history: ChatTurn[]): Promise<AsyncIterable<string>> {
   const ctx = await buildAssistantContext(user);
   if (openai) {
-    const stream = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-      stream: true,
-      temperature: 0.5,
-      max_tokens: 1200,
-      messages: [{ role: "system", content: systemPrompt(ctx) }, ...history.slice(-12)],
-    });
-    return (async function* () {
-      for await (const part of stream) {
-        const delta = part.choices[0]?.delta?.content;
-        if (delta) yield delta;
-      }
-    })();
+    try {
+      const stream = await openai.chat.completions.create({
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        stream: true,
+        temperature: 0.5,
+        max_tokens: 1200,
+        messages: [{ role: "system", content: systemPrompt(ctx) }, ...history.slice(-12)],
+      });
+      return (async function* () {
+        try {
+          for await (const part of stream) {
+            const delta = part.choices[0]?.delta?.content;
+            if (delta) yield delta;
+          }
+        } catch (err) {
+          console.error("[assistant] stream interrupted", err);
+          yield "\n\n_The AI service stopped responding. Please try again in a moment._";
+        }
+      })();
+    } catch (err) {
+      // Free tiers have rate limits — fall back to the offline, data-grounded assistant instead of failing.
+      console.error("[assistant] AI provider unavailable, using offline mode", err);
+    }
   }
   const text = await offlineReply(ctx, history[history.length - 1]?.content ?? "");
   return (async function* () {
