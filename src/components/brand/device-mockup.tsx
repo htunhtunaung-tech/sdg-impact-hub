@@ -56,7 +56,7 @@ export function DeviceMockup() {
       </div>
 
       {/* Phone */}
-      <div className="absolute left-0 top-28 w-[44%] min-w-[170px] rounded-[34px] border-[6px] border-ink bg-[image:var(--gradient-eco)] p-3 shadow-overlay">
+      <div className="float-slow absolute left-0 top-28 w-[44%] min-w-[170px] rounded-[34px] border-[6px] border-ink bg-[image:var(--gradient-eco)] p-3 shadow-overlay">
         <div className="mx-auto mb-3 h-4 w-16 rounded-full bg-ink" />
         <div className="flex items-center justify-between">
           <p className="text-[11px] font-bold text-ink">Good morning, Ploy</p>

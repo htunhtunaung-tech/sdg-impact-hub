@@ -1,5 +1,6 @@
 "use client";
 
+import { celebrate } from "@/lib/confetti";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ export function CompleteChallenge({ id, title, requiresEvidence, metric }: { id:
       const res = await completeChallengeAction(id, { note, evidenceUrl: evidence ?? undefined, value: value ? Number(value) : undefined });
       if (res.ok) {
         toast.success(res.message);
+        celebrate();
         setOpen(false);
         router.refresh();
       } else toast.error(res.error);

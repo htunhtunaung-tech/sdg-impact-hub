@@ -49,7 +49,7 @@ export function SdgTile({ goal, className }: { goal: number; className?: string 
       aria-hidden
     >
       <span className="absolute left-[11%] top-[8%] text-[clamp(8px,26cqw,15px)] font-extrabold leading-none tabular-nums">{goal}</span>
-      <SdgIcon goal={goal} className="mt-[14%] size-[46%]" strokeWidth={1.9} />
+      <SdgIcon goal={goal} className="mt-[14%] size-[46%] transition-transform duration-300 ease-out group-hover:-rotate-6 group-hover:scale-115" strokeWidth={1.9} />
     </span>
   );
 }

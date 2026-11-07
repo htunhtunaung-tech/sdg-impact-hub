@@ -13,7 +13,7 @@ export function Progress({ value, className, color, label }: { value: number; cl
       aria-label={label}
       className={cn("h-2 w-full overflow-hidden rounded-full bg-track", className)}
     >
-      <div className="h-full rounded-full bg-accent transition-[width] duration-700 ease-out" style={{ width: `${v}%`, background: color }} />
+      <div className="bar-fill h-full rounded-full bg-accent transition-[width] duration-700 ease-out" style={{ width: `${v}%`, background: color }} />
     </div>
   );
 }
