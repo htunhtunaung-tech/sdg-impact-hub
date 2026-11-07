@@ -1,6 +1,8 @@
 "use client";
 
 import { Check } from "lucide-react";
+import { SdgTile } from "@/components/sdg/sdg-badge";
+import { SdgIcon } from "@/components/sdg/sdg-icon";
 import { SDGS, sdgForeground } from "@/lib/sdg";
 import { cn } from "@/lib/utils";
 
@@ -34,12 +36,13 @@ export function GoalPicker({
             title={g.title}
             onClick={() => toggle(g.id)}
             className={cn(
-              "relative flex aspect-square items-center justify-center rounded-[8px] text-sm font-bold transition-all",
-              on ? "ring-2 ring-ink ring-offset-2" : "bg-surface text-ink ring-1 ring-border-strong hover:ring-ink",
+              "relative flex aspect-square flex-col items-center justify-center gap-0.5 rounded-[10px] transition-all",
+              on ? "ring-2 ring-ink ring-offset-2" : "bg-surface ring-1 ring-border-strong hover:ring-ink",
             )}
-            style={on ? { background: g.color, color: fg } : { boxShadow: `inset 0 -4px 0 ${g.color}` }}
+            style={on ? { background: g.color, color: fg } : { color: g.id === 7 ? "#8A6A00" : g.color }}
           >
-            {g.id}
+            <SdgIcon goal={g.id} className="size-[42%]" strokeWidth={2} />
+            <span className={cn("text-[11px] font-extrabold leading-none tabular-nums", !on && "text-ink")}>{g.id}</span>
             {on && <Check className="absolute right-0.5 top-0.5 size-3" aria-hidden />}
           </button>
         ) : (
@@ -53,9 +56,7 @@ export function GoalPicker({
               on ? "border-forest-900 bg-mint font-semibold text-forest-900" : "border-border bg-surface text-ink-muted hover:border-border-strong",
             )}
           >
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold" style={{ background: g.color, color: fg }}>
-              {g.id}
-            </span>
+            <SdgTile goal={g.id} className="size-9 shrink-0 rounded-[8px]" />
             <span className="line-clamp-2 min-w-0 flex-1 leading-tight">{g.shortTitle}</span>
             {on && <Check className="size-4 shrink-0" aria-hidden />}
           </button>

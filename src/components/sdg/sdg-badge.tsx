@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SdgIcon } from "@/components/sdg/sdg-icon";
 import { sdg, sdgForeground } from "@/lib/sdg";
 import { cn } from "@/lib/utils";
 
@@ -35,5 +36,20 @@ export function SdgLabel({ goal, short = true, link = false, className }: { goal
     </Link>
   ) : (
     <span className={cls}>{content}</span>
+  );
+}
+
+/** Mini goal tile — colour square with the goal's pictogram and its number in the corner (like the official SDG icons). */
+export function SdgTile({ goal, className }: { goal: number; className?: string }) {
+  const g = sdg(goal);
+  return (
+    <span
+      className={cn("relative flex aspect-square items-center justify-center overflow-hidden rounded-[12px] @container", className)}
+      style={{ background: g.color, color: sdgForeground(g.color) }}
+      aria-hidden
+    >
+      <span className="absolute left-[11%] top-[8%] text-[clamp(8px,26cqw,15px)] font-extrabold leading-none tabular-nums">{goal}</span>
+      <SdgIcon goal={goal} className="mt-[14%] size-[46%]" strokeWidth={1.9} />
+    </span>
   );
 }
