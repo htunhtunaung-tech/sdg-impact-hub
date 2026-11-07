@@ -133,3 +133,11 @@ Do **not** run the seed script against production — it truncates all tables.
 * **Performance.** Dashboard charts are server-rendered SVG (no client JS); interactive Recharts charts are code-split with
   fixed-height placeholders (no layout shift). Animations respect `prefers-reduced-motion`.
 * **Times** are stored in UTC and displayed in `NEXT_PUBLIC_APP_TIMEZONE`.
+
+## Author
+
+Designed and built by **Htun Htun Aung** — Digital Media Engineering student at Khon Kaen University and founder of TechTrek Edu.
+
+- LinkedIn: [htun-htun-aung-a282a8346](https://www.linkedin.com/in/htun-htun-aung-a282a8346)
+- GitHub: [@htunhtunaung-tech](https://github.com/htunhtunaung-tech)
+- Live app: [sdg-impact-hub.vercel.app](https://sdg-impact-hub.vercel.app)

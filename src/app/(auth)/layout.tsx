@@ -1,5 +1,6 @@
 import { Logo } from "@/components/layout/logo";
 import { EcoIllustration } from "@/components/brand/illustration";
+import { CreatorCredit } from "@/components/layout/creator-credit";
 import { SDGS, sdgForeground } from "@/lib/sdg";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -10,7 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <main id="main" className="flex flex-1 items-center justify-center py-10">
           <div className="w-full max-w-[440px] rounded-[var(--radius-2xl)] bg-surface p-6 shadow-raised sm:p-8 lg:p-0 lg:shadow-none">{children}</div>
         </main>
-        <footer className="text-xs text-ink-muted">© {new Date().getFullYear()} SDG Impact Hub · Built for the UN Global Goals community</footer>
+        <footer className="space-y-1 text-xs text-ink-muted"><p>© {new Date().getFullYear()} SDG Impact Hub · Built for the UN Global Goals community</p><CreatorCredit className="text-xs" /></footer>
       </div>
       <aside aria-label="About SDG Impact Hub" className="relative m-4 hidden overflow-hidden rounded-[32px] bg-[image:var(--gradient-eco)] lg:block" aria-hidden>
         <div className="relative flex h-full flex-col items-center justify-center p-12 text-center">
