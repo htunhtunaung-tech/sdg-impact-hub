@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ArrowRight, BadgeCheck, Building2, CalendarCheck2, ChartColumn, Hourglass, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import { SDGS, sdgForeground } from "@/lib/sdg";
+import { SdgTile } from "@/components/sdg/sdg-badge";
+import { SDGS } from "@/lib/sdg";
 import { DeviceMockup } from "@/components/brand/device-mockup";
 import { CreatorCredit } from "@/components/layout/creator-credit";
 import { formatInt, formatNumber, toNumber } from "@/lib/utils";
@@ -71,11 +72,11 @@ export default async function LandingPage() {
                   {user ? "Explore projects" : "I already have an account"}
                 </Link>
               </div>
-              <ul className="mt-10 flex flex-wrap gap-2" aria-label="The 17 goals">
+              <ul className="mt-10 grid max-w-[540px] grid-cols-6 gap-2 sm:grid-cols-9" aria-label="The 17 goals">
                 {SDGS.map((g) => (
                   <li key={g.id}>
-                    <Link href={`/sdgs/${g.id}`} className="flex size-9 items-center justify-center rounded-[14px] text-sm font-bold shadow-card transition-transform hover:-translate-y-0.5" style={{ background: g.color, color: sdgForeground(g.color) }} aria-label={`Goal ${g.id}: ${g.title}`}>
-                      {g.id}
+                    <Link href={`/sdgs/${g.id}`} className="block rounded-[12px] shadow-card transition-transform hover:-translate-y-0.5" aria-label={`Goal ${g.id}: ${g.title}`} title={g.title}>
+                      <SdgTile goal={g.id} />
                     </Link>
                   </li>
                 ))}
