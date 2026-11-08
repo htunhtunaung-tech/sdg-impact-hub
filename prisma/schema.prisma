@@ -236,6 +236,7 @@ model User {
   groupsCreated           DiscussionGroup[]
   assistantThreads        AssistantThread[]
   milestonesCompleted     ProjectMilestone[]
+  certificates            Certificate[]
 
   @@index([role])
   @@index([xp])
@@ -943,4 +944,25 @@ model AssistantMessage {
   thread AssistantThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   @@index([threadId, createdAt])
+}
+
+/// A volunteer certificate as issued: a snapshot of verified impact with a public, random code for verification.
+model Certificate {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  userId        String
+  name          String
+  hours         Decimal   @db.Decimal(8, 2)
+  activities    Int
+  projects      Int       @default(0)
+  peopleReached Int       @default(0)
+  goals         Json
+  periodStart   DateTime? @db.Date
+  periodEnd     DateTime? @db.Date
+  issuedAt      DateTime  @default(now())
+  revokedAt     DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, issuedAt])
 }
