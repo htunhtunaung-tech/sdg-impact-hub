@@ -148,8 +148,8 @@ export default async function LandingPage() {
                 </div>
                 <Link href="/projects" className="inline-flex items-center gap-1.5 font-semibold text-link hover:underline">All projects <ArrowRight className="size-4" /></Link>
               </div>
-              <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {featured.map((p) => <div key={p.id} className="reveal"><ProjectCard p={toProjectCard(p, null)} /></div>)}
+              <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {featured.map((p) => <div key={p.id} className="reveal min-w-0"><ProjectCard p={toProjectCard(p, null)} /></div>)}
               </div>
             </div>
           </section>

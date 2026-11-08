@@ -146,7 +146,7 @@ export default async function GoalPage({ params }: Props) {
               <Link href={`/projects?goal=${goal.id}`} className="text-sm font-semibold text-link hover:underline">View all</Link>
             </div>
             {projects.length ? (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {projects.map((p) => <ProjectCard key={p.id} p={toProjectCard(p, user)} />)}
               </div>
             ) : (
