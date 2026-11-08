@@ -90,7 +90,14 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
           )}
           <p className="flex items-center gap-2">
             {p.isOnline ? <Globe className="size-4 shrink-0 text-ink-subtle" aria-hidden /> : <MapPin className="size-4 shrink-0 text-ink-subtle" aria-hidden />}
-            <span className="truncate">{p.location}</span>
+            {p.isOnline ? (
+              <span className="font-semibold text-ink">Online</span>
+            ) : (
+              <span className="truncate">
+                <span className="font-semibold text-ink">In person</span>
+                {p.location && <> · {p.location}</>}
+              </span>
+            )}
           </p>
           {p.commitment && (
             <p className="flex items-center gap-2">

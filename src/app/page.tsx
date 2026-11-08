@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { ArrowRight, BadgeCheck, Building2, CalendarCheck2, ChartColumn, Hourglass, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
@@ -18,6 +19,8 @@ export const revalidate = 300;
 
 export default async function LandingPage() {
   const user = await getCurrentUser();
+  // Light-data mode: browsers send "Save-Data: on" when the user turns on data saving
+  const saveData = (await headers()).get("save-data")?.toLowerCase() === "on";
   const [hours, people, volunteers, projectCount, orgs, featured] = await Promise.all([
     db.impactSubmission.aggregate({ where: { status: "VERIFIED" }, _sum: { hours: true } }),
     peopleReached({ status: "VERIFIED" }),
@@ -104,7 +107,7 @@ export default async function LandingPage() {
           <div className="grid grid-cols-2 gap-2 rounded-[var(--radius-2xl)] border border-border/80 bg-surface p-2 shadow-raised sm:gap-4 sm:p-4 lg:grid-cols-4">
             {stats.map((st, i) => (
               <div key={st.l} className={`min-w-0 rounded-[16px] p-3 sm:rounded-[20px] sm:p-5 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun", "bg-tone-lilac"][i]}`}>
-                <p className="truncate text-[28px] font-bold leading-none tracking-tight text-ink sm:text-[40px]"><CountUp value={st.v} /></p>
+                <p className="truncate text-[28px] font-bold leading-none tracking-tight text-ink sm:text-[40px]"><CountUp value={st.v} animate={!saveData} /></p>
                 <p className="mt-1.5 flex items-center gap-1 text-[13px] text-ink-muted sm:mt-2 sm:text-sm">
                   <span className="sm:hidden">{st.s}</span><span className="hidden sm:inline">{st.l}</span>
                   {st.help && <TermHelp term="peopleReached" />}

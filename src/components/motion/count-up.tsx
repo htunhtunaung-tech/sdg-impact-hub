@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
  * Number that counts up from 0 the first time it scrolls into view.
  * Server-renders the final value (good for SEO and no-JS), and stays static with reduced motion.
  */
-export function CountUp({ value, duration = 1400 }: { value: number; duration?: number }) {
+export function CountUp({ value, duration = 1400, animate = true }: { value: number; duration?: number; animate?: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [shown, setShown] = useState(value);
   const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
@@ -15,7 +15,7 @@ export function CountUp({ value, duration = 1400 }: { value: number; duration?: 
     const el = ref.current;
     // Static number for reduced motion and for Save-Data (light-data mode on prepaid mobile plans)
     const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
-    if (!el || value <= 0 || saveData || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    if (!el || !animate || value <= 0 || saveData || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     let raf = 0;
     setShown(0);
     const io = new IntersectionObserver(
@@ -35,7 +35,7 @@ export function CountUp({ value, duration = 1400 }: { value: number; duration?: 
     );
     io.observe(el);
     return () => { io.disconnect(); cancelAnimationFrame(raf); };
-  }, [value, duration]);
+  }, [value, duration, animate]);
 
   return (
     <span ref={ref} className="tabular-nums">
