@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TermHelp } from "@/components/ui/term-help";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -356,8 +357,8 @@ export default async function DashboardPage() {
           <Card>
             <CardHeader>
               <div>
-                <CardTitle>Level {lvl.level}</CardTitle>
-                <CardDescription>{formatInt(user.xp)} XP · from verified impact</CardDescription>
+                <CardTitle className="flex items-center gap-1.5">Level {lvl.level} <TermHelp term="level" /></CardTitle>
+                <CardDescription className="flex items-center gap-1.5">{formatInt(user.xp)} XP · from verified impact <TermHelp term="xp" /></CardDescription>
               </div>
               <IconBubble className="bg-tone-sun text-amber-800"><Trophy /></IconBubble>
             </CardHeader>

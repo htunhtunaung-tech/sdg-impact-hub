@@ -157,7 +157,7 @@ export function ProjectForm({
             <Field label="Start date" htmlFor="startDate"><Input type="date" value={v.startDate} onChange={(e) => set("startDate", e.target.value)} /></Field>
             <Field label="End date" htmlFor="endDate" error={errors.endDate}><Input type="date" value={v.endDate} onChange={(e) => set("endDate", e.target.value)} /></Field>
             <Field label="Schedule" htmlFor="scheduleText" hint="e.g. “Saturdays, 9:00–12:00”"><Input value={v.scheduleText} onChange={(e) => set("scheduleText", e.target.value)} /></Field>
-            <Field label="Commitment" htmlFor="commitment" hint="e.g. “3 hours per week”"><Input value={v.commitment} onChange={(e) => set("commitment", e.target.value)} /></Field>
+            <Field label="Time needed" htmlFor="commitment" hint="e.g. “2 h a week” or “One day, 4 h”. Shown on the project card."><Input value={v.commitment} onChange={(e) => set("commitment", e.target.value)} /></Field>
           </div>
         </CardContent>
       </Card>

@@ -29,5 +29,8 @@ export function toProjectCard(p: P, user?: { id: string } | null): ProjectCardDa
     saved: Array.isArray(p.saves) && p.saves.length > 0,
     canSave: Boolean(user),
     moderationStatus: p.moderationStatus,
+    secondaryGoals: p.goals.slice(1).map((g) => g.goalId),
+    isOnline: p.isOnline,
+    commitment: p.commitment,
   };
 }

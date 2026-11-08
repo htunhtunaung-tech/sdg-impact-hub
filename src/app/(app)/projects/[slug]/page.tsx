@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TermHelp } from "@/components/ui/term-help";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -454,9 +455,9 @@ async function ManageTab({ project }: { project: NonNullable<Awaited<ReturnType<
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="verify" className="scroll-mt-24">
         <CardHeader>
-          <div><CardTitle>Contributions to verify ({pendingSubs.length})</CardTitle><CardDescription>Check evidence before verifying. Verified entries count towards impact, badges and leaderboards.</CardDescription></div>
+          <div><CardTitle className="flex items-center gap-1.5">Contributions to verify ({pendingSubs.length}) <TermHelp term="toVerify" /></CardTitle><CardDescription>Check evidence before verifying. Verified entries count towards impact, badges and leaderboards.</CardDescription></div>
         </CardHeader>
         <CardContent>
           {pendingSubs.length ? (
