@@ -35,7 +35,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
       <Button variant="ghost" asChild>
         <Link href="/impact"><ArrowLeft /> Back to Impact</Link>
       </Button>
-      {cert && <PrintButton />}
+      {cert && <PrintButton userId={userId} />}
     </div>
   );
 
@@ -151,7 +151,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
       <p className="mx-auto mt-4 max-w-[1060px] text-center text-sm text-ink-muted print:hidden">
         Anyone can check this certificate at <a className="font-semibold text-link underline-offset-4 hover:underline" href={verifyUrl}>{verifyUrl.replace(/^https?:\/\//, "")}</a>.
         <br />
-        Tip: in the print window choose <strong>Save as PDF</strong>, <strong>Landscape</strong>, and turn on <strong>Background graphics</strong>.
+        <strong>Download PDF</strong> saves an A4 landscape file, the same on phones and computers.
       </p>
     </main>
   );

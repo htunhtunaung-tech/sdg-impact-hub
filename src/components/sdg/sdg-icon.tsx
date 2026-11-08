@@ -24,6 +24,11 @@ const ICONS: Record<number, React.ComponentType<LucideProps>> = {
   17: Handshake,
 };
 
+/** The icon component for a goal (used by the server-made certificate PDF to read its shapes). */
+export function sdgIconComponent(goal: number) {
+  return ICONS[goal] ?? Leaf;
+}
+
 export function SdgIcon({ goal, ...props }: { goal: number } & LucideProps) {
   const Icon = ICONS[goal] ?? Leaf;
   return <Icon aria-hidden {...props} />;

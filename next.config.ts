@@ -25,6 +25,8 @@ const csp = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Server-side PDF rendering (volunteer certificates) runs as a plain Node package
+  serverExternalPackages: ["@react-pdf/renderer"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
