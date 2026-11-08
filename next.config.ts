@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Server-side PDF rendering (volunteer certificates) runs as a plain Node package
   serverExternalPackages: ["@react-pdf/renderer"],
+  // pdfkit loads its built-in fonts (Helvetica, Times, Courier) and fs/zlib helpers through package
+  // "#imports" that Vercel's file tracing misses; ship them with the certificate PDF route.
+  outputFileTracingIncludes: {
+    "/certificate/[userId]/pdf": ["./node_modules/pdfkit/js/standard-fonts/**/*", "./node_modules/pdfkit/js/data/**/*", "./node_modules/pdfkit/lib/**/*", "./node_modules/pdfkit/package.json"],
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
