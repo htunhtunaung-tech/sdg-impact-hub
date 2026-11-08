@@ -48,7 +48,7 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
         ? `Starts ${formatDate(p.startDate, { day: "numeric", month: "short" })}`
         : (p.scheduleText ?? "Ongoing");
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-card transition-shadow hover:shadow-raised">
+    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-card transition-shadow hover:shadow-raised">
       <div className="relative flex h-40 items-center justify-center" style={{ background: p.imageUrl ? undefined : sdgTint(g.color, 0.16) }}>
         {p.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -75,34 +75,34 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
           </div>
         )}
       </div>
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex min-w-0 flex-1 flex-col p-5">
         <GoalTags primary={p.primaryGoal} others={p.secondaryGoals} />
-        <h3 className="mt-2 text-lg font-semibold leading-snug text-ink">
+        <h3 className="mt-2 break-words text-lg font-semibold leading-snug text-ink">
           <Link href={`/projects/${p.slug}`} className="after:absolute after:inset-0 focus:outline-none">
             {p.title}
           </Link>
         </h3>
         <div className="mt-3 space-y-1 text-sm text-ink-muted">
           {p.organizationName && (
-            <p className="flex items-center gap-2">
-              <Building2 className="size-4 shrink-0 text-ink-subtle" aria-hidden /> <span className="truncate">{p.organizationName}</span>
+            <p className="flex min-w-0 items-center gap-2">
+              <Building2 className="size-4 shrink-0 text-ink-subtle" aria-hidden /> <span className="min-w-0 truncate">{p.organizationName}</span>
             </p>
           )}
-          <p className="flex items-center gap-2">
+          <p className="flex min-w-0 items-center gap-2">
             {p.isOnline ? <Globe className="size-4 shrink-0 text-ink-subtle" aria-hidden /> : <MapPin className="size-4 shrink-0 text-ink-subtle" aria-hidden />}
             {p.isOnline ? (
               <span className="font-semibold text-ink">Online</span>
             ) : (
-              <span className="truncate">
+              <span className="min-w-0 truncate">
                 <span className="font-semibold text-ink">In person</span>
                 {p.location && <> · {p.location}</>}
               </span>
             )}
           </p>
           {p.commitment && (
-            <p className="flex items-center gap-2">
+            <p className="flex min-w-0 items-center gap-2">
               <Clock className="size-4 shrink-0 text-ink-subtle" aria-hidden /> <span className="sr-only">Time needed: </span>
-              <span className="truncate" title={p.commitment}>{p.commitment}</span>
+              <span className="min-w-0 truncate" title={p.commitment}>{p.commitment}</span>
             </p>
           )}
         </div>
