@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, LogOut, Settings, ShieldCheck, User } from "lucide-react";
+import { ChevronDown, LogOut, Settings, ShieldCheck, User, Award } from "lucide-react";
 import { Avatar } from "@/components/ui/misc";
 import { Dropdown, DropdownContent, DropdownItem, DropdownLabel, DropdownSeparator, DropdownTrigger } from "@/components/ui/dropdown";
 import { signOutAction } from "@/server/actions/auth";
@@ -20,6 +20,11 @@ export function UserMenu({ user }: { user: ShellUser }) {
         <DropdownItem asChild>
           <Link href="/profile">
             <User /> Your profile
+          </Link>
+        </DropdownItem>
+        <DropdownItem asChild>
+          <Link href="/certificate">
+            <Award /> My certificate
           </Link>
         </DropdownItem>
         <DropdownItem asChild>
