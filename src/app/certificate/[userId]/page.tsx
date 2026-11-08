@@ -86,17 +86,21 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
         <div className="absolute inset-4 rounded-[12px] border border-forest-900/15 sm:inset-6 print:inset-[9mm]" aria-hidden />
         <div className="absolute inset-5 rounded-[10px] border border-forest-900/10 sm:inset-7 print:inset-[10.5mm]" aria-hidden />
 
-        <div className="relative flex h-full flex-col items-center px-6 pb-10 pt-10 text-center sm:px-16 sm:pb-12 sm:pt-12 print:px-[22mm] print:pb-[16mm] print:pt-[16mm]">
-          <div className="flex items-center gap-2.5">
-            <LogoMark className="size-10" />
-            <span className="text-sm font-bold tracking-tight text-forest-900">SDG Impact Hub</span>
+        <div className="relative flex h-full flex-col items-center px-6 pb-9 pt-9 text-center sm:px-16 sm:pb-10 sm:pt-10 print:px-[20mm] print:pb-[14mm] print:pt-[13mm]">
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-3.5">
+              <LogoMark className="size-16 rounded-[16px] sm:size-[72px] print:size-[19mm]" />
+              <span className="text-[26px] font-bold tracking-tight text-forest-800 sm:text-[30px]">SDG Impact Hub</span>
+            </div>
+            <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.14em] text-ink-subtle">Volunteering • Community Impact • Sustainable Development</p>
           </div>
 
           <div className="my-auto flex flex-col items-center py-4">
-            <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.32em] text-link">Certificate of Volunteering</p>
+            <p className="mt-2 text-[15px] font-bold uppercase tracking-[0.08em] text-forest-800 sm:text-[17px]">Certificate of Volunteering</p>
+            <div className="mt-2 h-px w-40 bg-forest-900/30" aria-hidden />
             <p className="mt-4 text-sm text-ink-muted">This certificate is proudly presented to</p>
             <h1 className="mt-2 font-display text-[40px] leading-tight text-ink sm:text-[64px]">{cert.name}</h1>
-            <div className="mt-1 h-px w-48 bg-gradient-to-r from-transparent via-forest-900/40 to-transparent" aria-hidden />
+            <div className="mt-1 h-px w-56 bg-forest-900/25" aria-hidden />
 
             <p className="mx-auto mt-5 max-w-[640px] text-[15px] leading-relaxed text-ink-muted">
               in recognition of <strong className="text-ink">{formatNumber(hours)} verified volunteer hours</strong> across {cert.activities}{" "}
@@ -105,9 +109,9 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
               {period ? `, ${period}` : ""}, contributing to the United Nations Sustainable Development Goals.
             </p>
 
-            <ul className="mt-6 flex flex-wrap justify-center gap-3" aria-label="Goals contributed to">
+            <ul className="mt-6 flex flex-wrap justify-center gap-3 sm:gap-4" aria-label="Goals contributed to">
               {goals.slice(0, 6).map((g) => (
-                <li key={g.goalId} className="flex w-[84px] flex-col items-center gap-1.5">
+                <li key={g.goalId} className="flex w-[104px] flex-col items-center gap-1.5 rounded-[12px] border border-border bg-canvas px-2 pb-2.5 pt-3 sm:w-[120px]">
                   <SdgTile goal={g.goalId} className="size-12 rounded-[10px]" />
                   <span className="text-[11px] font-semibold leading-tight text-ink">{sdg(g.goalId).shortTitle}</span>
                   <span className="text-[11px] tabular-nums text-ink-muted">{formatNumber(g.hours)} h</span>
@@ -116,7 +120,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
             </ul>
           </div>
 
-          <div className="grid w-full grid-cols-1 items-end gap-6 pt-6 text-xs text-ink-muted sm:grid-cols-3">
+          <div className="grid w-full grid-cols-1 items-end gap-6 border-t border-border pt-4 text-xs text-ink-muted sm:grid-cols-3">
             <div className="sm:text-left">
               <p className="font-semibold text-ink">{formatDate(cert.issuedAt, { day: "numeric", month: "long", year: "numeric" })}</p>
               <div className="mx-auto mt-1 h-px w-40 bg-ink/25 sm:mx-0" aria-hidden />
@@ -124,7 +128,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
             </div>
             <div>
               {cert.peopleReached > 0 && (
-                <p className="text-ink"><strong>{cert.peopleReached.toLocaleString("en-US")}</strong> people reached</p>
+                <p className="text-[17px] font-bold text-ink">{cert.peopleReached.toLocaleString("en-US")} people reached</p>
               )}
               <p className="mt-1">Only hours confirmed by project organizers or administrators are counted.</p>
             </div>
