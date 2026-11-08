@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Building2, CalendarDays, CircleCheck, MapPin } from "lucide-react";
+import { Building2, CalendarDays, CircleCheck, Clock, Globe, MapPin } from "lucide-react";
 import { Progress } from "@/components/ui/misc";
-import { SdgLabel } from "@/components/sdg/sdg-badge";
+import { GoalTags } from "@/components/sdg/sdg-badge";
 import { SdgIcon } from "@/components/sdg/sdg-icon";
 import { SaveProjectButton } from "@/components/projects/save-button";
 import { sdg, sdgTint } from "@/lib/sdg";
@@ -23,6 +23,11 @@ export interface ProjectCardData {
   saved?: boolean;
   canSave?: boolean;
   moderationStatus?: string;
+  /** Other goals besides the primary one (shown as outline tags). */
+  secondaryGoals?: number[];
+  isOnline?: boolean;
+  /** Time needed, e.g. "2 h a week" (free text from the organizer). */
+  commitment?: string | null;
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -71,7 +76,7 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
         )}
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <SdgLabel goal={p.primaryGoal} />
+        <GoalTags primary={p.primaryGoal} others={p.secondaryGoals} />
         <h3 className="mt-2 text-lg font-semibold leading-snug text-ink">
           <Link href={`/projects/${p.slug}`} className="after:absolute after:inset-0 focus:outline-none">
             {p.title}
@@ -84,8 +89,15 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
             </p>
           )}
           <p className="flex items-center gap-2">
-            <MapPin className="size-4 shrink-0 text-ink-subtle" aria-hidden /> <span className="truncate">{p.location}</span>
+            {p.isOnline ? <Globe className="size-4 shrink-0 text-ink-subtle" aria-hidden /> : <MapPin className="size-4 shrink-0 text-ink-subtle" aria-hidden />}
+            <span className="truncate">{p.location}</span>
           </p>
+          {p.commitment && (
+            <p className="flex items-center gap-2">
+              <Clock className="size-4 shrink-0 text-ink-subtle" aria-hidden /> <span className="sr-only">Time needed: </span>
+              <span className="truncate" title={p.commitment}>{p.commitment}</span>
+            </p>
+          )}
         </div>
         {p.volunteersNeeded > 0 && (
           <div className="mt-4">

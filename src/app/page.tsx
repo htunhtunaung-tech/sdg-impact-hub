@@ -3,6 +3,7 @@ import { ArrowRight, BadgeCheck, Building2, CalendarCheck2, ChartColumn, Hourgla
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { CountUp } from "@/components/motion/count-up";
+import { TermHelp } from "@/components/ui/term-help";
 import { SdgTile } from "@/components/sdg/sdg-badge";
 import { SDGS } from "@/lib/sdg";
 import { DeviceMockup } from "@/components/brand/device-mockup";
@@ -26,10 +27,10 @@ export default async function LandingPage() {
     db.project.findMany({ where: { moderationStatus: "APPROVED", status: "RECRUITING" }, include: projectCardInclude(), orderBy: { createdAt: "desc" }, take: 3 }),
   ]);
   const stats = [
-    { v: Math.round(toNumber(hours._sum.hours)), l: "verified volunteer hours" },
-    { v: people, l: "people reached" },
-    { v: volunteers.length, l: "volunteers with verified impact" },
-    { v: projectCount, l: "live projects" },
+    { v: Math.round(toNumber(hours._sum.hours)), l: "verified volunteer hours", s: "verified hours" },
+    { v: people, l: "people reached", s: "people reached", help: true },
+    { v: volunteers.length, l: "volunteers with verified impact", s: "volunteers" },
+    { v: projectCount, l: "live projects", s: "live projects" },
   ];
   const primaryCta = user ? { href: "/dashboard", label: "Go to your dashboard" } : { href: "/register", label: "Join for free" };
 
@@ -54,28 +55,38 @@ export default async function LandingPage() {
       <main>
         {/* Hero */}
         <section className="relative overflow-hidden bg-[image:var(--gradient-eco)]">
-          <div className="container-page relative grid gap-16 pb-24 pt-12 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:pb-28">
-            <div>
+          <div className="container-page relative grid gap-8 pb-6 pt-6 sm:gap-16 sm:pb-24 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:pb-28">
+            <div className="min-w-0">
               <p className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-forest-900 shadow-card">
                 <ShieldCheck className="size-3.5" /> Impact you can verify — not just claim
               </p>
-              <h1 className="mt-6 text-[42px] font-bold leading-[1.04] tracking-[-0.03em] text-ink sm:text-[64px]">
-                Turn care for the Global Goals into <span className="bg-[image:var(--gradient-brand)] bg-clip-text text-transparent">local, measurable</span> action.
+              <h1 className="mt-4 text-[32px] font-bold leading-[1.1] tracking-[-0.03em] text-ink sm:mt-6 sm:text-[64px] sm:leading-[1.04]">
+                {/* Phones get a shorter headline so the stats fit on the first screen */}
+                <span className="sm:hidden">Local action for the Global Goals, <span className="bg-[image:var(--gradient-brand)] bg-clip-text text-transparent">measured.</span></span>
+                <span className="hidden sm:inline">Turn care for the Global Goals into <span className="bg-[image:var(--gradient-brand)] bg-clip-text text-transparent">local, measurable</span> action.</span>
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-muted">
+              <p className="mt-3 max-w-xl text-base leading-relaxed text-ink-muted sm:hidden">
+                Find projects near you or online. Get your hours verified and earn a certificate.
+              </p>
+              <p className="mt-6 hidden max-w-xl text-lg leading-relaxed text-ink-muted sm:block">
                 SDG Impact Hub connects volunteers, students, universities and NGOs around projects for the 17 UN Sustainable Development Goals — then measures what really changed.
               </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-5 flex flex-col gap-1 sm:mt-8 sm:flex-row sm:gap-3">
                 <Link href={primaryCta.href} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-7 text-[15px] font-semibold text-white shadow-brand hover:bg-primary-hover">
                   {primaryCta.label} <ArrowRight className="size-4" />
                 </Link>
-                <Link href={user ? "/projects" : "/login"} className="inline-flex h-12 items-center justify-center rounded-full bg-white px-7 text-[15px] font-semibold text-ink shadow-card hover:bg-mint">
+                <Link href={user ? "/projects" : "/login"} className="inline-flex h-11 items-center justify-center rounded-full px-7 text-[15px] font-semibold text-link underline-offset-4 hover:underline sm:h-12 sm:bg-white sm:text-ink sm:no-underline sm:shadow-card sm:hover:bg-mint sm:hover:no-underline">
                   {user ? "Explore projects" : "I already have an account"}
                 </Link>
               </div>
-              <ul className="mt-10 grid max-w-[540px] grid-cols-6 gap-2 sm:grid-cols-9" aria-label="The 17 goals">
+              <div className="mt-4 flex items-center justify-between sm:hidden">
+                <p className="text-sm font-semibold text-ink">The 17 goals</p>
+                <Link href="/sdgs" className="inline-flex min-h-11 items-center text-sm font-semibold text-link">See all 17</Link>
+              </div>
+              {/* Phones: one swipeable row of 44 px tiles. Larger screens: a grid. */}
+              <ul className="-mx-4 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-10 sm:grid sm:max-w-[540px] sm:grid-cols-9 sm:overflow-visible sm:px-0 sm:pb-0" aria-label="The 17 goals">
                 {SDGS.map((g) => (
-                  <li key={g.id}>
+                  <li key={g.id} className="w-11 shrink-0 snap-start sm:w-auto">
                     <Link href={`/sdgs/${g.id}`} className="group block rounded-[12px] shadow-card transition-transform hover:-translate-y-1" aria-label={`Goal ${g.id}: ${g.title}`} title={g.title}>
                       <SdgTile goal={g.id} />
                     </Link>
@@ -83,21 +94,25 @@ export default async function LandingPage() {
                 ))}
               </ul>
             </div>
-            <DeviceMockup />
+            {/* Not rendered on phones: saves space and data */}
+            <div className="hidden sm:block"><DeviceMockup /></div>
           </div>
         </section>
 
         {/* Live stats */}
-        <section className="container-page -mt-10 relative z-10" aria-label="Platform impact">
-          <div className="grid grid-cols-2 gap-3 rounded-[var(--radius-2xl)] border border-border/80 bg-surface p-3 shadow-raised sm:gap-4 sm:p-4 lg:grid-cols-4">
+        <section className="container-page relative z-10 sm:-mt-10" aria-label="Platform impact">
+          <div className="grid grid-cols-2 gap-2 rounded-[var(--radius-2xl)] border border-border/80 bg-surface p-2 shadow-raised sm:gap-4 sm:p-4 lg:grid-cols-4">
             {stats.map((st, i) => (
-              <div key={st.l} className={`rounded-[20px] p-5 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun", "bg-tone-lilac"][i]}`}>
-                <p className="text-[32px] font-bold leading-none tracking-tight text-ink sm:text-[40px]"><CountUp value={st.v} /></p>
-                <p className="mt-2 text-sm text-ink-muted">{st.l}</p>
+              <div key={st.l} className={`min-w-0 rounded-[16px] p-3 sm:rounded-[20px] sm:p-5 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun", "bg-tone-lilac"][i]}`}>
+                <p className="truncate text-[28px] font-bold leading-none tracking-tight text-ink sm:text-[40px]"><CountUp value={st.v} /></p>
+                <p className="mt-1.5 flex items-center gap-1 text-[13px] text-ink-muted sm:mt-2 sm:text-sm">
+                  <span className="sm:hidden">{st.s}</span><span className="hidden sm:inline">{st.l}</span>
+                  {st.help && <TermHelp term="peopleReached" />}
+                </p>
               </div>
             ))}
           </div>
-          <p className="mt-3 text-center text-xs text-ink-subtle">Live figures. Only contributions verified by a project organizer or administrator are counted.</p>
+          <p className="mt-3 hidden text-center text-xs text-ink-subtle sm:block">Live figures. Only contributions verified by a project organizer or administrator are counted.</p>
         </section>
 
         {/* How it works */}

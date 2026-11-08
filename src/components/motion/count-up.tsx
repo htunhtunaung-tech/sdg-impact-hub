@@ -13,7 +13,9 @@ export function CountUp({ value, duration = 1400 }: { value: number; duration?: 
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || value <= 0 || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    // Static number for reduced motion and for Save-Data (light-data mode on prepaid mobile plans)
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    if (!el || value <= 0 || saveData || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     let raf = 0;
     setShown(0);
     const io = new IntersectionObserver(

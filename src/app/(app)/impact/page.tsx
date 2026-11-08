@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Award, CalendarCheck, CircleCheck, Clock, Download, Globe, Hourglass, Plus, Target, TrendingDown, TrendingUp, Trophy, Users, XCircle } from "lucide-react";
+import { ArrowRight, Award, CalendarCheck, CircleCheck, Clock, Download, Globe, Hourglass, Info, Plus, Target, TrendingDown, TrendingUp, Trophy, Users, XCircle } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
 import { formatDate, formatInt, formatNumber, toNumber } from "@/lib/utils";
@@ -16,6 +16,7 @@ import { sdg } from "@/lib/sdg";
 import { HoursAreaChart } from "@/components/charts/lazy";
 import { hoursByGoal, metricTotals, monthlyHours, peopleReached } from "@/server/queries/impact";
 import { DeleteEntryButton } from "./delete-entry";
+import { TermHelp } from "@/components/ui/term-help";
 
 export const metadata: Metadata = { title: "Impact Analytics" };
 
@@ -51,7 +52,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
     db.impactSubmission.findMany({ where: { ...inRange, projectId: { not: null } }, distinct: ["projectId"], select: { projectId: true } }),
     db.impactSubmission.findMany({
       where: { userId: user.id },
-      include: { project: { select: { title: true, slug: true } } },
+      include: { project: { select: { title: true, slug: true, organizerId: true, moderationStatus: true } } },
       orderBy: [{ date: "desc" }, { createdAt: "desc" }],
       take: 15,
     }),
@@ -182,9 +183,16 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
                     <td className="px-3 py-3.5 text-right tabular-nums">{formatNumber(toNumber(r.hours))}</td>
                     <td className="px-6 py-3.5">
                       <span className="flex items-center gap-2">
-                        {r.status === "VERIFIED" ? <Badge variant="success"><CircleCheck /> Verified</Badge> : r.status === "PENDING" ? <Badge variant="warning"><Hourglass /> Self-reported</Badge> : <Badge variant="danger"><XCircle /> Not verified</Badge>}
+                        {r.status === "VERIFIED" ? (
+                          <TermHelp term="verified"><Badge variant="success"><CircleCheck /> Verified <Info className="opacity-70" /></Badge></TermHelp>
+                        ) : r.status === "PENDING" ? (
+                          <TermHelp term="selfReported"><Badge variant="warning"><Hourglass /> Self-reported <Info className="opacity-70" /></Badge></TermHelp>
+                        ) : (
+                          <TermHelp term="notVerified"><Badge variant="danger"><XCircle /> Not verified <Info className="opacity-70" /></Badge></TermHelp>
+                        )}
                         {r.status !== "VERIFIED" && <DeleteEntryButton id={r.id} />}
                       </span>
+                      {r.status === "PENDING" && <VerifyNextStep project={r.project} userId={user.id} />}
                     </td>
                   </tr>
                 ))}
@@ -200,4 +208,16 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
       </Card>
     </div>
   );
+}
+
+/** B1-3: the next step for a self-reported entry, so it gets verified and counts. */
+function VerifyNextStep({ project, userId }: { project: { slug: string; organizerId: string; moderationStatus: string } | null; userId: string }) {
+  const link = "mt-1 inline-flex min-h-11 items-center gap-1 whitespace-nowrap text-sm font-semibold text-link underline-offset-4 hover:underline pointer-fine:min-h-0";
+  if (!project || project.moderationStatus !== "APPROVED") {
+    return <Link href="/help" className={link}>Ask an administrator to verify <ArrowRight className="size-3.5" aria-hidden /></Link>;
+  }
+  if (project.organizerId === userId) {
+    return <Link href={`/projects/${project.slug}#verify`} className={link}>Verify it on your project page <ArrowRight className="size-3.5" aria-hidden /></Link>;
+  }
+  return <Link href={`/projects/${project.slug}`} className={link}>Ask your organizer to verify <ArrowRight className="size-3.5" aria-hidden /></Link>;
 }
