@@ -20,6 +20,7 @@ const PROTECTED = [
   "/volunteer/new",
   "/volunteer/manage",
   "/organizations/new",
+  "/certificate",
 ];
 
 export default auth((req) => {

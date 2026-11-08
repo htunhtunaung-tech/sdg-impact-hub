@@ -81,6 +81,9 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
             <Button variant="secondary" asChild>
               <a href={`/api/impact/export?range=${rk}`}><Download /> Export CSV</a>
             </Button>
+            <Button asChild>
+              <Link href={`/certificate/${user.id}`}><Award /> My certificate</Link>
+            </Button>
           </>
         }
       />
