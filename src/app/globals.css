@@ -82,8 +82,9 @@
 }
 
 @layer base {
-  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-  body { @apply bg-canvas text-ink; font-feature-settings: "cv11", "ss01"; }
+  /* overflow-x: clip keeps phones from zooming out if any element is too wide (and, unlike hidden, keeps sticky headers working) */
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: clip; }
+  body { @apply bg-canvas text-ink; overflow-x: clip; font-feature-settings: "cv11", "ss01"; }
   :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
   ::selection { background: var(--color-mint-strong); }
   h1, h2, h3, h4 { letter-spacing: -0.015em; }
