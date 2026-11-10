@@ -11,6 +11,7 @@ import { DeviceMockup } from "@/components/brand/device-mockup";
 import { CreatorCredit } from "@/components/layout/creator-credit";
 import { toNumber } from "@/lib/utils";
 import { Logo } from "@/components/layout/logo";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { ProjectCard } from "@/components/projects/project-card";
 import { projectCardInclude, toProjectCard } from "@/server/queries/projects";
 import { peopleReached } from "@/server/queries/impact";
@@ -49,6 +50,7 @@ export default async function LandingPage() {
             <Link href="/organizations" className="inline-flex h-10 items-center rounded-full px-3 hover:bg-track hover:text-ink">Organizations</Link>
           </nav>
           <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             {!user && <Link href="/login" className="hidden h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-track sm:inline-flex">Sign in</Link>}
             <Link href={primaryCta.href} className="inline-flex h-10 items-center rounded-full bg-primary px-5 text-sm font-semibold text-white shadow-brand hover:bg-primary-hover">{user ? "Dashboard" : "Join free"}</Link>
           </div>

@@ -79,7 +79,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
 
       <article
         aria-label={`Volunteer certificate for ${cert.name}`}
-        className="relative mx-auto max-w-[1060px] overflow-hidden rounded-[18px] bg-white shadow-raised sm:aspect-[297/210] print:h-[210mm] print:w-[297mm] print:max-w-none print:rounded-none print:shadow-none"
+        className="light-island relative mx-auto max-w-[1060px] overflow-hidden rounded-[18px] bg-white shadow-raised sm:aspect-[297/210] print:h-[210mm] print:w-[297mm] print:max-w-none print:rounded-none print:shadow-none"
       >
         <div className="absolute inset-x-0 top-0 flex h-2.5" aria-hidden>{band}</div>
         <div className="absolute inset-x-0 bottom-0 flex h-2.5" aria-hidden>{band}</div>
