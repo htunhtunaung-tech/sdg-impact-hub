@@ -20,9 +20,12 @@ function safeCallback(url: unknown) {
 
 export async function registerAction(input: unknown): Promise<ActionResult<{ devLink?: string }>> {
   return runAction(async () => {
-    await enforceRateLimit("register", 5, 3600);
+    // Check the form first so typos don't use up attempts. The per-network limit is generous because
+    // mobile carriers in Myanmar and Thailand put many phones behind one shared IP address.
     const data = parseOrThrow(registerSchema, input);
     const email = data.email.toLowerCase();
+    await enforceRateLimit("register-ip", 30, 3600);
+    await enforceRateLimit("register-email", 5, 3600, email);
     const existing = await db.user.findUnique({ where: { email } });
     const message = "Check your inbox — we've sent you a link to confirm your email.";
     if (existing) {
@@ -119,8 +122,8 @@ export async function forgotPasswordAction(input: unknown): Promise<ActionResult
 
 export async function resetPasswordAction(input: unknown): Promise<ActionResult> {
   return runAction(async () => {
-    await enforceRateLimit("reset", 10, 3600);
     const data = parseOrThrow(resetPasswordSchema, input);
+    await enforceRateLimit("reset", 10, 3600);
     const userId = await consumeEmailToken(data.token, "RESET_PASSWORD");
     if (!userId) throw new ActionError("This reset link is invalid or has expired. Request a new one.");
     await db.user.update({

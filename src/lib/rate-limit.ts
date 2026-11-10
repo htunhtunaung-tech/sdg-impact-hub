@@ -21,12 +21,13 @@ export async function rateLimit(key: string, limit: number, windowSeconds: numbe
 
 export async function clientIp() {
   const h = await headers();
-  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
+  // Vercel sets x-vercel-forwarded-for to the real visitor address; x-forwarded-for is the fallback elsewhere.
+  return h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
 }
 
 /** Throws a user-facing error when the limit is exceeded. Keyed by user id when given, else by IP. */
 export async function enforceRateLimit(name: string, limit: number, windowSeconds: number, identity?: string) {
   const id = identity ?? (await clientIp());
   const allowed = await rateLimit(`${name}:${id}`, limit, windowSeconds);
-  if (!allowed) throw new ActionError("You're doing that too often. Please wait a moment and try again.");
+  if (!allowed) throw new ActionError("Too many attempts in a short time. Please wait a few minutes and try again.");
 }
