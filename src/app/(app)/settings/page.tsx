@@ -21,7 +21,7 @@ export default async function SettingsPage() {
         googleLinked={google > 0}
         isAdmin={user.role === "ADMIN"}
         profile={{
-          name: user.name, username: profile.username, role: user.role === "ADMIN" ? "INDIVIDUAL" : user.role, image: user.image, headline: profile.headline ?? "",
+          name: user.name, username: profile.username, role: user.role === "ADMIN" ? "INDIVIDUAL" : user.role, image: user.image, coverImage: profile.coverImage ?? null, headline: profile.headline ?? "",
           bio: profile.bio ?? "", city: profile.city ?? "", country: profile.country ?? "", latitude: profile.latitude, longitude: profile.longitude,
           website: profile.website ?? "", skills: profile.skills, interests: profile.interests, goals: goals.map((g) => g.goalId),
         }}
