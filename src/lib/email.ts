@@ -29,11 +29,19 @@ function layout(heading: string, body: string, cta?: { label: string; url: strin
   </div></body></html>`;
 }
 
-export async function sendEmail(opts: { to: string; subject: string; heading: string; body: string; cta?: { label: string; url: string } }) {
+export async function sendEmail(opts: {
+  to: string;
+  subject: string;
+  heading: string;
+  body: string;
+  cta?: { label: string; url: string };
+  attachments?: { filename: string; content: Buffer; contentType: string }[];
+}) {
   const t = getTransport();
   const text = `${opts.heading}\n\n${opts.body}${opts.cta ? `\n\n${opts.cta.label}: ${opts.cta.url}` : ""}`;
   if (!t) {
-    console.info(`\n──── [email: SMTP not configured] ────\nTo: ${opts.to}\nSubject: ${opts.subject}\n\n${text}\n──────────────────────────────────────\n`);
+    const files = opts.attachments?.map((a) => `${a.filename} (${a.content.length} bytes)`).join(", ");
+    console.info(`\n──── [email: SMTP not configured] ────\nTo: ${opts.to}\nSubject: ${opts.subject}${files ? `\nAttachments: ${files}` : ""}\n\n${text}\n──────────────────────────────────────\n`);
     return;
   }
   try {
@@ -43,6 +51,7 @@ export async function sendEmail(opts: { to: string; subject: string; heading: st
       subject: opts.subject,
       text,
       html: layout(opts.heading, opts.body, opts.cta),
+      attachments: opts.attachments,
     });
   } catch (err) {
     // Email failures must never break the user flow.
@@ -66,6 +75,15 @@ export const emails = {
       heading: "Reset your password",
       body: "Someone asked to reset the password for this account. If that was you, use the button below. The link expires in 1 hour. If it wasn't you, you can ignore this email.",
       cta: { label: "Choose a new password", url: `${appUrl()}/reset-password?token=${token}` },
+    }),
+  certificate: (to: string, c: { name: string; hours: string; code: string; verifyUrl: string; fileName: string; pdf: Buffer }) =>
+    sendEmail({
+      to,
+      subject: `Your SDG Impact Hub certificate (${c.code})`,
+      heading: `Congratulations, ${c.name}!`,
+      body: `Your volunteer certificate for ${c.hours} verified hours is attached as a PDF, so you always have a copy. Anyone can check it is genuine by scanning its QR code or opening the link below. Certificate ID: ${c.code}.`,
+      cta: { label: "Verify this certificate", url: c.verifyUrl },
+      attachments: [{ filename: c.fileName, content: c.pdf, contentType: "application/pdf" }],
     }),
   notification: (to: string, title: string, body: string, link?: string | null) =>
     sendEmail({

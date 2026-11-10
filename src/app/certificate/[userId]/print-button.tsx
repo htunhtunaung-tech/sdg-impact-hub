@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
  * Download = the server-made A4 PDF. We fetch it here (with the signed-in session) and save it from memory,
  * because Android's download manager re-requests plain download links without the session and saves an
  * empty file. Any failure is shown as a message instead. Print stays available on larger screens.
+ * The server also emails the volunteer a copy of the PDF (at most 3 times an hour).
  */
 export function PrintButton({ userId }: { userId: string }) {
   const [busy, setBusy] = useState(false);
@@ -16,7 +17,7 @@ export function PrintButton({ userId }: { userId: string }) {
   async function download() {
     setBusy(true);
     try {
-      const res = await fetch(`/certificate/${userId}/pdf`, { credentials: "same-origin", cache: "no-store" });
+      const res = await fetch(`/certificate/${userId}/pdf?email=1`, { credentials: "same-origin", cache: "no-store" });
       const type = res.headers.get("content-type") ?? "";
       if (!res.ok || !type.includes("application/pdf")) {
         const reason = type.includes("text/plain") ? (await res.text()).slice(0, 200) : `The server answered ${res.status}.`;
@@ -33,7 +34,9 @@ export function PrintButton({ userId }: { userId: string }) {
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 60_000);
-      toast.success("Certificate downloaded.");
+      const emailed = res.headers.get("x-certificate-emailed");
+      if (emailed && emailed !== "no" && emailed !== "limit") toast.success("Certificate downloaded", { description: `We're also emailing a copy to ${emailed}.` });
+      else toast.success("Certificate downloaded.", emailed === "limit" ? { description: "We already emailed you a copy recently, so we didn't send another." } : undefined);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Download failed. Please try again.");
     } finally {
