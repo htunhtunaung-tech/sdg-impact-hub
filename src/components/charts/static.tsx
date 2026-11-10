@@ -53,7 +53,7 @@ export function StaticAreaChart({ data, height = 220, unit = "verified hours" }:
               </linearGradient>
             </defs>
             {[0, 1, 2, 3, 4].map((k) => (
-              <line key={k} x1="0" x2={W} y1={(H / 4) * k} y2={(H / 4) * k} stroke="#E4E9E6" strokeDasharray={k === 4 ? undefined : "4 4"} vectorEffect="non-scaling-stroke" />
+              <line key={k} x1="0" x2={W} y1={(H / 4) * k} y2={(H / 4) * k} stroke="var(--color-border)" strokeDasharray={k === 4 ? undefined : "4 4"} vectorEffect="non-scaling-stroke" />
             ))}
             {area && <path d={area} fill="url(#static-area)" className="chart-area" />}
             {line && <path d={line} pathLength={1} className="chart-line" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />}
@@ -103,7 +103,7 @@ export function StaticDonut({ data, size = 180, centerLabel = "verified" }: { da
     <figure className="m-0 flex flex-col items-center gap-5">
       <div className="relative" style={{ width: size, height: size }}>
         <svg viewBox="0 0 42 42" className="size-full -rotate-90" aria-hidden>
-          <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#EDF1EE" strokeWidth="6" />
+          <circle cx="21" cy="21" r="15.9155" fill="none" stroke="var(--color-track)" strokeWidth="6" />
           {rows.map((d) => {
             const len = Math.max(0, (d.value / total) * 100 - gap);
             const el = (

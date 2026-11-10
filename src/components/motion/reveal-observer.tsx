@@ -34,13 +34,20 @@ export function RevealObserver() {
         io.observe(el);
       });
     };
-    // Whatever is already on screen stays as it is (it was visible before JavaScript loaded);
-    // only content further down waits for the visitor to scroll to it.
-    document.querySelectorAll<HTMLElement>(".reveal, .reveal-group > *").forEach((el) => {
-      if (el.getBoundingClientRect().top < window.innerHeight) el.dataset.shown = "now";
-    });
-    scan();
-    root.classList.add("reveal-on");
+    // Start after the page has finished loading and hydrating, so we never touch server HTML React is
+    // still checking. Whatever is on screen by then stays as it is; only content further down waits
+    // for the visitor to scroll to it.
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      document.querySelectorAll<HTMLElement>(".reveal, .reveal-group > *").forEach((el) => {
+        if (el.getBoundingClientRect().top < window.innerHeight) el.dataset.shown = "now";
+      });
+      scan();
+      root.classList.add("reveal-on");
+      mo.observe(document.body, { childList: true, subtree: true });
+    };
 
     // Client navigations and streamed content add new elements; look for them once per frame.
     let raf = 0;
@@ -48,8 +55,11 @@ export function RevealObserver() {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(scan);
     });
-    mo.observe(document.body, { childList: true, subtree: true });
+    const later = () => window.setTimeout(start, 150);
+    if (document.readyState === "complete") later();
+    else window.addEventListener("load", later, { once: true });
     return () => {
+      window.removeEventListener("load", later);
       io.disconnect();
       mo.disconnect();
       cancelAnimationFrame(raf);

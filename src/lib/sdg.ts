@@ -68,8 +68,6 @@ export function sdgForeground(hex: string) {
 
 /** Soft tint used for project hero placeholders. */
 export function sdgTint(hex: string, alpha = 0.16) {
-  const c = hex.replace("#", "");
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(c.slice(i, i + 2), 16));
-  const mix = (v: number) => Math.round(255 - (255 - v) * alpha);
-  return `rgb(${mix(r!)}, ${mix(g!)}, ${mix(b!)})`;
+  // Mixed with the page surface, so the tint is light in light mode and dark in dark mode.
+  return `color-mix(in srgb, ${hex} ${Math.round(alpha * 100)}%, var(--color-surface))`;
 }

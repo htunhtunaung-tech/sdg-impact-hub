@@ -12,6 +12,7 @@ import { GoalPicker } from "@/components/sdg/goal-picker";
 import { TagInput } from "@/components/forms/tag-input";
 import { AvatarEditor } from "@/components/forms/avatar-editor";
 import { CoverEditor } from "@/components/forms/cover-editor";
+import { ThemePicker } from "@/components/theme/theme-toggle";
 import { LocationPicker } from "@/components/map/location-picker";
 import { changePasswordAction, deleteAccountAction, updatePrivacyAction, updateProfileAction } from "@/server/actions/profile";
 
@@ -92,6 +93,10 @@ export function SettingsForms({ profile, privacy, email, hasPassword, googleLink
         </Card>
       </form>
 
+      <Card>
+        <CardHeader><div><CardTitle>Appearance</CardTitle><CardDescription>Choose light or dark mode. This is saved on this device.</CardDescription></div></CardHeader>
+        <CardContent><ThemePicker /></CardContent>
+      </Card>
       <Card>
         <CardHeader><div><CardTitle>Privacy & notifications</CardTitle></div></CardHeader>
         <CardContent className="space-y-4">

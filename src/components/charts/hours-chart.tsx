@@ -8,8 +8,8 @@ export type MonthPoint = { key: string; label: string; full: string; verified: n
 
 const VERIFIED = "#059669";
 const PENDING = "#D97706";
-const GRID = "#E2E8F0";
-const AXIS = "#64748B";
+const GRID = "var(--color-border)";
+const AXIS = "var(--color-ink-subtle)";
 
 function TipBox({ active, payload, showPending }: TooltipProps<number, string> & { showPending: boolean; payload?: { payload: MonthPoint }[] }) {
   if (!active || !payload?.length) return null;

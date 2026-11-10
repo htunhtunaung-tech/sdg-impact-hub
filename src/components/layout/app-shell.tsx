@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
@@ -209,6 +210,7 @@ export function AppShell({ user, children }: { user: ShellUser | null; children:
             <div className="md:hidden">
               <CommandSearch iconOnly />
             </div>
+            <ThemeToggle />
             {user ? (
               <>
                 <Link

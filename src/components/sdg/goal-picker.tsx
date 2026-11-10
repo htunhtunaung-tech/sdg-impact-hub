@@ -52,7 +52,7 @@ export function GoalPicker({
               goal={g.id}
               className="size-6 shrink-0 transition-transform duration-300 group-hover:scale-110"
               strokeWidth={2}
-              style={on ? undefined : { color: g.id === 7 ? "#8A6A00" : g.color }}
+              style={on ? undefined : { color: g.id === 7 ? "var(--sdg7-ink)" : g.color }}
               aria-hidden
             />
             <span className={cn("line-clamp-2 text-[11px] font-semibold leading-tight", on ? "" : "text-ink")}>

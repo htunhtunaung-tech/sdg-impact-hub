@@ -1,4 +1,5 @@
 import { Logo } from "@/components/layout/logo";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { EcoIllustration } from "@/components/brand/illustration";
 import { CreatorCredit } from "@/components/layout/creator-credit";
 import { SdgTile } from "@/components/sdg/sdg-badge";
@@ -8,7 +9,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="grid min-h-dvh bg-[image:var(--gradient-eco)] lg:grid-cols-[1fr_minmax(0,600px)] lg:bg-none lg:bg-surface">
       <div className="flex flex-col px-5 py-6 sm:px-10">
-        <header><Logo /></header>
+        <header className="flex items-center justify-between"><Logo /><ThemeToggle /></header>
         <main id="main" className="flex flex-1 items-center justify-center py-10">
           <div className="w-full max-w-[440px] rounded-[var(--radius-2xl)] bg-surface p-6 shadow-raised sm:p-8 lg:p-0 lg:shadow-none">{children}</div>
         </main>
