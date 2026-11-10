@@ -40,9 +40,17 @@ function isActive(pathname: string, href: string) {
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 }
 
+/** Each menu item wears one of the official SDG colours (icon chip, active bar and soft highlight). */
+const NAV_COLORS: Record<NavIcon, string> = {
+  home: "#4C9F38", globe: "#0A97D9", folder: "#FD6925", heart: "#E5243B", chart: "#A21942", flame: "#FF3A21",
+  users: "#26BDE2", people: "#DD1367", building: "#19486A", sparkles: "#FD9D24", message: "#00689D",
+  settings: "#3F7E44", help: "#BF8B2E", shield: "#14532d",
+};
+
 function NavLink({ item, pathname, onNavigate, compact = false }: { item: NavItem; pathname: string; onNavigate?: () => void; compact?: boolean }) {
   const Icon = ICONS[item.icon];
   const active = isActive(pathname, item.href);
+  const color = { "--nav-c": NAV_COLORS[item.icon] } as React.CSSProperties;
   if (compact)
     return (
       <Tooltip content={item.label} side="right">
@@ -51,12 +59,10 @@ function NavLink({ item, pathname, onNavigate, compact = false }: { item: NavIte
           onClick={onNavigate}
           aria-current={active ? "page" : undefined}
           aria-label={item.label}
-          className={cn(
-            "relative mx-auto flex size-12 items-center justify-center rounded-[16px] transition-colors",
-            active ? "bg-primary text-white shadow-brand" : "text-slate-500 hover:bg-track hover:text-ink",
-          )}
+          style={color}
+          className={cn("nav-item group relative mx-auto flex size-12 items-center justify-center rounded-[16px] transition-[background-color,color,transform] active:scale-95", active && "is-active")}
         >
-          <Icon className="size-5" />
+          <Icon className="nav-icon size-5" />
           {item.badge && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-accent ring-2 ring-surface" aria-hidden />}
         </Link>
       </Tooltip>
@@ -66,13 +72,11 @@ function NavLink({ item, pathname, onNavigate, compact = false }: { item: NavIte
       href={item.href}
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
-      className={cn(
-        "group relative flex h-11 items-center gap-3 rounded-[14px] px-3 text-[15px] transition-colors",
-        active ? "bg-tone-mint font-semibold text-forest-900" : "text-slate-700 hover:bg-track hover:text-ink",
-      )}
+      style={color}
+      className={cn("nav-item group relative flex h-11 items-center gap-3 rounded-[14px] px-3 text-[15px] transition-[background-color,color,transform] active:scale-[0.98]", active && "is-active font-semibold")}
     >
-      <span className={cn("flex size-8 items-center justify-center rounded-[14px] transition-colors", active ? "bg-primary text-white" : "text-slate-500 group-hover:text-slate-700")}>
-        <Icon className="size-[18px]" />
+      <span className="nav-chip flex size-8 items-center justify-center rounded-[11px] transition-[background-color,color,transform] duration-200">
+        <Icon className="nav-icon size-[18px]" />
       </span>
       <span className="flex-1">{item.label}</span>
       {item.badge && <span className="rounded-full bg-mint-strong px-2 py-0.5 text-[11px] font-semibold text-forest-900">{item.badge}</span>}
@@ -170,10 +174,12 @@ export function AppShell({ user, children }: { user: ShellUser | null; children:
       </a>
 
       {/* Desktop: floating sidebar card */}
-      <aside aria-label="Sidebar" className="fixed bottom-4 left-4 top-4 z-30 hidden w-[256px] flex-col rounded-[var(--radius-xl)] border border-border/80 bg-surface shadow-card lg:flex">
+      <aside aria-label="Sidebar" className="fixed bottom-4 left-4 top-4 z-30 hidden w-[256px] flex-col overflow-hidden isolate rounded-[var(--radius-xl)] border border-border/80 bg-surface shadow-card lg:flex">
         <div className="flex h-[72px] items-center px-6">
           <Logo />
         </div>
+        <div className="sdg-stripe mx-6 -mt-2 mb-3 h-1 rounded-full" aria-hidden />
+        <div className="sidebar-doodles pointer-events-none absolute -z-10 inset-x-0 bottom-0 h-72 rounded-b-[var(--radius-xl)]" aria-hidden />
         <SidebarNav user={user} pathname={pathname} />
         {user && <ImpactPromo />}
         {user && <ProfileCard user={user} />}
