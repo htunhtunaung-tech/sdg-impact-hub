@@ -10,6 +10,8 @@ import { Avatar } from "@/components/ui/misc";
 
 const OUTPUT = 512; // px, square; shown at most ~120 px, so this stays sharp on 3x screens
 const MAX_SOURCE = 15 * 1024 * 1024;
+/** Below 1 the photo gets smaller than the circle, e.g. to show head and shoulders; the gap is filled white. */
+const MIN_ZOOM = 0.4;
 
 /** Draws the chosen square (after rotation) onto a canvas and returns a JPEG file. */
 async function cropToFile(src: string, area: Area, rotation: number): Promise<File> {
@@ -41,7 +43,9 @@ async function cropToFile(src: string, area: Area, rotation: number): Promise<Fi
   oc.fillStyle = "#ffffff"; // PNGs with transparency get a white background instead of black
   oc.fillRect(0, 0, OUTPUT, OUTPUT);
   oc.imageSmoothingQuality = "high";
-  oc.drawImage(rotated, area.x, area.y, area.width, area.height, 0, 0, OUTPUT, OUTPUT);
+  // The area can reach past the photo when zoomed out; scaling the whole image keeps that part white.
+  const k = OUTPUT / area.width;
+  oc.drawImage(rotated, -area.x * k, -area.y * k, rotated.width * k, rotated.height * k);
   const blob = await new Promise<Blob | null>((r) => out.toBlob(r, "image/jpeg", 0.9));
   if (!blob) throw new Error("Couldn't save this photo. Try another one.");
   return new File([blob], "avatar.jpg", { type: "image/jpeg" });
@@ -139,14 +143,15 @@ export function AvatarEditor({ name, value, onChange }: { name: string; value: s
 
       <Dialog open={src !== null} onOpenChange={(o) => !o && !busy && close()}>
         {src && (
-          <DialogContent title="Adjust your photo" description="Drag to move it. Pinch, scroll or use the slider to zoom.">
-            <div className="relative h-[300px] overflow-hidden rounded-[20px] bg-slate-900 sm:h-[340px]">
+          <DialogContent title="Adjust your photo" description="Drag to move it. Zoom out to show more of you, or zoom in for a close-up.">
+            <div className="relative h-[300px] overflow-hidden rounded-[20px] bg-white sm:h-[340px]">
               <Cropper
                 image={src}
                 crop={crop}
                 zoom={zoom}
                 rotation={rotation}
-                minZoom={1}
+                minZoom={MIN_ZOOM}
+                restrictPosition={false}
                 maxZoom={4}
                 zoomSpeed={0.15}
                 aspect={1}
@@ -160,12 +165,12 @@ export function AvatarEditor({ name, value, onChange }: { name: string; value: s
               />
             </div>
             <div className="mt-5 flex items-center gap-3">
-              <button type="button" onClick={() => setZoom((z) => Math.max(1, +(z - 0.2).toFixed(2)))} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-track text-ink-muted hover:text-ink active:scale-95" aria-label="Zoom out">
+              <button type="button" onClick={() => setZoom((z) => Math.max(MIN_ZOOM, +(z - 0.1).toFixed(2)))} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-track text-ink-muted hover:text-ink active:scale-95" aria-label="Zoom out">
                 <ZoomOut className="size-5" />
               </button>
               <input
                 type="range"
-                min={1}
+                min={MIN_ZOOM}
                 max={4}
                 step={0.01}
                 value={zoom}
@@ -173,7 +178,7 @@ export function AvatarEditor({ name, value, onChange }: { name: string; value: s
                 aria-label="Zoom"
                 className="h-2 flex-1 cursor-pointer appearance-none rounded-full bg-track accent-[var(--color-primary)]"
               />
-              <button type="button" onClick={() => setZoom((z) => Math.min(4, +(z + 0.2).toFixed(2)))} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-track text-ink-muted hover:text-ink active:scale-95" aria-label="Zoom in">
+              <button type="button" onClick={() => setZoom((z) => Math.min(4, +(z + 0.1).toFixed(2)))} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-track text-ink-muted hover:text-ink active:scale-95" aria-label="Zoom in">
                 <ZoomIn className="size-5" />
               </button>
               <button type="button" onClick={() => setRotation((r) => (r + 90) % 360)} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-track text-ink-muted hover:text-ink active:scale-95" aria-label="Rotate 90 degrees">
