@@ -41,7 +41,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
 
   if (!cert) {
     return (
-      <main lang="en" className="min-h-dvh bg-canvas p-4 sm:p-8">
+      <main lang="en" className="min-h-dvh p-4 sm:p-8">
         {toolbar}
         <div className="mx-auto max-w-xl rounded-[var(--radius-xl)] bg-surface p-8 text-center shadow-card">
           <LogoMark className="mx-auto size-12" />
@@ -72,7 +72,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
   );
 
   return (
-    <main lang="en" className="min-h-dvh bg-canvas p-4 sm:p-8 print:min-h-0 print:bg-white print:p-0">
+    <main lang="en" className="min-h-dvh p-4 sm:p-8 print:min-h-0 print:bg-white print:p-0">
       {/* A4 landscape, edge to edge, colours kept when printing */}
       <style>{`@page { size: A4 landscape; margin: 0; } @media print { html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; } }`}</style>
       {toolbar}

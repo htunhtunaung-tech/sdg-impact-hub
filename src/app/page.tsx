@@ -147,7 +147,7 @@ export default async function LandingPage() {
 
         {/* Featured projects */}
         {featured.length > 0 && (
-          <section className="bg-canvas py-20 sm:py-24">
+          <section className="py-20 sm:py-24">
             <div className="container-page">
               <div className="reveal flex flex-wrap items-end justify-between gap-4">
                 <div>

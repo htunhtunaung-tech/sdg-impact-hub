@@ -47,7 +47,7 @@ export default async function VerifyCertificatePage({ params }: { params: Promis
   const checkedAt = new Date().toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" });
 
   return (
-    <div lang="en" className="flex min-h-dvh flex-col bg-canvas">
+    <div lang="en" className="flex min-h-dvh flex-col">
       <header className="container-page flex h-16 items-center"><Logo /></header>
       <main className="container-page flex flex-1 items-start justify-center py-8">
         <div className="w-full max-w-xl overflow-hidden rounded-[var(--radius-2xl)] bg-surface shadow-raised">
