@@ -15,6 +15,7 @@ import { GoalBars } from "@/components/impact/goal-bars";
 import { AchievementIcon } from "@/components/impact/achievement-icon";
 import { hoursByGoal } from "@/server/queries/impact";
 import { ReportUserButton } from "./report-user";
+import { FollowButton } from "@/components/social/follow-button";
 
 type Props = { params: Promise<{ username: string }> };
 const ROLE: Record<string, string> = { INDIVIDUAL: "Member", STUDENT: "Student", VOLUNTEER: "Volunteer", ORGANIZER: "Project organizer", ORGANIZATION: "Organization", ADMIN: "Administrator" };
@@ -44,7 +45,7 @@ export default async function UserProfilePage({ params }: Props) {
   }
 
   const verified = { userId: u.id, status: "VERIFIED" as const };
-  const [hours, byGoal, achievements, allAchievements, memberships, goals, activity, pending] = await Promise.all([
+  const [hours, byGoal, achievements, allAchievements, memberships, goals, activity, pending, followerCount, followingCount, iFollow, followsMe] = await Promise.all([
     db.impactSubmission.aggregate({ where: verified, _sum: { hours: true }, _count: true }),
     hoursByGoal(verified),
     db.userAchievement.findMany({ where: { userId: u.id }, include: { achievement: true }, orderBy: { earnedAt: "desc" } }),
@@ -53,6 +54,10 @@ export default async function UserProfilePage({ params }: Props) {
     db.userSdgInterest.findMany({ where: { userId: u.id }, orderBy: { goalId: "asc" } }),
     db.activity.findMany({ where: { actorId: u.id, isPublic: true }, orderBy: { createdAt: "desc" }, take: 8 }),
     isMe ? db.impactSubmission.aggregate({ where: { userId: u.id, status: "PENDING" }, _sum: { hours: true } }) : null,
+    db.userFollow.count({ where: { followingId: u.id, follower: { status: "ACTIVE" } } }),
+    db.userFollow.count({ where: { followerId: u.id, following: { status: "ACTIVE" } } }),
+    viewer && !isMe ? db.userFollow.findUnique({ where: { followerId_followingId: { followerId: viewer.id, followingId: u.id } } }) : null,
+    viewer && !isMe ? db.userFollow.findUnique({ where: { followerId_followingId: { followerId: u.id, followingId: viewer.id } } }) : null,
   ]);
   const lvl = levelProgress(u.xp);
   const earned = new Set(achievements.map((a) => a.achievementId));
@@ -78,16 +83,29 @@ export default async function UserProfilePage({ params }: Props) {
             <div className="flex gap-2">
               {isMe ? (
                 <Button variant="secondary" asChild><Link href="/settings"><Pencil /> Edit profile</Link></Button>
-              ) : viewer ? (
+              ) : (
                 <>
-                  <Button asChild><Link href={`/messages?with=${u.id}`}><MessageSquare /> Message</Link></Button>
-                  <ReportUserButton userId={u.id} />
+                  <FollowButton userId={u.id} following={!!iFollow} followsYou={!!followsMe} signedIn={!!viewer} />
+                  {viewer && (
+                    <>
+                      <Button variant="secondary" asChild><Link href={`/messages?with=${u.id}`}><MessageSquare /> Message</Link></Button>
+                      <ReportUserButton userId={u.id} />
+                    </>
+                  )}
                 </>
-              ) : null}
+              )}
             </div>
           </div>
           <h1 className="mt-3 text-2xl font-bold sm:text-3xl">{u.name}</h1>
-          <p className="text-ink-muted">@{profile.username} · {ROLE[u.role]} · Level {lvl.level}</p>
+          <p className="flex flex-wrap items-center gap-x-1.5 text-ink-muted">
+            @{profile.username} · {ROLE[u.role]} · Level {lvl.level}
+            {followsMe && <span className="ml-1 rounded-full bg-track px-2 py-0.5 text-xs font-medium text-ink-muted">Follows you</span>}
+          </p>
+          {/* Followers / following, like Instagram */}
+          <p className="mt-2 flex gap-5 text-[15px]">
+            <Link href={`/u/${profile.username}/followers`} className="hover:underline"><b className="font-bold text-ink">{formatInt(followerCount)}</b> <span className="text-ink-muted">{followerCount === 1 ? "follower" : "followers"}</span></Link>
+            <Link href={`/u/${profile.username}/following`} className="hover:underline"><b className="font-bold text-ink">{formatInt(followingCount)}</b> <span className="text-ink-muted">following</span></Link>
+          </p>
           {profile.headline && <p className="mt-2 text-[17px]">{profile.headline}</p>}
           <p className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink-muted">
             {profile.city && <span className="inline-flex items-center gap-1.5"><MapPin className="size-4" />{[profile.city, profile.country].filter(Boolean).join(", ")}</span>}

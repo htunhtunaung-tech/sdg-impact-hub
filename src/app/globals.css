@@ -278,3 +278,7 @@ html[data-calm] *:not(.animate-spin), html[data-calm] ::before, html[data-calm] 
 .leaflet-container .leaflet-control-attribution a { color: var(--color-link) !important; text-decoration: underline !important; }
 
 [data-sonner-toaster] [data-sonner-toast] { border-radius: 16px; box-shadow: var(--shadow-raised); font-size: 14px; }
+
+/* Follow button: a quick bounce when you tap Follow */
+@keyframes follow-pop { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+html.motion .follow-pop { animation: follow-pop 0.45s cubic-bezier(0.3, 1.4, 0.5, 1); }
