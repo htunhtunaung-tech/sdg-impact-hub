@@ -296,3 +296,34 @@ html.dark .chat-wall-ocean { background: url("data:image/svg+xml,%3Csvg xmlns='h
 html.dark .chat-wall-sunrise { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23fdba74' stroke-opacity='0.12' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E %3Cpath d='M18 46c0-18 18-28 34-26 2 16-10 32-34 26zM18 46l26-20'/%3E %3Cpath d='M98 66v16M86 82h24'/%3E%3Ccircle cx='98' cy='50' r='14'/%3E%3Cpath d='M91 50a7 7 0 0 1 7-7'/%3E %3Cpath d='M170 14l11 17h-6l9 13h-28l9-13h-6zM170 44v8'/%3E %3Cpath d='M150 128v-18M150 114c-9 0-13-7-13-13 9 0 13 7 13 13M150 108c9 0 13-7 13-13-9 0-13 7-13 13'/%3E %3Cpath d='M40 112s-12 14-12 22a12 12 0 0 0 24 0c0-8-12-22-12-22z'/%3E %3Ccircle cx='112' cy='160' r='7'/%3E%3Cpath d='M112 146v-4M112 178v-4M98 160h-4M130 160h-4M102 150l-3-3M125 173l-3-3M102 170l-3 3M125 147l-3 3'/%3E %3Ccircle cx='182' cy='92' r='12'/%3E%3Cpath d='M170 92h24M182 80c-6 7-6 17 0 24M182 80c6 7 6 17 0 24'/%3E %3Cpath d='M60 182q8-8 16 0t16 0'/%3E %3Cpath d='M126 22c4-6 12-6 14 0-6 1-10 4-14 0z'/%3E %3Cpath d='M14 160c6-10 18-10 22-2-8 2-14 6-22 2zM36 158l10-6'/%3E %3Cpath d='M70 120c6 4 6 12 0 16'/%3E %3C/g%3E%3C/svg%3E") 0 0 / 200px 200px repeat, linear-gradient(180deg,#1d1610,#17110c); }
 .chat-wall-plain { background: var(--color-surface); }
 html.dark .chat-bubble-in { background-color: var(--color-track); }
+
+/* ── Sidebar menu theme ─────────────────────────────────────────────────────
+   Every menu item has its own official SDG colour (--nav-c, set inline): a tinted icon chip,
+   a soft highlight and an accent bar when active. A 17-colour stripe sits under the logo and
+   faint nature doodles fade in at the bottom of the sidebar. Labels stay ink for contrast. */
+.sdg-stripe { background: linear-gradient(90deg, #E5243B 0.00% 5.88%, #DDA63A 5.88% 11.76%, #4C9F38 11.76% 17.65%, #C5192D 17.65% 23.53%, #FF3A21 23.53% 29.41%, #26BDE2 29.41% 35.29%, #FCC30B 35.29% 41.18%, #A21942 41.18% 47.06%, #FD6925 47.06% 52.94%, #DD1367 52.94% 58.82%, #FD9D24 58.82% 64.71%, #BF8B2E 64.71% 70.59%, #3F7E44 70.59% 76.47%, #0A97D9 76.47% 82.35%, #56C02B 82.35% 88.24%, #00689D 88.24% 94.12%, #19486A 94.12% 100.00%); opacity: 0.85; }
+.sidebar-doodles {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%232f855a' stroke-opacity='0.16' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E %3Cpath d='M18 46c0-18 18-28 34-26 2 16-10 32-34 26zM18 46l26-20'/%3E %3Cpath d='M98 66v16M86 82h24'/%3E%3Ccircle cx='98' cy='50' r='14'/%3E%3Cpath d='M91 50a7 7 0 0 1 7-7'/%3E %3Cpath d='M170 14l11 17h-6l9 13h-28l9-13h-6zM170 44v8'/%3E %3Cpath d='M150 128v-18M150 114c-9 0-13-7-13-13 9 0 13 7 13 13M150 108c9 0 13-7 13-13-9 0-13 7-13 13'/%3E %3Cpath d='M40 112s-12 14-12 22a12 12 0 0 0 24 0c0-8-12-22-12-22z'/%3E %3Ccircle cx='112' cy='160' r='7'/%3E%3Cpath d='M112 146v-4M112 178v-4M98 160h-4M130 160h-4M102 150l-3-3M125 173l-3-3M102 170l-3 3M125 147l-3 3'/%3E %3Ccircle cx='182' cy='92' r='12'/%3E%3Cpath d='M170 92h24M182 80c-6 7-6 17 0 24M182 80c6 7 6 17 0 24'/%3E %3Cpath d='M60 182q8-8 16 0t16 0'/%3E %3Cpath d='M126 22c4-6 12-6 14 0-6 1-10 4-14 0z'/%3E %3Cpath d='M14 160c6-10 18-10 22-2-8 2-14 6-22 2zM36 158l10-6'/%3E %3Cpath d='M70 120c6 4 6 12 0 16'/%3E %3C/g%3E%3C/svg%3E") 0 0 / 180px 180px repeat;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.5) 45%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.5) 45%, transparent 100%);
+  opacity: 0.8;
+}
+html.dark .sidebar-doodles { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%234ade80' stroke-opacity='0.12' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E %3Cpath d='M18 46c0-18 18-28 34-26 2 16-10 32-34 26zM18 46l26-20'/%3E %3Cpath d='M98 66v16M86 82h24'/%3E%3Ccircle cx='98' cy='50' r='14'/%3E%3Cpath d='M91 50a7 7 0 0 1 7-7'/%3E %3Cpath d='M170 14l11 17h-6l9 13h-28l9-13h-6zM170 44v8'/%3E %3Cpath d='M150 128v-18M150 114c-9 0-13-7-13-13 9 0 13 7 13 13M150 108c9 0 13-7 13-13-9 0-13 7-13 13'/%3E %3Cpath d='M40 112s-12 14-12 22a12 12 0 0 0 24 0c0-8-12-22-12-22z'/%3E %3Ccircle cx='112' cy='160' r='7'/%3E%3Cpath d='M112 146v-4M112 178v-4M98 160h-4M130 160h-4M102 150l-3-3M125 173l-3-3M102 170l-3 3M125 147l-3 3'/%3E %3Ccircle cx='182' cy='92' r='12'/%3E%3Cpath d='M170 92h24M182 80c-6 7-6 17 0 24M182 80c6 7 6 17 0 24'/%3E %3Cpath d='M60 182q8-8 16 0t16 0'/%3E %3Cpath d='M126 22c4-6 12-6 14 0-6 1-10 4-14 0z'/%3E %3Cpath d='M14 160c6-10 18-10 22-2-8 2-14 6-22 2zM36 158l10-6'/%3E %3Cpath d='M70 120c6 4 6 12 0 16'/%3E %3C/g%3E%3C/svg%3E") 0 0 / 180px 180px repeat; }
+.nav-item { color: var(--color-ink-muted); }
+.nav-item .nav-chip { color: var(--nav-c); background: color-mix(in srgb, var(--nav-c) 11%, transparent); }
+.nav-item:not(.nav-chip) > .nav-icon { color: var(--nav-c); }
+.nav-item:hover { color: var(--color-ink); background: color-mix(in srgb, var(--nav-c) 8%, transparent); }
+.nav-item:hover .nav-chip { background: color-mix(in srgb, var(--nav-c) 18%, transparent); }
+.nav-item.is-active { color: var(--color-ink); background: color-mix(in srgb, var(--nav-c) 13%, var(--color-surface)); }
+.nav-item.is-active .nav-chip { background: var(--nav-c); color: #fff; box-shadow: 0 6px 14px -6px color-mix(in srgb, var(--nav-c) 70%, transparent); }
+.nav-item.is-active::before { content: ""; position: absolute; left: -12px; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0; background: var(--nav-c); }
+/* compact rail: the whole square is the chip */
+.nav-item.size-12.is-active { background: var(--nav-c); color: #fff; }
+.nav-item.size-12.is-active > .nav-icon { color: #fff; }
+.nav-item.size-12.is-active::before { left: -8px; }
+html.motion .nav-item:hover .nav-icon { animation: nav-wiggle 0.5s ease; }
+@keyframes nav-wiggle { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-12deg) scale(1.1); } 60% { transform: rotate(8deg) scale(1.05); } }
+/* Dark mode: lift the deep SDG colours (e.g. 16, 17) so menu icons stay visible */
+html.dark .nav-item .nav-chip, html.dark .nav-item:not(.is-active) > .nav-icon { color: color-mix(in srgb, var(--nav-c) 50%, #fff); background-color: color-mix(in srgb, var(--nav-c) 24%, transparent); }
+html.dark .nav-item.size-12:not(.is-active) { background-color: transparent; }
+html.dark .nav-item.is-active .nav-chip { color: #fff; background: var(--nav-c); }
