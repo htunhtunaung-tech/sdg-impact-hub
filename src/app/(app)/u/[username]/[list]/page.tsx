@@ -99,7 +99,7 @@ export default async function FollowListPage({ params }: Props) {
                 </span>
               </Link>
               {viewer?.id !== p.id && (
-                <FollowButton userId={p.id} following={iFollow.has(p.id)} followsYou={followsMe.has(p.id)} signedIn={!!viewer} size="sm" />
+                <FollowButton refresh={false} userId={p.id} following={iFollow.has(p.id)} followsYou={followsMe.has(p.id)} signedIn={!!viewer} size="sm" />
               )}
             </li>
           ))}

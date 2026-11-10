@@ -17,6 +17,7 @@ export function FollowButton({
   followsYou = false,
   signedIn,
   size = "md",
+  refresh = true,
   className,
 }: {
   userId: string;
@@ -24,6 +25,8 @@ export function FollowButton({
   followsYou?: boolean;
   signedIn: boolean;
   size?: "sm" | "md";
+  /** Re-load the page after following (profile counts). Off in lists, so cards don't jump around. */
+  refresh?: boolean;
   className?: string;
 }) {
   const router = useRouter();
@@ -44,7 +47,7 @@ export function FollowButton({
       if (!res.ok) {
         setOn(!next);
         toast.error(res.error);
-      } else router.refresh();
+      } else if (refresh) router.refresh();
     });
   };
 

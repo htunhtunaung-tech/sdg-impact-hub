@@ -11,6 +11,7 @@ const PROTECTED = [
   "/impact",
   "/assistant",
   "/community",
+  "/people",
   "/messages",
   "/notifications",
   "/settings",

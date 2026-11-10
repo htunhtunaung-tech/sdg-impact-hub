@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   Bell, Building2, ChartColumn, ChevronRight, CircleHelp, Flame, FolderOpen, Globe, Heart, House, Menu, MessageSquare,
-  Plus, Settings, ShieldCheck, Sparkles, Users,
-} from "lucide-react";
+  Plus, Settings, ShieldCheck, Sparkles, Users, UserSearch } from "lucide-react";
 import { Dialog as D } from "radix-ui";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/misc";
@@ -20,7 +19,7 @@ import { CreatorCredit } from "@/components/layout/creator-credit";
 
 const ICONS: Record<NavIcon, React.ComponentType<{ className?: string }>> = {
   home: House, globe: Globe, folder: FolderOpen, heart: Heart, chart: ChartColumn, users: Users, sparkles: Sparkles,
-  settings: Settings, help: CircleHelp, flame: Flame, building: Building2, shield: ShieldCheck, message: MessageSquare,
+  settings: Settings, help: CircleHelp, flame: Flame, building: Building2, shield: ShieldCheck, message: MessageSquare, people: UserSearch,
 };
 
 export interface ShellUser {
