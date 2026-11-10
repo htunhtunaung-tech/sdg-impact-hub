@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ChatWallpaper, ChatWallpaperPicker, ChatWallpaperProvider } from "@/components/messages/chat-wallpaper";
 import Link from "next/link";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { db } from "@/lib/db";
@@ -65,25 +66,26 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
         </aside>
         <section className={cn("flex flex-col", !partner && "hidden md:flex")}>
           {partner ? (
-            <>
+            <ChatWallpaperProvider>
               <header className="flex items-center gap-3 border-b border-border p-4">
                 <Link href="/messages" className="md:hidden" aria-label="Back to conversations"><ArrowLeft className="size-5" /></Link>
                 <Avatar name={partner.name} src={partner.image} size={36} />
                 <p className="font-semibold">{partner.name}</p>
+                <ChatWallpaperPicker />
               </header>
-              <ol className="flex-1 space-y-2 overflow-y-auto p-4" aria-live="polite">
+              <ChatWallpaper className="flex-1 space-y-2 overflow-y-auto p-4" aria-live="polite">
                 {thread.map((m) => (
                   <li key={m.id} className={cn("flex", m.senderId === user.id ? "justify-end" : "justify-start")}>
-                    <div className={cn("max-w-[78%] rounded-[16px] px-3.5 py-2 text-[15px]", m.senderId === user.id ? "rounded-br-sm bg-primary text-white" : "rounded-bl-sm bg-slate-100 text-ink")}>
+                    <div className={cn("max-w-[78%] rounded-[16px] px-3.5 py-2 text-[15px]", m.senderId === user.id ? "rounded-br-sm bg-primary text-white" : "chat-bubble-in rounded-bl-sm bg-surface text-ink shadow-card")}>
                       <p className="whitespace-pre-line">{m.body}</p>
                       <p className={cn("mt-0.5 text-right text-[11px]", m.senderId === user.id ? "text-emerald-100" : "text-ink-subtle")}>{formatTime(m.createdAt)}</p>
                     </div>
                   </li>
                 ))}
-                {!thread.length && <li className="py-10 text-center text-sm text-ink-muted">Say hello to {partner.name.split(" ")[0]}.</li>}
-              </ol>
+                {!thread.length && <li className="mx-auto w-fit rounded-full bg-surface/90 px-4 py-2 text-center text-sm text-ink-muted shadow-card">Say hello to {partner.name.split(" ")[0]}.</li>}
+              </ChatWallpaper>
               <MessageComposer recipientId={partner.id} />
-            </>
+            </ChatWallpaperProvider>
           ) : (
             <div className="flex flex-1 items-center justify-center p-6"><EmptyState icon={<MessageSquare />} title="Select a conversation" className="border-0" /></div>
           )}
