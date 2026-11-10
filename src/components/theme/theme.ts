@@ -15,7 +15,7 @@ export function readMode(): ThemeMode {
     const v = localStorage.getItem(KEY);
     if (v === "light" || v === "dark" || v === "system") return v;
   } catch {}
-  return "system";
+  return "light"; // Light is the default look; dark only when chosen
 }
 
 /** Adds or removes html.dark, with a short colour transition so the switch feels smooth. */
@@ -40,7 +40,7 @@ export function setMode(mode: ThemeMode) {
 
 /** Current choice plus whether the page is dark right now; follows system changes in "system" mode. */
 export function useTheme() {
-  const [mode, setState] = useState<ThemeMode>("system");
+  const [mode, setState] = useState<ThemeMode>("light");
   const [isDark, setDark] = useState(false);
   useEffect(() => {
     const sync = () => {
