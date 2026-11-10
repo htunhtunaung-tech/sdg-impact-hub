@@ -97,7 +97,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
       </p>
       <h2 className="sr-only">Results</h2>
       {items.length ? (
-        <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="reveal-group grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
           {items.map((p) => (
             <ProjectCard key={p.id} p={toProjectCard(p, user)} />
           ))}

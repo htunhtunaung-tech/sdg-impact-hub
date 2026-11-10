@@ -190,7 +190,7 @@ export default async function DashboardPage() {
       </section>
 
       {/* KPI tiles */}
-      <section aria-label="Your impact at a glance" className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <section aria-label="Your impact at a glance" className="reveal-group grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <Stat tone="mint" icon={<Clock />} label="Volunteer hours" value={formatNumber(totalHours)} trend={toNumber(hoursMonth._sum.hours) > 0 ? "up" : null}
           sub={toNumber(hoursMonth._sum.hours) > 0 ? <span className="inline-flex items-center gap-1"><TrendingUp className="size-3.5" />+{formatNumber(toNumber(hoursMonth._sum.hours))} this month</span> : "Verified, last 12 months"} />
         <Stat tone="sky" icon={<FolderOpen />} label="Projects joined" value={memberships.length} sub={`${activeProjects.length} active now`} />
@@ -200,7 +200,7 @@ export default async function DashboardPage() {
       </section>
 
       {/* Trend + donut */}
-      <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
+      <div className="reveal-group mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
           <CardHeader>
             <div>
@@ -234,7 +234,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Insights + projects */}
-      <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
+      <div className="reveal-group mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle>What to do next</CardTitle>
@@ -291,7 +291,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recommended + upcoming + level */}
-      <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
+      <div className="reveal-group mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
           <CardHeader>
             <div>
@@ -378,7 +378,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Achievements + community */}
-      <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
+      <div className="reveal-group mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
           <CardHeader>
             <CardTitle>Recent achievements</CardTitle>

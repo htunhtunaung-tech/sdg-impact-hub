@@ -58,27 +58,33 @@ export default async function LandingPage() {
       <main>
         {/* Hero */}
         <section className="relative overflow-hidden bg-[image:var(--gradient-eco)]">
+          {/* Soft SDG-coloured light drifting behind the hero (larger screens only, decorative) */}
+          <div className="pointer-events-none absolute inset-0 hidden sm:block" aria-hidden>
+            <span className="blob absolute -left-24 top-10 size-72 rounded-full bg-[#4C9F38]/15 blur-3xl" />
+            <span className="blob absolute right-[8%] top-0 size-80 rounded-full bg-[#26BDE2]/15 blur-3xl [animation-delay:-6s]" />
+            <span className="blob absolute bottom-0 left-[40%] size-64 rounded-full bg-[#FCC30B]/15 blur-3xl [animation-delay:-12s]" />
+          </div>
           <div className="container-page relative grid gap-8 pb-6 pt-6 sm:gap-16 sm:pb-24 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:pb-28">
             <div className="min-w-0">
-              <p className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-forest-900 shadow-card">
+              <p className="hero-in inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-forest-900 shadow-card">
                 <ShieldCheck className="size-3.5" /> Impact you can verify — not just claim
               </p>
-              <h1 className="mt-4 text-[32px] font-bold leading-[1.1] tracking-[-0.03em] text-ink sm:mt-6 sm:text-[64px] sm:leading-[1.04]">
+              <h1 style={{ "--d": "80ms" } as React.CSSProperties} className="hero-in mt-4 text-[32px] font-bold leading-[1.1] tracking-[-0.03em] text-ink sm:mt-6 sm:text-[64px] sm:leading-[1.04]">
                 {/* Phones get a shorter headline so the stats fit on the first screen */}
-                <span className="sm:hidden">Local action for the Global Goals, <span className="bg-[image:var(--gradient-brand)] bg-clip-text text-transparent">measured.</span></span>
-                <span className="hidden sm:inline">Turn care for the Global Goals into <span className="bg-[image:var(--gradient-brand)] bg-clip-text text-transparent">local, measurable</span> action.</span>
+                <span className="sm:hidden">Local action for the Global Goals, <span className="text-shimmer">measured.</span></span>
+                <span className="hidden sm:inline">Turn care for the Global Goals into <span className="text-shimmer">local, measurable</span> action.</span>
               </h1>
-              <p className="mt-3 max-w-xl text-base leading-relaxed text-ink-muted sm:hidden">
+              <p style={{ "--d": "160ms" } as React.CSSProperties} className="hero-in mt-3 max-w-xl text-base leading-relaxed text-ink-muted sm:hidden">
                 Find projects near you or online. Get your hours verified and earn a certificate.
               </p>
-              <p className="mt-6 hidden max-w-xl text-lg leading-relaxed text-ink-muted sm:block">
+              <p style={{ "--d": "160ms" } as React.CSSProperties} className="hero-in mt-6 hidden max-w-xl text-lg leading-relaxed text-ink-muted sm:block">
                 SDG Impact Hub connects volunteers, students, universities and NGOs around projects for the 17 UN Sustainable Development Goals — then measures what really changed.
               </p>
-              <div className="mt-5 flex flex-col gap-1 sm:mt-8 sm:flex-row sm:gap-3">
-                <Link href={primaryCta.href} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-7 text-[15px] font-semibold text-white shadow-brand hover:bg-primary-hover">
-                  {primaryCta.label} <ArrowRight className="size-4" />
+              <div style={{ "--d": "240ms" } as React.CSSProperties} className="hero-in mt-5 flex flex-col gap-1 sm:mt-8 sm:flex-row sm:gap-3">
+                <Link href={primaryCta.href} className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-7 text-[15px] font-semibold text-white shadow-brand transition-[background-color,transform,box-shadow] duration-150 hover:bg-primary-hover hover:shadow-raised active:scale-[0.97]">
+                  {primaryCta.label} <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
-                <Link href={user ? "/projects" : "/login"} className="inline-flex h-11 items-center justify-center rounded-full px-7 text-[15px] font-semibold text-link underline-offset-4 hover:underline sm:h-12 sm:bg-white sm:text-ink sm:no-underline sm:shadow-card sm:hover:bg-mint sm:hover:no-underline">
+                <Link href={user ? "/projects" : "/login"} className="inline-flex h-11 items-center justify-center rounded-full px-7 text-[15px] font-semibold text-link underline-offset-4 hover:underline sm:h-12 sm:bg-white sm:text-ink sm:no-underline sm:shadow-card sm:hover:bg-mint sm:hover:no-underline transition-[background-color,transform] duration-150 active:scale-[0.97]">
                   {user ? "Explore projects" : "I already have an account"}
                 </Link>
               </div>
@@ -88,9 +94,9 @@ export default async function LandingPage() {
               </div>
               {/* Phones: one swipeable row of 44 px tiles. Larger screens: a grid. */}
               <ul className="-mx-4 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-10 sm:grid sm:max-w-[540px] sm:grid-cols-9 sm:overflow-visible sm:px-0 sm:pb-0" aria-label="The 17 goals">
-                {SDGS.map((g) => (
-                  <li key={g.id} className="w-11 shrink-0 snap-start sm:w-auto">
-                    <Link href={`/sdgs/${g.id}`} className="group block rounded-[12px] shadow-card transition-transform hover:-translate-y-1" aria-label={`Goal ${g.id}: ${g.title}`} title={g.title}>
+                {SDGS.map((g, i) => (
+                  <li key={g.id} style={{ "--i": i } as React.CSSProperties} className="tile-pop w-11 shrink-0 snap-start sm:w-auto">
+                    <Link href={`/sdgs/${g.id}`} className="group block rounded-[12px] shadow-card transition-transform duration-200 hover:-translate-y-1 active:scale-95" aria-label={`Goal ${g.id}: ${g.title}`} title={g.title}>
                       <SdgTile goal={g.id} />
                     </Link>
                   </li>
@@ -98,13 +104,13 @@ export default async function LandingPage() {
               </ul>
             </div>
             {/* Not rendered on phones: saves space and data */}
-            <div className="hidden sm:block"><DeviceMockup /></div>
+            <div style={{ "--d": "300ms" } as React.CSSProperties} className="hero-in hidden sm:block"><DeviceMockup /></div>
           </div>
         </section>
 
         {/* Live stats */}
         <section className="container-page relative z-10 sm:-mt-10" aria-label="Platform impact">
-          <div className="grid grid-cols-2 gap-2 rounded-[var(--radius-2xl)] border border-border/80 bg-surface p-2 shadow-raised sm:gap-4 sm:p-4 lg:grid-cols-4">
+          <div style={{ "--d": "380ms" } as React.CSSProperties} className="hero-in grid grid-cols-2 gap-2 rounded-[var(--radius-2xl)] border border-border/80 bg-surface p-2 shadow-raised sm:gap-4 sm:p-4 lg:grid-cols-4">
             {stats.map((st, i) => (
               <div key={st.l} className={`min-w-0 rounded-[16px] p-3 sm:rounded-[20px] sm:p-5 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun", "bg-tone-lilac"][i]}`}>
                 <p className="truncate text-[28px] font-bold leading-none tracking-tight text-ink sm:text-[40px]"><CountUp value={st.v} animate={!saveData} /></p>
@@ -121,13 +127,13 @@ export default async function LandingPage() {
         {/* How it works */}
         <section className="container-page py-20">
           <h2 className="reveal max-w-2xl text-[34px] font-bold leading-tight tracking-tight sm:text-[44px]">From “I want to help” to proof that it mattered.</h2>
-          <ol className="mt-12 grid gap-6 md:grid-cols-3">
+          <ol className="reveal-group mt-12 grid gap-6 md:grid-cols-3">
             {[
               { icon: Sparkles, t: "Find your fit", d: "Follow the goals you care about. Our recommendations weigh your skills, interests and location — and explain why." },
               { icon: CalendarCheck2, t: "Show up", d: "Join a project or sign up for a session in two clicks. Add it to your calendar and get a reminder the day before." },
               { icon: ChartColumn, t: "Measure honestly", d: "Record hours and outcomes with evidence. Organizers verify them, so your impact report means something." },
             ].map(({ icon: Icon, t, d }, i) => (
-              <li key={t} className={`reveal rounded-[var(--radius-xl)] p-6 transition-transform duration-300 hover:-translate-y-1 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun"][i]}`}>
+              <li key={t} className={`rounded-[var(--radius-xl)] p-6 transition-transform duration-300 hover:-translate-y-1 ${["bg-tone-mint", "bg-tone-sky", "bg-tone-sun"][i]}`}>
                 <span className="flex size-12 items-center justify-center rounded-full bg-white text-forest-900 shadow-card"><Icon className="size-5" /></span>
                 <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-ink-muted">Step {i + 1}</p>
                 <h3 className="mt-1 text-xl font-semibold">{t}</h3>
@@ -148,8 +154,8 @@ export default async function LandingPage() {
                 </div>
                 <Link href="/projects" className="inline-flex items-center gap-1.5 font-semibold text-link hover:underline">All projects <ArrowRight className="size-4" /></Link>
               </div>
-              <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {featured.map((p) => <div key={p.id} className="reveal min-w-0"><ProjectCard p={toProjectCard(p, null)} /></div>)}
+              <div className="reveal-group mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {featured.map((p) => <div key={p.id} className="min-w-0"><ProjectCard p={toProjectCard(p, null)} /></div>)}
               </div>
             </div>
           </section>

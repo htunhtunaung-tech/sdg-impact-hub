@@ -82,7 +82,7 @@ export default async function OrganizationPage({ params }: Props) {
           </Card>
           <section>
             <h2 className="mb-4 text-xl font-semibold">Projects</h2>
-            {projects.length ? <div className="grid grid-cols-1 gap-4 md:grid-cols-2">{projects.map((p) => <ProjectCard key={p.id} p={toProjectCard(p, user)} />)}</div> : <p className="text-sm text-ink-muted">No published projects yet.</p>}
+            {projects.length ? <div className="reveal-group grid grid-cols-1 gap-4 md:grid-cols-2">{projects.map((p) => <ProjectCard key={p.id} p={toProjectCard(p, user)} />)}</div> : <p className="text-sm text-ink-muted">No published projects yet.</p>}
           </section>
           {posts.length > 0 && (
             <section>

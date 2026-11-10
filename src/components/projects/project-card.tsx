@@ -48,7 +48,7 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
         ? `Starts ${formatDate(p.startDate, { day: "numeric", month: "short" })}`
         : (p.scheduleText ?? "Ongoing");
   return (
-    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-card transition-shadow hover:shadow-raised">
+    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-card transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-raised active:scale-[0.99]">
       <div className="relative flex h-40 items-center justify-center" style={{ background: p.imageUrl ? undefined : sdgTint(g.color, 0.16) }}>
         {p.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element

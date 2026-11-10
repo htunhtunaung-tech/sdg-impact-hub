@@ -9,7 +9,7 @@ export function DeviceMockup() {
   return (
     <div className="relative mx-auto min-h-[440px] w-full max-w-[560px] sm:min-h-[500px]" aria-hidden>
       {/* Laptop / dashboard card */}
-      <div className="ml-auto w-[84%] rounded-[24px] border border-border/80 bg-surface p-4 shadow-overlay sm:p-5">
+      <div className="float-slower ml-auto w-[84%] rounded-[24px] border border-border/80 bg-surface p-4 shadow-overlay sm:p-5">
         <div className="mb-4 flex items-center gap-1.5">
           <span className="size-2.5 rounded-full bg-rose-300" />
           <span className="size-2.5 rounded-full bg-amber-300" />

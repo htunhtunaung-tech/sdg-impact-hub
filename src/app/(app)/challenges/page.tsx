@@ -29,7 +29,7 @@ export default async function ChallengesPage() {
   return (
     <div className="container-page max-w-5xl py-6 sm:py-8">
       <PageHeader title="Challenges" description="Build sustainable habits. Rewards favour real, verifiable action over volume." />
-      <div className="mb-8 grid gap-3 sm:grid-cols-3">
+      <div className="reveal-group mb-8 grid gap-3 sm:grid-cols-3">
         <Card><CardContent className="flex items-center gap-3 pt-5"><Flame className="size-8 text-orange-600" /><div><p className="text-2xl font-bold">{user.currentStreak} days</p><p className="text-sm text-ink-muted">Current streak · best {user.longestStreak}</p></div></CardContent></Card>
         <Card><CardContent className="flex items-center gap-3 pt-5"><CircleCheck className="size-8 text-accent" /><div><p className="text-2xl font-bold">{completedTotal}</p><p className="text-sm text-ink-muted">Challenges completed</p></div></CardContent></Card>
         <Card><CardContent className="flex items-start gap-3 pt-5 text-sm text-ink-muted"><Info className="mt-0.5 size-5 shrink-0 text-info" /><p>Honour-system challenges earn up to <strong>{XP.dailyChallengeCap} XP a day</strong>. Evidence challenges earn XP only after review.</p></CardContent></Card>
@@ -42,7 +42,7 @@ export default async function ChallengesPage() {
             <section key={g.key}>
               <h2 className="text-xl font-semibold">{g.title}</h2>
               <p className="mb-4 text-sm text-ink-muted">{g.sub}</p>
-              <ul className="grid gap-4 md:grid-cols-2">
+              <ul className="reveal-group grid gap-4 md:grid-cols-2">
                 {list.map((c) => {
                   const p = mine.find((m) => m.challengeId === c.id);
                   const done = p?.status === "COMPLETED";
