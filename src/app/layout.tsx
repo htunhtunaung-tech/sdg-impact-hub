@@ -21,9 +21,9 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#14532d", width: "device-width", initialScale: 1 };
 
-// Runs before first paint: applies the saved theme (or the device setting) so dark mode never flashes white,
+// Runs before first paint: applies the saved theme (light unless the visitor picked Dark or Same as device) so dark mode never flashes white,
 // and turns motion on unless the visitor asked for Reduce motion or Save-Data.
-const MOTION_SCRIPT = `(function(h){try{var t=localStorage.getItem("theme");if(t==="dark"||((!t||t==="system")&&matchMedia("(prefers-color-scheme: dark)").matches)){h.classList.add("dark");var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#0a110e")}}catch(e){}try{var c=navigator.connection;if((c&&c.saveData)||matchMedia("(prefers-reduced-motion: reduce)").matches){h.setAttribute("data-calm","");return}}catch(e){}h.classList.add("motion")})(document.documentElement)`;
+const MOTION_SCRIPT = `(function(h){try{var t=localStorage.getItem("theme");if(t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches)){h.classList.add("dark");var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#0a110e")}}catch(e){}try{var c=navigator.connection;if((c&&c.saveData)||matchMedia("(prefers-reduced-motion: reduce)").matches){h.setAttribute("data-calm","");return}}catch(e){}h.classList.add("motion")})(document.documentElement)`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
