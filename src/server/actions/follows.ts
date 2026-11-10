@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { ActionError, runAction, type ActionResult } from "@/lib/action";
 import { enforceRateLimit } from "@/lib/rate-limit";
@@ -40,7 +39,8 @@ export async function toggleFollowUserAction(targetId: string): Promise<ActionRe
         });
       }
     }
-    revalidatePath(`/u/${target.profile.username}`);
+    // No revalidatePath: it would re-render the page you are on and re-shuffle lists like People.
+    // Profile pages are dynamic, and the button refreshes them itself when counts should change.
     return { ok: true, data: { following: !existing }, message: existing ? `Unfollowed ${target.name}.` : `You're following ${target.name}.` };
   });
 }

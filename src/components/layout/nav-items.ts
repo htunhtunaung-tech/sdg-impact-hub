@@ -1,5 +1,5 @@
 export type NavIcon =
-  | "home" | "globe" | "folder" | "heart" | "chart" | "users" | "sparkles" | "settings" | "help" | "flame" | "building" | "shield" | "message";
+  | "home" | "globe" | "folder" | "heart" | "chart" | "users" | "sparkles" | "settings" | "help" | "flame" | "building" | "shield" | "message" | "people";
 
 export interface NavItem {
   href: string;
@@ -17,6 +17,7 @@ export const MAIN_NAV: NavItem[] = [
   { href: "/impact", label: "Impact Analytics", icon: "chart", auth: true },
   { href: "/challenges", label: "Challenges", icon: "flame", auth: true },
   { href: "/community", label: "Community", icon: "users", auth: true },
+  { href: "/people", label: "People", icon: "people", auth: true },
   { href: "/organizations", label: "Organizations", icon: "building" },
   { href: "/assistant", label: "AI Assistant", icon: "sparkles", badge: "New", auth: true },
 ];
