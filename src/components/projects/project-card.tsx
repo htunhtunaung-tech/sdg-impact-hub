@@ -48,7 +48,7 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
         ? `Starts ${formatDate(p.startDate, { day: "numeric", month: "short" })}`
         : (p.scheduleText ?? "Ongoing");
   return (
-    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-card transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-raised active:scale-[0.99]">
+    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-card transition-[box-shadow,transform] duration-300 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-accent hover:-translate-y-1 hover:shadow-raised active:scale-[0.99]">
       <div className="relative flex h-40 items-center justify-center" style={{ background: p.imageUrl ? undefined : sdgTint(g.color, 0.16) }}>
         {p.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -121,7 +121,8 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
           <span className="flex items-center gap-2">
             <CalendarDays className="size-4 text-ink-subtle" aria-hidden /> {when}
           </span>
-          <span className="relative z-10 rounded-[8px] border border-border-strong px-3 py-1.5 text-sm font-semibold text-ink">View project</span>
+          {/* Looks like a button, but the whole card is the link (title link stretched over the card), so clicks pass through */}
+          <span aria-hidden className="pointer-events-none rounded-[8px] border border-border-strong px-3 py-1.5 text-sm font-semibold text-ink transition-colors group-hover:border-forest-900 group-hover:bg-forest-900 group-hover:text-white">View project</span>
         </div>
       </div>
     </article>
