@@ -41,7 +41,7 @@ export function CommandSearch({ iconOnly = false }: { iconOnly?: boolean }) {
   useEffect(() => {
     if (!open) return;
     const term = q.trim();
-    if (term.length < 2) {
+    if (term.replace(/^@+/, "").length < (term.startsWith("@") ? 1 : 2)) {
       setResults([]);
       setError(false);
       return;
@@ -135,9 +135,9 @@ export function CommandSearch({ iconOnly = false }: { iconOnly?: boolean }) {
           </div>
           <div className="max-h-[60vh] overflow-y-auto p-2">
             {error && <p className="px-3 py-6 text-center text-sm text-danger">Search failed. Please try again.</p>}
-            {!error && q.trim().length < 2 && <p className="px-3 py-6 text-center text-sm text-ink-subtle">Type at least two characters to search.</p>}
+            {!error && q.trim().length < 2 && <p className="px-3 py-6 text-center text-sm text-ink-subtle">Type at least two characters to search, or @ and a username to find people.</p>}
             {!error && q.trim().length >= 2 && !loading && results.length === 0 && (
-              <p className="px-3 py-6 text-center text-sm text-ink-subtle">No results for “{q.trim()}”.</p>
+              <p className="px-3 py-6 text-center text-sm text-ink-subtle">{q.trim().startsWith("@") ? <>No public profile with a username starting with “{q.trim()}”. Check the spelling, or ask them to make their profile public.</> : <>No results for “{q.trim()}”.</>}</p>
             )}
             <ul ref={listRef} id="search-results" role="listbox">
               {grouped.map(([type, items]) => (
