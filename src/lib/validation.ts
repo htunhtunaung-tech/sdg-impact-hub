@@ -82,6 +82,7 @@ export const profileSchema = z.object({
   longitude,
   website: optionalUrl,
   image: optionalUrl,
+  coverImage: optionalUrl,
   skills: stringList(25, 40),
   interests: stringList(25, 40),
   goals: z.array(goalId).max(17).default([]),

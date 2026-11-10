@@ -255,6 +255,8 @@ model UserProfile {
   skills             String[]
   interests          String[]
   website            String?
+  /// Wide banner image at the top of the public profile (1584 x 396).
+  coverImage         String?
   isPublic           Boolean  @default(true)
   showOnLeaderboard  Boolean  @default(true)
   emailNotifications Boolean  @default(true)

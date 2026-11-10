@@ -39,11 +39,11 @@ export async function updateProfileAction(input: unknown): Promise<ActionResult>
         where: { userId: user.id },
         create: {
           userId: user.id, username: d.username, headline: d.headline, bio: d.bio, city: d.city, country: d.country,
-          latitude: d.latitude ?? null, longitude: d.longitude ?? null, website: d.website, skills: d.skills, interests: d.interests,
+          latitude: d.latitude ?? null, longitude: d.longitude ?? null, website: d.website, coverImage: d.coverImage ?? null, skills: d.skills, interests: d.interests,
         },
         update: {
           username: d.username, headline: d.headline ?? null, bio: d.bio ?? null, city: d.city ?? null, country: d.country ?? null,
-          latitude: d.latitude ?? null, longitude: d.longitude ?? null, website: d.website ?? null, skills: d.skills, interests: d.interests,
+          latitude: d.latitude ?? null, longitude: d.longitude ?? null, website: d.website ?? null, coverImage: d.coverImage ?? null, skills: d.skills, interests: d.interests,
         },
       }),
       db.userSdgInterest.deleteMany({ where: { userId: user.id } }),

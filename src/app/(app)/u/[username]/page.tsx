@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Clock, FolderOpen, Globe, Link2, Lock, MapPin, MessageSquare, Pencil, ShieldCheck, Trophy } from "lucide-react";
+import { Camera, Clock, FolderOpen, Globe, Link2, Lock, MapPin, MessageSquare, Pencil, ShieldCheck, Trophy } from "lucide-react";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { levelProgress } from "@/lib/gamification";
@@ -60,7 +60,18 @@ export default async function UserProfilePage({ params }: Props) {
   return (
     <div className="container-page py-6 sm:py-8">
       <section className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface shadow-card">
-        <div className="h-28 bg-gradient-to-r from-forest-900 via-emerald-700 to-emerald-500 sm:h-36" />
+        {/* Cover photo (4:1 like LinkedIn); the green banner when none is set */}
+        <div className={`group relative aspect-[3/1] w-full overflow-hidden sm:aspect-[4/1] ${profile.coverImage ? "bg-track" : "bg-gradient-to-r from-forest-900 via-emerald-700 to-emerald-500"}`}>
+          {profile.coverImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={profile.coverImage} alt="" className="absolute inset-0 size-full object-cover" />
+          )}
+          {isMe && (
+            <Link href="/settings" className="absolute right-3 top-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-white/90 px-3 text-sm font-semibold text-ink shadow-card backdrop-blur transition-[background-color,transform] hover:bg-white active:scale-95">
+              <Camera className="size-4" /> {profile.coverImage ? "Edit cover" : "Add cover"}
+            </Link>
+          )}
+        </div>
         <div className="px-5 pb-6 sm:px-8">
           <div className="-mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <Avatar name={u.name} src={u.image} size={96} className="border-4 border-surface text-3xl" />
