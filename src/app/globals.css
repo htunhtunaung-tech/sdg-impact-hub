@@ -327,3 +327,18 @@ html.motion .nav-item:hover .nav-icon { animation: nav-wiggle 0.5s ease; }
 html.dark .nav-item .nav-chip, html.dark .nav-item:not(.is-active) > .nav-icon { color: color-mix(in srgb, var(--nav-c) 50%, #fff); background-color: color-mix(in srgb, var(--nav-c) 24%, transparent); }
 html.dark .nav-item.size-12:not(.is-active) { background-color: transparent; }
 html.dark .nav-item.is-active .nav-chip { color: #fff; background: var(--nav-c); }
+
+/* ── The 17 Goals behind every page ─────────────────────────────────────────
+   A faint, fixed pattern of the 17 official SDG icons in their own colours (public/brand/sdg-pattern.svg,
+   7 KB, cached). It sits under all content; cards and panels keep their solid surfaces. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url("/brand/sdg-pattern.svg") 0 0 / 420px 420px repeat;
+  opacity: 0.09;
+}
+html.dark body::before { opacity: 0.08; }
+@media print { body::before { display: none; } }

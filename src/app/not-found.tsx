@@ -4,7 +4,7 @@ import { Logo } from "@/components/layout/logo";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-canvas px-4 text-center">
+    <div className="flex min-h-dvh flex-col items-center justify-center px-4 text-center">
       <Logo />
       <span className="mt-10 flex size-14 items-center justify-center rounded-full bg-mint text-link"><Compass className="size-7" /></span>
       <h1 className="mt-5 text-[40px] font-bold tracking-tight">Page not found</h1>
