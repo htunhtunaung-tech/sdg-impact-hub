@@ -161,6 +161,7 @@ enum NotificationType {
   COMMENT
   ORGANIZATION_VERIFIED
   PROJECT_REVIEWED
+  NEW_FOLLOWER
   SYSTEM
 }
 
@@ -237,6 +238,8 @@ model User {
   assistantThreads        AssistantThread[]
   milestonesCompleted     ProjectMilestone[]
   certificates            Certificate[]
+  following               UserFollow[]             @relation("FollowsOut")
+  followers               UserFollow[]             @relation("FollowsIn")
 
   @@index([role])
   @@index([xp])
@@ -881,6 +884,19 @@ model Message {
 
   @@index([senderId, recipientId, createdAt])
   @@index([recipientId, readAt])
+}
+
+/// One user following another (like Instagram). followerId follows followingId.
+model UserFollow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("FollowsOut", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("FollowsIn", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@index([followingId, createdAt])
 }
 
 model Notification {

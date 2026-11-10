@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Award, Bell, CircleCheck, FolderOpen, Heart, MessageCircle, MessageSquare, ShieldCheck } from "lucide-react";
+import { Award, Bell, CircleCheck, FolderOpen, Heart, MessageCircle, MessageSquare, ShieldCheck, UserPlus } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
 import { cn, timeAgo } from "@/lib/utils";
@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Notifications" };
 
 const ICON = {
   APPLICATION_RECEIVED: Heart, APPLICATION_UPDATED: CircleCheck, PROJECT_UPDATE: FolderOpen, IMPACT_REVIEWED: ShieldCheck, ACHIEVEMENT_EARNED: Award,
-  NEW_MESSAGE: MessageSquare, COMMENT: MessageCircle, ORGANIZATION_VERIFIED: ShieldCheck, PROJECT_REVIEWED: FolderOpen, SYSTEM: Bell,
+  NEW_MESSAGE: MessageSquare, COMMENT: MessageCircle, ORGANIZATION_VERIFIED: ShieldCheck, PROJECT_REVIEWED: FolderOpen, NEW_FOLLOWER: UserPlus, SYSTEM: Bell,
 } as const;
 
 export default async function NotificationsPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
