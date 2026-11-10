@@ -89,7 +89,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
         }
       />
 
-      <section className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4" aria-label="Summary">
+      <section className="reveal-group grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4" aria-label="Summary">
         <Stat tone="mint" icon={<Clock />} label="Volunteer hours" value={formatNumber(h)} trend={hDelta != null && hDelta > 0 ? "up" : null}
           sub={hDelta != null ? <span className="inline-flex items-center gap-1">{hDelta > 0 ? <TrendingUp className="size-3.5" /> : hDelta < 0 ? <TrendingDown className="size-3.5" /> : null}{hDelta >= 0 ? "+" : ""}{hDelta}% vs previous {range.label}</span> : "Verified only"} />
         <Stat tone="sky" icon={<Users />} label="People reached" value={formatInt(people)} trend={pDelta != null && pDelta > 0 ? "up" : null}
@@ -98,7 +98,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
         <Stat tone="lilac" icon={<Globe />} label="Goals contributed" value={byGoal.length} sub={`Across ${projects.length} project${projects.length === 1 ? "" : "s"}`} />
       </section>
 
-      <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
+      <div className="reveal-group mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
           <CardHeader>
             <div>
@@ -126,7 +126,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
         </Card>
       </div>
 
-      <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
+      <div className="reveal-group mt-4 grid gap-4 sm:mt-6 sm:gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
           <CardHeader><div><CardTitle>Measured outcomes</CardTitle><CardDescription>Totals from verified contributions in this period</CardDescription></div></CardHeader>
           <CardContent>

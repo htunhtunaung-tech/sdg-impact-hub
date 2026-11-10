@@ -29,7 +29,7 @@ export default async function OrganizationsPage({ searchParams }: { searchParams
         ))}
       </div>
       {orgs.length ? (
-        <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <ul className="reveal-group grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {orgs.map((o) => (
             <li key={o.id}>
               <Link href={`/organizations/${o.slug}`} className="flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-card transition-shadow hover:shadow-raised">
