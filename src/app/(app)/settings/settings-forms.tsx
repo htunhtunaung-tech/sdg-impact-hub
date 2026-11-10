@@ -10,7 +10,7 @@ import { Field, FormError } from "@/components/ui/field";
 import { Checkbox, Input, Select, Textarea } from "@/components/ui/input";
 import { GoalPicker } from "@/components/sdg/goal-picker";
 import { TagInput } from "@/components/forms/tag-input";
-import { FileUpload } from "@/components/forms/file-upload";
+import { AvatarEditor } from "@/components/forms/avatar-editor";
 import { LocationPicker } from "@/components/map/location-picker";
 import { changePasswordAction, deleteAccountAction, updatePrivacyAction, updateProfileAction } from "@/server/actions/profile";
 
@@ -51,7 +51,7 @@ export function SettingsForms({ profile, privacy, email, hasPassword, googleLink
           <CardHeader><div><CardTitle>Profile</CardTitle><CardDescription>Shown on your public profile and used for recommendations.</CardDescription></div></CardHeader>
           <CardContent className="space-y-5">
             <FormError message={formError} />
-            <div><p className="mb-1.5 text-sm font-medium">Profile photo</p><FileUpload id="avatar" label="Upload a photo" value={p.image} onChange={(u) => set("image", u)} /></div>
+            <div><p className="mb-2 text-sm font-medium">Profile photo</p><AvatarEditor name={p.name} value={p.image} onChange={(u) => set("image", u)} /></div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Name" htmlFor="name" error={errors.name} required><Input value={p.name} onChange={(e) => set("name", e.target.value)} /></Field>
               <Field label="Username" htmlFor="username" error={errors.username} required><Input value={p.username} onChange={(e) => set("username", e.target.value.toLowerCase())} /></Field>
