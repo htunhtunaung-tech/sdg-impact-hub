@@ -20,12 +20,12 @@ function safeCallback(url: unknown) {
 
 export async function registerAction(input: unknown): Promise<ActionResult<{ devLink?: string }>> {
   return runAction(async () => {
-    // Check the form first so typos don't use up attempts. The per-network limit is generous because
-    // mobile carriers in Myanmar and Thailand put many phones behind one shared IP address.
+    // Check the form first so typos don't use up attempts. The per-network limit is generous (100 an hour)
+    // because mobile carriers and school or event Wi-Fi put many people behind one shared IP address.
     const data = parseOrThrow(registerSchema, input);
     const email = data.email.toLowerCase();
-    await enforceRateLimit("register-ip", 30, 3600);
-    await enforceRateLimit("register-email", 5, 3600, email);
+    await enforceRateLimit("register-ip", 100, 3600);
+    await enforceRateLimit("register-email", 10, 3600, email);
     const existing = await db.user.findUnique({ where: { email } });
     const message = "Check your inbox — we've sent you a link to confirm your email.";
     if (existing) {
@@ -97,7 +97,7 @@ export async function resendVerificationAction(emailInput: string): Promise<Acti
 
 export async function verifyEmailAction(token: string): Promise<ActionResult> {
   return runAction(async () => {
-    await enforceRateLimit("verify-email", 20, 3600);
+    await enforceRateLimit("verify-email", 100, 3600);
     const userId = await consumeEmailToken(String(token ?? ""), "VERIFY_EMAIL");
     if (!userId) throw new ActionError("This link is invalid or has expired. Request a new one from the sign-in page.");
     await db.user.update({ where: { id: userId }, data: { emailVerified: new Date() } });
@@ -108,7 +108,7 @@ export async function verifyEmailAction(token: string): Promise<ActionResult> {
 export async function forgotPasswordAction(input: unknown): Promise<ActionResult<{ devLink?: string }>> {
   return runAction(async () => {
     const { email } = parseOrThrow(forgotPasswordSchema, input);
-    await enforceRateLimit("forgot", 5, 3600);
+    await enforceRateLimit("forgot", 20, 3600);
     const user = await db.user.findUnique({ where: { email: email.toLowerCase() } });
     let devLink: string | undefined;
     if (user && user.status === "ACTIVE") {
