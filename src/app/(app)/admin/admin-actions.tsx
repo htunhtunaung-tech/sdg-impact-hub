@@ -27,7 +27,7 @@ export function UserRow({ userId, role, status, self }: { userId: string; role: 
   return (
     <span className="flex flex-wrap items-center gap-2">
       <Select aria-label="Role" value={role} disabled={pending || self} className="h-8 w-auto text-[13px]" onChange={(e) => run(() => setUserRoleAction(userId, e.target.value))}>
-        {["INDIVIDUAL", "STUDENT", "VOLUNTEER", "ORGANIZER", "ORGANIZATION", "ADMIN"].map((r) => <option key={r} value={r}>{r.toLowerCase()}</option>)}
+        {["INDIVIDUAL", "STUDENT", "VOLUNTEER", "ORGANIZER", "ORGANIZATION", "YOUTH_ORGANIZATION", "ADMIN"].map((r) => <option key={r} value={r}>{r.toLowerCase()}</option>)}
       </Select>
       {!self && (
         <Button size="sm" variant={status === "ACTIVE" ? "ghost" : "secondary"} className={status === "ACTIVE" ? "text-danger" : ""} disabled={pending}

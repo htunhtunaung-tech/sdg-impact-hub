@@ -63,7 +63,7 @@ export function SettingsForms({ profile, privacy, email, hasPassword, googleLink
               <Field label="I'm a…" htmlFor="role">
                 <Select value={p.role} onChange={(e) => set("role", e.target.value)}>
                   <option value="INDIVIDUAL">Individual</option><option value="STUDENT">Student</option><option value="VOLUNTEER">Volunteer</option>
-                  <option value="ORGANIZER">Project organizer</option><option value="ORGANIZATION">NGO / Organization representative</option>
+                  <option value="ORGANIZER">Project organizer</option><option value="ORGANIZATION">NGO / Organization representative</option><option value="YOUTH_ORGANIZATION">Youth organization representative</option>
                 </Select>
               </Field>
             )}
