@@ -2,7 +2,8 @@ import "server-only";
 import { renderToBuffer } from "@react-pdf/renderer";
 import QRCode from "qrcode";
 import { CertificatePdf } from "@/lib/certificate-pdf";
-import { certificateGoals, currentCertificate, siteUrl } from "@/lib/certificates";
+import { certificateGoals, certificatePartners, currentCertificate, siteUrl } from "@/lib/certificates";
+import { initials, logoAsPng } from "@/lib/partner-logos";
 import { formatDate, toNumber } from "@/lib/utils";
 
 const monthYear = (d: Date) => formatDate(d, { month: "long", year: "numeric" });
@@ -27,6 +28,9 @@ export async function buildCertificatePdf(userId: string, name: string) {
     errorCorrectionLevel: "M",
     color: { dark: "#0f3d2a", light: "#ffffff" },
   });
+  const partners = await Promise.all(
+    (await certificatePartners(userId, cert.issuedAt)).map(async (p) => ({ name: p.name, initials: initials(p.name), logo: await logoAsPng(p.logoUrl) })),
+  );
   const pdf = await renderToBuffer(
     <CertificatePdf
       d={{
@@ -40,6 +44,7 @@ export async function buildCertificatePdf(userId: string, name: string) {
         issued: formatDate(cert.issuedAt, { day: "numeric", month: "long", year: "numeric" }),
         code: cert.code,
         qrPng,
+        partners,
       }}
     />,
   );

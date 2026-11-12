@@ -5,11 +5,12 @@ import { ArrowLeft } from "lucide-react";
 import { LogoMark } from "@/components/layout/logo";
 import { SdgTile } from "@/components/sdg/sdg-badge";
 import { Button } from "@/components/ui/button";
-import { certificateGoals, currentCertificate, qrSvg, siteUrl } from "@/lib/certificates";
+import { certificateGoals, certificatePartners, currentCertificate, qrSvg, siteUrl } from "@/lib/certificates";
+import { initials } from "@/lib/partner-logos";
 import { db } from "@/lib/db";
 import { sdg, SDGS } from "@/lib/sdg";
 import { getCurrentUser } from "@/lib/session";
-import { formatDate, formatNumber, toNumber } from "@/lib/utils";
+import { cn, formatDate, formatNumber, toNumber } from "@/lib/utils";
 import { PrintButton } from "./print-button";
 
 export const metadata: Metadata = { title: "Volunteer certificate", robots: { index: false } };
@@ -59,6 +60,8 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
   const goals = certificateGoals(cert.goals);
   const verifyUrl = `${await siteUrl()}/verify/${cert.code}`;
   const qr = await qrSvg(verifyUrl);
+  const partners = await certificatePartners(userId, cert.issuedAt);
+  const tight = partners.length > 0; // make room for the partner logos inside the A4 frame
   const period =
     cert.periodStart && cert.periodEnd
       ? monthYear(cert.periodStart) === monthYear(cert.periodEnd)
@@ -95,30 +98,51 @@ export default async function CertificatePage({ params }: { params: Promise<{ us
             <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.14em] text-ink-subtle">Volunteering • Community Impact • Sustainable Development</p>
           </div>
 
-          <div className="my-auto flex flex-col items-center py-4">
+          <div className={cn("my-auto flex flex-col items-center", tight ? "py-1" : "py-4")}>
             <p className="mt-2 text-[15px] font-bold uppercase tracking-[0.08em] text-forest-800 sm:text-[17px]">Certificate of Volunteering</p>
             <div className="mt-2 h-px w-40 bg-forest-900/30" aria-hidden />
             <p className="mt-4 text-sm text-ink-muted">This certificate is proudly presented to</p>
-            <h1 className="mt-2 font-display text-[40px] leading-tight text-ink sm:text-[64px]">{cert.name}</h1>
+            <h1 className={cn("mt-2 font-display text-[40px] leading-tight text-ink", tight ? "sm:text-[54px]" : "sm:text-[64px]")}>{cert.name}</h1>
             <div className="mt-1 h-px w-56 bg-forest-900/25" aria-hidden />
 
-            <p className="mx-auto mt-5 max-w-[640px] text-[15px] leading-relaxed text-ink-muted">
+            <p className={cn("mx-auto max-w-[680px] text-[15px] leading-relaxed text-ink-muted", tight ? "mt-3" : "mt-5")}>
               in recognition of <strong className="text-ink">{formatNumber(hours)} verified volunteer hours</strong> across {cert.activities}{" "}
               {cert.activities === 1 ? "activity" : "activities"}
               {cert.projects > 0 ? ` in ${cert.projects} ${cert.projects === 1 ? "project" : "projects"}` : ""}
               {period ? `, ${period}` : ""}, contributing to the United Nations Sustainable Development Goals.
             </p>
 
-            <ul className="mt-6 flex flex-wrap justify-center gap-3 sm:gap-4" aria-label="Goals contributed to">
+            <ul className={cn("flex flex-wrap justify-center gap-3 sm:gap-4", tight ? "mt-4" : "mt-6")} aria-label="Goals contributed to">
               {goals.slice(0, 6).map((g) => (
-                <li key={g.goalId} className="flex w-[104px] flex-col items-center gap-1.5 rounded-[12px] border border-border bg-canvas px-2 pb-2.5 pt-3 sm:w-[120px]">
-                  <SdgTile goal={g.goalId} className="size-12 rounded-[10px]" />
+                <li key={g.goalId} className={cn("flex w-[104px] flex-col items-center gap-1.5 rounded-[12px] border border-border bg-canvas px-2 sm:w-[120px]", tight ? "pb-2 pt-2" : "pb-2.5 pt-3")}>
+                  <SdgTile goal={g.goalId} className={cn("rounded-[10px]", tight ? "size-10" : "size-12")} />
                   <span className="text-[11px] font-semibold leading-tight text-ink">{sdg(g.goalId).shortTitle}</span>
                   <span className="text-[11px] tabular-nums text-ink-muted">{formatNumber(g.hours)} h</span>
                 </li>
               ))}
             </ul>
           </div>
+
+          {partners.length > 0 && (
+            <div className="mb-3 flex flex-col items-center">
+              <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-subtle">In partnership with</p>
+              <ul className="mt-2 flex flex-wrap items-start justify-center gap-x-6 gap-y-3" aria-label="Partner organizations">
+                {partners.map((p) => (
+                  <li key={p.id} className="flex w-[120px] flex-col items-center gap-1.5">
+                    <span className="flex h-10 w-[110px] items-center justify-center">
+                      {p.logoUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={p.logoUrl} alt="" className="max-h-10 max-w-[110px] object-contain" />
+                      ) : (
+                        <span className="flex size-10 items-center justify-center rounded-full bg-mint text-sm font-bold text-forest-800" aria-hidden>{initials(p.name)}</span>
+                      )}
+                    </span>
+                    <span className="text-[11px] leading-tight text-ink-muted">{p.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="grid w-full grid-cols-1 items-end gap-6 border-t border-border pt-4 text-xs text-ink-muted sm:grid-cols-3">
             <div className="sm:text-left">
