@@ -9,7 +9,7 @@ import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { canManageProject } from "@/lib/permissions";
 import { sdg, sdgTint } from "@/lib/sdg";
-import { formatCurrency, formatDate, formatNumber, timeAgo, toNumber } from "@/lib/utils";
+import { formatCurrency, formatDate, formatDateRange, formatNumber, timeAgo, toNumber } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -468,7 +468,7 @@ async function ManageTab({ project }: { project: NonNullable<Awaited<ReturnType<
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold">{s.user.name} · <span className="font-normal">{s.title}</span></p>
                     <p className="text-sm text-ink-muted">
-                      {formatDate(s.date)} · {formatNumber(toNumber(s.hours))} h
+                      {formatDateRange(s.date, s.endDate)} · {formatNumber(toNumber(s.hours))} h
                       {s.values.map((v) => ` · ${formatNumber(v.value)} ${v.metric.unit}`).join("")}
                     </p>
                     {s.description && <p className="mt-1 text-sm text-slate-700">{s.description}</p>}

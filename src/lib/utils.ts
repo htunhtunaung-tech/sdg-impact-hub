@@ -87,3 +87,10 @@ export function toNumber(v: unknown): number {
   if (typeof v === "number") return v;
   return Number(v.toString());
 }
+
+/** "12 Oct 2026" for one day, "1 Jan – 30 Jun 2026" (or across years) for a multi-day activity. */
+export function formatDateRange(start: Date, end?: Date | null) {
+  if (!end || end.getTime() === start.getTime()) return formatDate(start);
+  const sameYear = start.getUTCFullYear() === end.getUTCFullYear();
+  return `${formatDate(start, sameYear ? { day: "numeric", month: "short" } : undefined)} – ${formatDate(end)}`;
+}

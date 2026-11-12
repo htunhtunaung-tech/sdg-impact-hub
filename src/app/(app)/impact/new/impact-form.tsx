@@ -11,6 +11,8 @@ import { Field, FormError } from "@/components/ui/field";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FileUpload } from "@/components/forms/file-upload";
 import { SDGS } from "@/lib/sdg";
+import { cn } from "@/lib/utils";
+import { daysBetween, MAX_HOURS_PER_DAY_AVG } from "@/lib/validation";
 import { submitImpactAction } from "@/server/actions/impact";
 
 type Init = { opportunityId: string; projectId: string; goalId: number; title: string; date: string; hours: string };
@@ -22,19 +24,26 @@ export function ImpactForm({ projects, opportunities, metrics, initial }: {
   initial: Init;
 }) {
   const router = useRouter();
-  const [v, setV] = useState({ ...initial, description: "", evidenceUrl: null as string | null, values: [] as { metricId: string; value: string }[] });
+  const [v, setV] = useState({ ...initial, description: "", evidenceUrl: null as string | null, values: [] as { metricId: string; value: string }[], multi: false, endDate: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [pending, start] = useTransition();
-  const set = <K extends keyof typeof v>(k: K, val: (typeof v)[K]) => setV((s) => ({ ...s, [k]: val }));
+  const set = <K extends keyof typeof v>(k: K, val: (typeof v)[K]) => {
+    setV((s) => ({ ...s, [k]: val }));
+    // Changing dates or hours can fix an hours error, so clear the old messages for those fields.
+    if (k === "date" || k === "endDate" || k === "hours") setErrors(({ date: _d, endDate: _e, hours: _h, ...rest }) => rest);
+  };
   const today = new Date().toISOString().slice(0, 10);
+  // Multi-day: hours limit grows with the number of days (12 a day on average).
+  const days = v.multi && v.date && v.endDate && v.endDate >= v.date ? daysBetween(new Date(v.date), new Date(v.endDate)) : 1;
+  const maxHours = days > 1 ? days * MAX_HOURS_PER_DAY_AVG : 24;
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
     start(async () => {
       const res = await submitImpactAction({
-        title: v.title, description: v.description || undefined, date: v.date, hours: Number(v.hours || 0), goalId: v.goalId,
+        title: v.title, description: v.description || undefined, date: v.date, endDate: v.multi && v.endDate ? v.endDate : null, hours: Number(v.hours || 0), goalId: v.goalId,
         projectId: v.projectId || null, opportunityId: v.opportunityId || null, evidenceUrl: v.evidenceUrl ?? undefined,
         values: v.values.filter((x) => x.metricId && x.value).map((x) => ({ metricId: x.metricId, value: Number(x.value) })),
       });
@@ -84,8 +93,37 @@ export function ImpactForm({ projects, opportunities, metrics, initial }: {
                 {SDGS.map((g) => <option key={g.id} value={g.id}>{g.id}. {g.shortTitle}</option>)}
               </Select>
             </Field>
-            <Field label="Date" htmlFor="date" error={errors.date} required><Input type="date" max={today} value={v.date} onChange={(e) => set("date", e.target.value)} /></Field>
-            <Field label="Hours" htmlFor="hours" error={errors.hours}><Input type="number" min={0} max={24} step={0.5} value={v.hours} onChange={(e) => set("hours", e.target.value)} /></Field>
+            <div className="sm:col-span-2">
+              <div role="radiogroup" aria-label="How long did it take?" className="inline-flex rounded-full bg-track p-1 text-sm">
+                {[{ multi: false, label: "One day" }, { multi: true, label: "Multi-day activity" }].map((o) => (
+                  <button
+                    key={o.label}
+                    type="button"
+                    role="radio"
+                    aria-checked={v.multi === o.multi}
+                    onClick={() => { setV((s) => ({ ...s, multi: o.multi })); setErrors(({ date: _d, endDate: _e, hours: _h, ...rest }) => rest); }}
+                    className={cn("rounded-full px-4 py-1.5 font-semibold transition-colors", v.multi === o.multi ? "bg-surface text-ink shadow-card" : "text-ink-muted hover:text-ink")}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+              {v.multi && <p className="mt-2 text-sm text-ink-muted">For something that ran over many days, like a semester of weekly classes. Log the total hours for the whole period.</p>}
+            </div>
+            <Field label={v.multi ? "Start date" : "Date"} htmlFor="date" error={errors.date} required><Input id="date" type="date" max={today} value={v.date} onChange={(e) => set("date", e.target.value)} /></Field>
+            {v.multi && (
+              <Field label="End date" htmlFor="endDate" error={errors.endDate} required>
+                <Input id="endDate" type="date" min={v.date || undefined} max={today} value={v.endDate} onChange={(e) => set("endDate", e.target.value)} />
+              </Field>
+            )}
+            <Field
+              label={v.multi ? "Total hours" : "Hours"}
+              htmlFor="hours"
+              error={errors.hours}
+              hint={days > 1 ? `${days} days · up to ${maxHours} hours (${MAX_HOURS_PER_DAY_AVG} a day on average)` : v.multi ? "Pick the end date first" : "Up to 24 for one day"}
+            >
+              <Input id="hours" type="number" min={0} max={maxHours} step={0.5} value={v.hours} onChange={(e) => set("hours", e.target.value)} />
+            </Field>
           </div>
           <Field label="Notes" htmlFor="description" hint="Optional — what happened, who was involved."><Textarea value={v.description} onChange={(e) => set("description", e.target.value)} maxLength={1500} /></Field>
 

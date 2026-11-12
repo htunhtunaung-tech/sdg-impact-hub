@@ -7,7 +7,7 @@ import { enforceRateLimit } from "@/lib/rate-limit";
 import { requireActionUser } from "@/lib/session";
 import { notify } from "@/lib/notify";
 import { reviewSubmission } from "@/lib/impact-review";
-import { impactSubmissionSchema, reviewSchema } from "@/lib/validation";
+import { daysBetween, impactSubmissionSchema, reviewSchema } from "@/lib/validation";
 
 export async function submitImpactAction(input: unknown): Promise<ActionResult<{ id: string }>> {
   return runAction(async () => {
@@ -25,9 +25,17 @@ export async function submitImpactAction(input: unknown): Promise<ActionResult<{
       const dupe = await db.impactSubmission.findFirst({ where: { userId: user.id, opportunityId: d.opportunityId, status: { not: "REJECTED" } } });
       if (dupe) throw new ActionError("You've already recorded this activity.");
     }
-    // Guard against implausible totals: at most 24 hours logged per day.
-    const sameDay = await db.impactSubmission.aggregate({ where: { userId: user.id, date: d.date, status: { not: "REJECTED" } }, _sum: { hours: true } });
-    if (Number(sameDay._sum.hours ?? 0) + d.hours > 24) throw new ActionError("That would be more than 24 hours on one day.", { hours: "Too many hours for this day" });
+    // Guard against implausible totals: at most 24 hours logged per day, also across entries.
+    const endDate = d.endDate && daysBetween(d.date, d.endDate) > 1 ? d.endDate : null;
+    if (!endDate) {
+      const sameDay = await db.impactSubmission.aggregate({ where: { userId: user.id, date: d.date, endDate: null, status: { not: "REJECTED" } }, _sum: { hours: true } });
+      if (Number(sameDay._sum.hours ?? 0) + d.hours > 24) throw new ActionError("That would be more than 24 hours on one day.", { hours: "Too many hours for this day" });
+    } else {
+      // Everything already logged that starts inside this period, plus this entry, must fit in 24 h a day.
+      const inside = await db.impactSubmission.aggregate({ where: { userId: user.id, date: { gte: d.date, lte: endDate }, status: { not: "REJECTED" } }, _sum: { hours: true } });
+      if (Number(inside._sum.hours ?? 0) + d.hours > daysBetween(d.date, endDate) * 24)
+        throw new ActionError("Together with what you've already logged, that's more hours than these days have.", { hours: "Too many hours for these dates" });
+    }
     if (d.hours === 0 && d.values.every((v) => v.value === 0)) throw new ActionError("Add hours or at least one measured outcome.", { hours: "Add hours or an outcome" });
 
     const metrics = await db.impactMetric.findMany({ where: { id: { in: d.values.map((v) => v.metricId) } }, select: { id: true } });
@@ -35,7 +43,7 @@ export async function submitImpactAction(input: unknown): Promise<ActionResult<{
     const s = await db.impactSubmission.create({
       data: {
         userId: user.id, goalId: d.goalId, projectId: d.projectId, opportunityId: d.opportunityId, title: d.title, description: d.description,
-        date: d.date, hours: d.hours, evidenceUrl: d.evidenceUrl,
+        date: d.date, endDate, hours: d.hours, evidenceUrl: d.evidenceUrl,
         values: { create: d.values.filter((v) => ok.has(v.metricId) && v.value > 0).map((v) => ({ metricId: v.metricId, value: v.value })) },
       },
     });
