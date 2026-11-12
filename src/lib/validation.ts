@@ -42,7 +42,7 @@ export const passwordSchema = z
   .regex(/[A-Za-z]/, "Include at least one letter")
   .regex(/[0-9]/, "Include at least one number");
 
-export const SELF_SERVICE_ROLES = ["INDIVIDUAL", "STUDENT", "VOLUNTEER", "ORGANIZER", "ORGANIZATION"] as const;
+export const SELF_SERVICE_ROLES = ["INDIVIDUAL", "STUDENT", "VOLUNTEER", "ORGANIZER", "ORGANIZATION", "YOUTH_ORGANIZATION"] as const;
 
 export const loginSchema = z.object({
   email: z.email("Enter a valid email address").max(254),
@@ -231,7 +231,7 @@ export const reportSchema = z.object({
   details: optionalText(1000),
 });
 
-export const ORG_TYPES = ["NGO", "UNIVERSITY", "SCHOOL", "COMPANY", "COMMUNITY_GROUP", "GOVERNMENT"] as const;
+export const ORG_TYPES = ["NGO", "UNIVERSITY", "SCHOOL", "COMPANY", "COMMUNITY_GROUP", "YOUTH_ORGANIZATION", "GOVERNMENT"] as const;
 export const organizationSchema = z.object({
   name: trimmed(3, 120, "Name"),
   type: z.enum(ORG_TYPES),

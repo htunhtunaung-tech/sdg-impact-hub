@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = { title: "Organizations" };
 
-const TYPE: Record<string, string> = { NGO: "NGO", UNIVERSITY: "University", SCHOOL: "School", COMPANY: "Company", COMMUNITY_GROUP: "Community group", GOVERNMENT: "Government" };
+const TYPE: Record<string, string> = { NGO: "NGO", UNIVERSITY: "University", SCHOOL: "School", COMPANY: "Company", COMMUNITY_GROUP: "Community group", YOUTH_ORGANIZATION: "Youth organization", GOVERNMENT: "Government" };
 
 export default async function OrganizationsPage({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
   const user = await getCurrentUser();

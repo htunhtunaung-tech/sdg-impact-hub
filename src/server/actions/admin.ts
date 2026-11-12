@@ -8,7 +8,7 @@ import { notify } from "@/lib/notify";
 import { evaluateAchievements } from "@/lib/gamification";
 import { sdgEditSchema } from "@/lib/validation";
 
-const ROLES = ["INDIVIDUAL", "STUDENT", "VOLUNTEER", "ORGANIZER", "ORGANIZATION", "ADMIN"] as const;
+const ROLES = ["INDIVIDUAL", "STUDENT", "VOLUNTEER", "ORGANIZER", "ORGANIZATION", "YOUTH_ORGANIZATION", "ADMIN"] as const;
 
 export async function setUserRoleAction(userId: string, role: string): Promise<ActionResult> {
   return runAction(async () => {

@@ -33,7 +33,7 @@ export interface ShellUser {
 }
 
 const roleLabel: Record<string, string> = {
-  INDIVIDUAL: "Member", STUDENT: "Student", VOLUNTEER: "Volunteer", ORGANIZER: "Project organizer", ORGANIZATION: "Organization", ADMIN: "Administrator",
+  INDIVIDUAL: "Member", STUDENT: "Student", VOLUNTEER: "Volunteer", ORGANIZER: "Project organizer", ORGANIZATION: "Organization", YOUTH_ORGANIZATION: "Youth organization", ADMIN: "Administrator",
 };
 
 function isActive(pathname: string, href: string) {

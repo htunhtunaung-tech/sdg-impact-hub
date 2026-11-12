@@ -15,6 +15,7 @@ const ROLES = [
   { value: "VOLUNTEER", label: "Volunteer" },
   { value: "ORGANIZER", label: "Project organizer" },
   { value: "ORGANIZATION", label: "NGO / Organization representative" },
+  { value: "YOUTH_ORGANIZATION", label: "Youth organization representative" },
 ];
 
 export function RegisterForm() {

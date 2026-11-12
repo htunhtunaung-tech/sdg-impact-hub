@@ -18,7 +18,7 @@ import { ReportUserButton } from "./report-user";
 import { FollowButton } from "@/components/social/follow-button";
 
 type Props = { params: Promise<{ username: string }> };
-const ROLE: Record<string, string> = { INDIVIDUAL: "Member", STUDENT: "Student", VOLUNTEER: "Volunteer", ORGANIZER: "Project organizer", ORGANIZATION: "Organization", ADMIN: "Administrator" };
+const ROLE: Record<string, string> = { INDIVIDUAL: "Member", STUDENT: "Student", VOLUNTEER: "Volunteer", ORGANIZER: "Project organizer", ORGANIZATION: "Organization", YOUTH_ORGANIZATION: "Youth organization", ADMIN: "Administrator" };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await db.userProfile.findUnique({ where: { username: (await params).username }, include: { user: { select: { name: true } } } });

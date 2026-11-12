@@ -4,7 +4,7 @@ import { celebrate } from "@/lib/confetti";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Building2, Check, GraduationCap, HandHeart, Megaphone, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Check, GraduationCap, HandHeart, Megaphone, Sprout, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, FormError } from "@/components/ui/field";
@@ -17,7 +17,7 @@ import { EcoIllustration } from "@/components/brand/illustration";
 import { completeOnboardingAction, skipOnboardingAction } from "@/server/actions/profile";
 import { cn } from "@/lib/utils";
 
-type Role = "INDIVIDUAL" | "STUDENT" | "VOLUNTEER" | "ORGANIZER" | "ORGANIZATION";
+type Role = "INDIVIDUAL" | "STUDENT" | "VOLUNTEER" | "ORGANIZER" | "ORGANIZATION" | "YOUTH_ORGANIZATION";
 interface Values {
   role: string;
   goals: number[];
@@ -33,6 +33,7 @@ const ROLES: { value: Role; label: string; sub: string; icon: React.ReactNode }[
   { value: "STUDENT", label: "Student", sub: "Learn, earn certificates and build experience", icon: <GraduationCap /> },
   { value: "ORGANIZER", label: "Project organizer", sub: "Run a project and recruit volunteers", icon: <Megaphone /> },
   { value: "ORGANIZATION", label: "NGO or organization", sub: "Represent a team and verify impact", icon: <Building2 /> },
+  { value: "YOUTH_ORGANIZATION", label: "Youth organization", sub: "Lead a youth group, club or student-led initiative", icon: <Sprout /> },
   { value: "INDIVIDUAL", label: "Just exploring", sub: "Follow goals and see what's happening", icon: <UserRound /> },
 ];
 const SKILLS = ["Teaching", "Coding", "Design", "Event support", "Translation", "Health care", "Photography", "Data analysis", "Fundraising", "Social media", "Engineering", "Project management"];

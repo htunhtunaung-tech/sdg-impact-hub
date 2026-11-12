@@ -10,7 +10,7 @@ import { Input, Select, Textarea } from "@/components/ui/input";
 import { FileUpload } from "@/components/forms/file-upload";
 import { createOrganizationAction } from "@/server/actions/organizations";
 
-const TYPES = [["NGO", "NGO / non-profit"], ["UNIVERSITY", "University"], ["SCHOOL", "School"], ["COMPANY", "Company"], ["COMMUNITY_GROUP", "Community group"], ["GOVERNMENT", "Government body"]];
+const TYPES = [["NGO", "NGO / non-profit"], ["UNIVERSITY", "University"], ["SCHOOL", "School"], ["COMPANY", "Company"], ["COMMUNITY_GROUP", "Community group"], ["YOUTH_ORGANIZATION", "Youth organization"], ["GOVERNMENT", "Government body"]];
 
 export function OrganizationForm() {
   const router = useRouter();

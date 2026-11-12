@@ -19,13 +19,14 @@ const ROLES = [
   { key: "STUDENT", label: "Students" },
   { key: "ORGANIZER", label: "Organizers" },
   { key: "ORGANIZATION", label: "Organizations" },
+  { key: "YOUTH_ORGANIZATION", label: "Youth organizations" },
 ] as const;
 const SORTS = [
   { key: "suggested", label: "Suggested" },
   { key: "new", label: "Newest" },
   { key: "popular", label: "Most followed" },
 ] as const;
-const ROLE_LABEL: Record<string, string> = { INDIVIDUAL: "Member", STUDENT: "Student", VOLUNTEER: "Volunteer", ORGANIZER: "Project organizer", ORGANIZATION: "Organization", ADMIN: "Administrator" };
+const ROLE_LABEL: Record<string, string> = { INDIVIDUAL: "Member", STUDENT: "Student", VOLUNTEER: "Volunteer", ORGANIZER: "Project organizer", ORGANIZATION: "Organization", YOUTH_ORGANIZATION: "Youth organization", ADMIN: "Administrator" };
 
 type SP = { q?: string; role?: string; sort?: string; page?: string };
 
