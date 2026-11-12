@@ -79,3 +79,31 @@ export async function siteUrl() {
 export async function qrSvg(text: string) {
   return QRCode.toString(text, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#0f3d2a", light: "#0000" } });
 }
+
+export type CertificatePartner = { id: string; name: string; slug: string; logoUrl: string | null; hours: number };
+
+/**
+ * The organizations behind a volunteer's certificate: owners of the projects whose hours were verified
+ * before it was issued, most hours first (shown as "In partnership with" logos). Verified organizations only.
+ */
+export async function certificatePartners(userId: string, issuedAt: Date, take = 5): Promise<CertificatePartner[]> {
+  const rows = await db.impactSubmission.findMany({
+    where: {
+      userId,
+      status: "VERIFIED",
+      project: { organizationId: { not: null } },
+      OR: [{ reviewedAt: { lte: issuedAt } }, { reviewedAt: null, createdAt: { lte: issuedAt } }],
+    },
+    select: { hours: true, project: { select: { organization: { select: { id: true, name: true, slug: true, logoUrl: true, verificationStatus: true } } } } },
+  });
+  const byOrg = new Map<string, CertificatePartner>();
+  for (const r of rows) {
+    const o = r.project?.organization;
+    // Only verified organizations may put their name and logo on a certificate.
+    if (!o || o.verificationStatus !== "VERIFIED") continue;
+    const cur = byOrg.get(o.id) ?? { id: o.id, name: o.name, slug: o.slug, logoUrl: o.logoUrl, hours: 0 };
+    cur.hours += Number(r.hours);
+    byOrg.set(o.id, cur);
+  }
+  return [...byOrg.values()].sort((a, b) => b.hours - a.hours).slice(0, take);
+}

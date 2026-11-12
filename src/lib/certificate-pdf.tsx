@@ -34,6 +34,8 @@ export type CertificatePdfData = {
   issued: string;
   code: string;
   qrPng: string;
+  /** Organizations whose projects the hours came from (logo is a PNG data URI or null). */
+  partners?: { name: string; initials: string; logo: string | null }[];
 };
 
 const GREEN = "#166534";
@@ -343,6 +345,29 @@ export function CertificatePdf({ d }: { d: CertificatePdfData }) {
               })}
             </View>
           </View>
+
+          {d.partners && d.partners.length > 0 && (
+            <View style={{ alignItems: "center", marginBottom: 10 }}>
+              <Text style={{ fontSize: 6.5, letterSpacing: 1.6, color: SUBTLE }}>IN PARTNERSHIP WITH</Text>
+              <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "flex-start", marginTop: 6 }}>
+                {d.partners.map((p) => (
+                  <View key={p.name} style={{ width: 92, alignItems: "center", marginHorizontal: 6 }}>
+                    <View style={{ height: 34, width: 84, alignItems: "center", justifyContent: "center" }}>
+                      {p.logo ? (
+                        // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image
+                        <Image src={p.logo} style={{ maxHeight: 34, maxWidth: 84, objectFit: "contain" }} />
+                      ) : (
+                        <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: "#E7F5EC", alignItems: "center", justifyContent: "center" }}>
+                          <Text style={{ fontFamily: "Helvetica-Bold", fontSize: 10, color: GREEN }}>{p.initials}</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={{ fontSize: 6.3, color: MUTED, marginTop: 3, textAlign: "center" }}>{p.name}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
 
           <View style={s.footer}>
             <View style={s.col}>
