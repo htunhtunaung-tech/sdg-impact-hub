@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Award, CalendarCheck, CircleCheck, Clock, Download, Globe, Hourglass, Info, Plus, Target, TrendingDown, TrendingUp, Trophy, Users, XCircle } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
-import { formatDate, formatInt, formatNumber, toNumber } from "@/lib/utils";
+import { formatDateRange, formatInt, formatNumber, toNumber } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState, PageHeader, Stat } from "@/components/ui/misc";
@@ -53,7 +53,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
     db.impactSubmission.findMany({
       where: { userId: user.id },
       include: { project: { select: { title: true, slug: true, organizerId: true, moderationStatus: true } } },
-      orderBy: [{ date: "desc" }, { createdAt: "desc" }],
+      orderBy: [{ createdAt: "desc" }, { date: "desc" }], // newest recorded first, so a long multi-day entry shows up right away
       take: 15,
     }),
     db.$queryRaw<{ rank: bigint; total: bigint }[]>`
@@ -176,7 +176,7 @@ export default async function ImpactPage({ searchParams }: { searchParams: Promi
               <tbody className="divide-y divide-border">
                 {recent.map((r) => (
                   <tr key={r.id}>
-                    <td className="whitespace-nowrap px-6 py-3.5 text-ink-muted">{formatDate(r.date)}</td>
+                    <td className="whitespace-nowrap px-6 py-3.5 text-ink-muted">{formatDateRange(r.date, r.endDate)}</td>
                     <td className="px-3 py-3.5 font-semibold">{r.title}{r.reviewNote && r.status === "REJECTED" && <span className="block text-xs font-normal text-danger">{r.reviewNote}</span>}</td>
                     <td className="px-3 py-3.5 text-ink-muted">{r.project ? <Link href={`/projects/${r.project.slug}`} className="hover:underline">{r.project.title}</Link> : "—"}</td>
                     <td className="px-3 py-3.5"><span className="inline-flex items-center gap-2 text-sm"><SdgNumber goal={r.goalId} size={22} /> Goal {r.goalId}</span></td>

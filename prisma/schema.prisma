@@ -658,6 +658,8 @@ model ImpactSubmission {
   title         String
   description   String?
   date          DateTime     @db.Date
+  /// Last day of a multi-day activity (null = a single day). `date` is the first day.
+  endDate       DateTime?    @db.Date
   hours         Decimal      @default(0) @db.Decimal(6, 2)
   evidenceUrl   String?
   status        ImpactStatus @default(PENDING)

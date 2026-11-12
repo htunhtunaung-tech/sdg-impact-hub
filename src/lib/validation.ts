@@ -183,14 +183,26 @@ export const applicationSchema = z.object({
   wantsReminder: z.boolean().default(true),
 });
 
-export const impactSubmissionSchema = z.object({
+/** Average hours per day allowed for a multi-day activity (one-day entries can still log up to 24). */
+export const MAX_HOURS_PER_DAY_AVG = 12;
+/** Inclusive number of days between two dates (1 for the same day). */
+export const daysBetween = (a: Date, b: Date) => Math.round((Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate()) - Date.UTC(a.getUTCFullYear(), a.getUTCMonth(), a.getUTCDate())) / 86_400_000) + 1;
+
+export const impactSubmissionSchema = z
+  .object({
   title: trimmed(3, 120, "Activity"),
   description: optionalText(1500),
   date: z.coerce
     .date()
     .refine((d) => d.getTime() <= Date.now() + 24 * 3600 * 1000, "Date can't be in the future")
     .refine((d) => d.getTime() >= Date.now() - 366 * 24 * 3600 * 1000, "Date must be within the last year"),
-  hours: z.coerce.number().min(0).max(24, "Log at most 24 hours per entry"),
+  /** Set for a multi-day activity (e.g. a semester of weekly classes). */
+  endDate: z.coerce
+    .date()
+    .optional()
+    .nullable()
+    .refine((d) => !d || d.getTime() <= Date.now() + 24 * 3600 * 1000, "End date can't be in the future"),
+  hours: z.coerce.number().min(0).max(5000, "That's more hours than we can accept in one entry"),
   goalId,
   projectId: z.string().max(40).optional().nullable().transform((v) => v || null),
   opportunityId: z.string().max(40).optional().nullable().transform((v) => v || null),
@@ -199,7 +211,14 @@ export const impactSubmissionSchema = z.object({
     .array(z.object({ metricId: z.string().min(1).max(40), value: z.coerce.number().min(0).max(1e7) }))
     .max(8)
     .default([]),
-});
+  })
+  .superRefine((v, ctx) => {
+    if (v.endDate && v.endDate < v.date) ctx.addIssue({ code: "custom", path: ["endDate"], message: "End date must be on or after the start date" });
+    const days = v.endDate ? daysBetween(v.date, v.endDate) : 1;
+    if (days === 1 && v.hours > 24) ctx.addIssue({ code: "custom", path: ["hours"], message: "Log at most 24 hours for one day. Use Multi-day for longer activities." });
+    if (days > 1 && v.hours > days * MAX_HOURS_PER_DAY_AVG)
+      ctx.addIssue({ code: "custom", path: ["hours"], message: `At most ${days * MAX_HOURS_PER_DAY_AVG} hours for ${days} days (${MAX_HOURS_PER_DAY_AVG} a day on average)` });
+  });
 
 export const reviewSchema = z.object({
   id: z.string().min(1).max(40),

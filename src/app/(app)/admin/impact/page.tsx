@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { formatDate, formatNumber, toNumber } from "@/lib/utils";
+import { formatDateRange, formatNumber, toNumber } from "@/lib/utils";
 import { Avatar, EmptyState } from "@/components/ui/misc";
 import { Card } from "@/components/ui/card";
 import { SdgNumber } from "@/components/sdg/sdg-badge";
@@ -24,7 +24,7 @@ export default async function AdminImpactReview() {
             <div className="min-w-0 flex-1">
               <p className="font-semibold">{s.user.profile ? <Link href={`/u/${s.user.profile.username}`} className="hover:underline">{s.user.name}</Link> : s.user.name} · <span className="font-normal">{s.title}</span></p>
               <p className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
-                <SdgNumber goal={s.goalId} size={18} /> {formatDate(s.date)} · {formatNumber(toNumber(s.hours))} h
+                <SdgNumber goal={s.goalId} size={18} /> {formatDateRange(s.date, s.endDate)} · {formatNumber(toNumber(s.hours))} h
                 {s.values.map((v) => ` · ${formatNumber(v.value)} ${v.metric.unit}`).join("")}
                 {s.project && <> · <Link href={`/projects/${s.project.slug}`} className="hover:underline">{s.project.title}</Link></>}
               </p>
